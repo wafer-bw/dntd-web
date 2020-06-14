@@ -1,0 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+#logo-wrap {
+    text-align: center;
+}
+
+h1, #badges {
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+    color: darkslategrey;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+}
+
+.breakwrap {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.authButton {
+    margin-right: 5px;
+}
+
+#errorsWrap {
+    text-align: center;
+    padding: 2px;
+    margin-bottom: 5px;
+}
+
+#errors {
+    color: rgb(120, 0, 0);
+    background-color: whitesmoke;
+    border: 2px solid red;
+}
+
+#entriesWrap {
+    width: 85%;
+    float: right;
+}
+
+#tagsWrap {
+    width: 15%;
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#googleApi {
+    text-align: center;
+}
+
+.del {
+    margin-left: 5px;
+}
+
+#spreadsheetURLs {
+    width: 100%;
+    height: 60px;
+    margin: 5px;
+}
+
+#compose, .entryWrap {
+    display: flex;
+    flex-direction: row;
+}
+
+.column, .entry {
+    flex: 1 1 0px;
+}
+
+#searchWrap {
+    text-align: center;
+}
+
+.searchNone {
+    border: 1.5px solid black;
+}
+
+.searchAnd {
+    border: 1.5px solid green;
+}
+
+.searchOr {
+    border: 1.5px solid orangered;
+}
+
+.entry {
+    border: 1px solid black;
+}
+
+#search {
+    width: 50%
+}
+
+#search, #hideEntriesKeysToggle, #hideTagRefinesToggle {
+    display: inline-block;
+}
+
+#searchQuery {
+    text-align: left;
+    display: inline-block;
+    width: 90%;
+}
+
+.tempguidancePre, .labelColumn {
+    color: grey;
+    text-align: center;
+    font-size: 12px;
+}
+
+.labelColumn {
+    flex: 1 1 0px;
+}
+
+.fullWidth {
+    width: 100% !important;
+}
+
+.tagKey {
+    background-color: rgb(155, 155, 155);
+    border: none;
+    color: black;
+    border-radius: 16px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-left: 0.37em;
+    padding-right: 0.15em;
+}
+
+.simpleTag {
+    background-color: rgb(125, 125, 125);
+    border: none;
+    color: black;
+    border-radius: 16px;
+    padding-left: 0.37em;
+    padding-right: 0.37em;
+}
+
+.roundTagKey {
+    background-color: rgb(155, 155, 155);
+    border: none;
+    color: black;
+    border-radius: 16px;
+    padding-left: 0.37em;
+    padding-right: 0.37em;
+}
+
+.roundTagVal {
+    background-color: lightgrey;
+    border: none;
+    color: black;
+    border-radius: 16px;
+    padding-left: 0.37em;
+    padding-right: 0.37em;
+}
+
+.tagVal {
+    background-color: lightgrey;
+    border: none;
+    color: black;
+    border-radius: 16px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding-left: 0.15em;
+    padding-right: 0.37em;
+}
+
+.tagKey a, .tagVal a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#main {
+    padding: 20px;
+}
+
+#googleApi, #entries, #compose, #composeLabels, #search, #tags, #badges {
+    padding: 10px;
+}
+
+#sheetSelect, #spreadsheetSelect, #hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img {
+    margin-left: 5px;
+}
+
+#composeLabels {
+    padding-top: 0px;
+}
+
+#compose {
+    padding-bottom: 50px;
+}
+
+.hide {
+    display: none;
+}
+
+.tagRefineValWrap {
+    margin-left: 10px;
+    margin-top: 1px;
+}
+
+.tagRefineWrap {
+    margin-top: 3px;
+}
+
+#spinner {
+    text-align: center;
+    height: 15px;
+}
+
+.spinner {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 15px;
+}
+
+.spinner div {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 25%;
+    background: darkslategrey;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.spinner div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+
+.spinner div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.spinner div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.spinner div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(24px, 0);
+    }
+}
+
+[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    pointer-events: none;
+    color: gray;
+}
