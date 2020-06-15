@@ -5,7 +5,7 @@
     "display": "standalone",
     "theme_color": "#fff",
     "background_color": "#fff",
-    "description": "Tag-based plaintext journaling webapp with a slight feature focus on DnD and other tabletop RPGs.",
+    "description": "Tag-based plaintext journaling web app with a slight feature focus on DnD and other tabletop RPGs.",
     "icons": [
         {
             "src": "./images/splash512.png",
