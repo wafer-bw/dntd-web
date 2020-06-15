@@ -65,7 +65,6 @@ export function googleAPI() {
     function signInOutButton() {
         return (journal.isSignedIn)
             ? m("button", { onclick: () => {
-                console.log("signout")
                 if (testMode === TestMode.RETURN_ROWS) { journal.unload() }
                 gapi_.auth2.getAuthInstance().signOut()
             }, class: "authButton" }, "Sign Out")
