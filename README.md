@@ -1,6 +1,6 @@
 <div align="center">
     <img src="./www/images/favicon.ico"/>
-    <h1 style="margin-top: 0px">wafer-bw/dntd-web</h1>
+    <h1>wafer-bw/dntd-web</h1>
     <p>Tag-based plaintext journaling web app with a slight feature focus on DnD and other tabletop RPGs.</p>
     <img src="https://github.com/wafer-bw/dntd-web/workflows/e2e/badge.svg"/>
     <img src="./www/images/coverage_badge.svg"/>
