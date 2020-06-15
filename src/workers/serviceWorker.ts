@@ -15,7 +15,6 @@ self.addEventListener("install", (event: any) => {
                 "./images/coverage_badge.svg",
                 "https://apis.google.com/js/api.js",
                 "https://unpkg.com/mithril@2.0.4/mithril.min.js",
-                "https://github.com/wafer-bw/dntd-web/workflows/e2e/badge.svg"
             ])
         })
     )
