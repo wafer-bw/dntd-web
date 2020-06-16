@@ -1,4 +1,10 @@
-testing
+# Built js
+dntd.js
+dntd.js.map
+syncWebWorker.js
+syncWebWorker.js.map
+serviceWorker.js
+serviceWorker.js.map
 
 # Tests
 cypress/screenshots
