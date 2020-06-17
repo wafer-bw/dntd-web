@@ -51,12 +51,12 @@ context("Refines Tests", () => {
 
     it("Orders refines properly", function () {
         cy.get("#tags > div:nth-child(3) > span").click()
-        cy.get("#tags > div:nth-child(3) > div:nth-child(2)").contains(":frog")
-        cy.get("#tags > div:nth-child(3) > div:nth-child(3)").contains(":emu")
-        cy.get("#tags > div:nth-child(3) > div:nth-child(4)").contains(":dog")
-        cy.get("#tags > div:nth-child(3) > div:nth-child(5)").contains(":cat")
-        cy.get("#tags > div:nth-child(3) > div:nth-child(6)").contains(":bear")
-        cy.get("#tags > div:nth-child(3) > div:nth-child(7)").contains(":ant")
+        cy.get("#tags > div:nth-child(3) > div:nth-child(2)").contains("frog")
+        cy.get("#tags > div:nth-child(3) > div:nth-child(3)").contains("emu")
+        cy.get("#tags > div:nth-child(3) > div:nth-child(4)").contains("dog")
+        cy.get("#tags > div:nth-child(3) > div:nth-child(5)").contains("cat")
+        cy.get("#tags > div:nth-child(3) > div:nth-child(6)").contains("bear")
+        cy.get("#tags > div:nth-child(3) > div:nth-child(7)").contains("ant")
     })
 
     it("Ctrl clicks refine tag keys to apply refines", function () {

@@ -16,7 +16,7 @@ export class Search {
     get query(): Entry {
         return new Entry([
             this.barQuery.raw,
-            ...Array.from(this.refinesQuery.keys.values()).map(key => `${key}:`),
+            ...Array.from(this.refinesQuery.keys.values()),
             ...Array.from(this.refinesQuery.vals.keys())
         ].join(" "))
     }

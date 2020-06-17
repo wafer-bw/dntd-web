@@ -7,19 +7,6 @@
     <p><a href="https://dntd.app">https://dntd.app</a></p>
 </div>
 
-## Local Setup / Usage
-```bash
-git clone git@github.com:wafer-bw/dntd-web.git
-cd dntd-web
-npm i -D
-npm run build
-python -m http.server # python3+
-# OR
-python -m SimpleHTTPServer # python<3
-# OR
-vercel dev # may prompt you to login and deploy first
-```
-
 ## Features
 * **Inline tagging** - Tags can be added anywhere in a journal entry.
 * **Key-value pair tagging** - Better organization and categorization.
