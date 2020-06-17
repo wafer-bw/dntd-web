@@ -4,14 +4,13 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-#logo-wrap {
+#head, #callToAction {
     text-align: center;
 }
 
-h1, #badges {
+h1, h3, #badges {
     margin-block-start: 0em;
     margin-block-end: 0em;
-    text-align: center;
 }
 
 .breakwrap {

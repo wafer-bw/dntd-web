@@ -1,11 +1,24 @@
 <div align="center">
-    <img src="./www/images/favicon.ico"/>
+    <img src="./public/images/favicon.ico"/>
     <h1>wafer-bw/dntd-web</h1>
     <p>Tag-based plaintext journaling web app with a slight feature focus on DnD and other tabletop RPGs.</p>
     <img src="https://github.com/wafer-bw/dntd-web/workflows/e2e/badge.svg"/>
-    <img src="./www/images/coverage_badge.svg"/>
-    <p><a href="https://dntd.app/">https://dntd.app</a></p>
+    <img src="./public/images/coverage_badge.svg"/>
+    <p><a href="https://dntd.app">https://dntd.app</a></p>
 </div>
+
+## Local Setup / Usage
+```bash
+git clone git@github.com:wafer-bw/dntd-web.git
+cd dntd-web
+npm i -D
+npm run build
+python -m http.server # python3+
+# OR
+python -m SimpleHTTPServer # python<3
+# OR
+vercel dev # may prompt you to login and deploy first
+```
 
 ## Features
 * **Inline tagging** - Tags can be added anywhere in a journal entry.

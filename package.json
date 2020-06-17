@@ -8,7 +8,7 @@
         "test": "cypress run",
         "test:dev": "npm run build && npm run test",
         "test:coverage": "npm run instrument && npm run test && npm run badges && npm run build",
-        "badges": "make-coverage-badge --report-path coverage/coverage-summary.json --output-path www/images/coverage_badge.svg"
+        "badges": "make-coverage-badge --report-path coverage/coverage-summary.json --output-path public/images/coverage_badge.svg"
     },
     "dependencies": {},
     "devDependencies": {
