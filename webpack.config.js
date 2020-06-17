@@ -56,7 +56,7 @@ function build(watch, instrument) {
         },
         output: {
             filename: "[name].js",
-            path: path.resolve(__dirname, "www", "js"),
+            path: path.resolve(__dirname, "public", "js"),
         },
         externals: {
             "mithril": "m"
@@ -65,8 +65,8 @@ function build(watch, instrument) {
             new FileManagerPlugin({
                 onEnd: {
                     move: [
-                        { source: "./www/js/serviceWorker.js", destination: "./www/serviceWorker.js" },
-                        { source: "./www/js/serviceWorker.js.map", destination: "./www/serviceWorker.js.map" }
+                        { source: "./public/js/serviceWorker.js", destination: "./public/serviceWorker.js" },
+                        { source: "./public/js/serviceWorker.js.map", destination: "./public/serviceWorker.js.map" }
                     ]
                 }
             })
