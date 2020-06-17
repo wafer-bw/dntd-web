@@ -1,3 +1,6 @@
+# Vercel
+.vercel
+
 # Tests
 cypress/screenshots
 cypress/videos
@@ -7,6 +10,7 @@ cypress/videos
 .DS_Store
 .coverage
 cov.xml
+
 # Logs
 logs
 *.log
