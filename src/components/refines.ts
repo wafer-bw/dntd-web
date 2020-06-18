@@ -8,7 +8,6 @@ export function refines() {
 
     function view() {
         if (journal.hideTagRefines) { return [] }
-        console.log(expanded)
         return m("#tagsWrap", m("#tags", [
             m(".tempguidancePre", "Tags"),
             simpleRefinesVnodes(),
@@ -18,7 +17,7 @@ export function refines() {
 
     function simpleRefinesVnodes(): Vnode {
         const { simple } = buildRefines()
-        return m(".tagRefineWrap", [
+        return m(".tagRefineWrap", (simple.size === 0)? [] : [
             refineKeyVnode(simpleTagsHeader, simple.size),
             Array.from(simple, ([key, tag]) => [
                 refineValVnode(key, tag)
@@ -46,8 +45,8 @@ export function refines() {
     function refineValVnode(key: string, tag: Tag) {
         return m("div", { class: `tagRefineValWrap` }, [
             m("span", tagRefineValSettings(key, tag), [
-                m("input", { type: "checkbox", checked: search.refinesQuery.vals.has(tag.clean) }),
-                (tag.val !== null) ? m("span", `${tag.val}`) : m("span", `${tag.flag}${tag.key}`),
+                m("input", { type: "checkbox", checked: (tag.val === null) ? search.refinesQuery.simpleKeys.has(tag.clean) : search.refinesQuery.vals.has(tag.clean) }),
+                (tag.val !== null) ? m("span", `${tag.cleanVal}`) : m("span", `${tag.flag}${tag.cleanKey}`),
                 m("span", ` (${tag.frq})`),
             ]),
         ])
@@ -88,9 +87,15 @@ export function refines() {
     }
 
     function refineTagValOnClick(tag: Tag) {
-        search.refinesQuery.vals.has(tag.clean)
-            ? search.refinesQuery.vals.delete(tag.clean)
-            : search.refinesQuery.vals.set(tag.clean, tag)
+        if (tag.val === null) {
+            search.refinesQuery.simpleKeys.has(tag.clean)
+                ? search.refinesQuery.simpleKeys.delete(tag.clean)
+                : search.refinesQuery.simpleKeys.set(tag.clean, tag)
+        } else {
+            search.refinesQuery.vals.has(tag.clean)
+                ? search.refinesQuery.vals.delete(tag.clean)
+                : search.refinesQuery.vals.set(tag.clean, tag)
+        }
     }
 
     function buildRefines() {
@@ -109,6 +114,28 @@ export function refines() {
                 complexRefines.get(key)!.push(tag)
             }
         }
+
+        // Clean stale simple tag key (refine val) selections
+        for (let [key,] of search.refinesQuery.simpleKeys) {
+            if (!simpleRefines.has(key)) {
+                search.refinesQuery.simpleKeys.delete(key)
+            }
+        }
+
+        // Clean stale complex tag key selections
+        for (let key of search.refinesQuery.keys) {
+            if (!complexRefines.has(key)) {
+                search.refinesQuery.keys.delete(key)
+            }
+        }
+
+        // Clean stale complex tag val
+        for (let [key,] of search.refinesQuery.vals) {
+            if (!Array.from(complexRefines.values()).some(tags => tags.some(tag => tag.clean === key))) {
+                search.refinesQuery.vals.delete(key)
+            }
+        }
+
         return {
             simple: new Map([...simpleRefines.entries()]),
             complex: new Map([...complexRefines.entries()].sort())

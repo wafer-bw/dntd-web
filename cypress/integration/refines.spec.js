@@ -77,4 +77,32 @@ context("Refines Tests", () => {
         cy.get("body").type("{cmd}")
     })
 
+    it("Properly clears simple tag keys from refine query if they don't exist", function() {
+        cy.get("#content").type("@simpletagdeletetest{enter}")
+        cy.get("#tags > div:nth-child(2) > span").click()
+        cy.get("#tags > div:nth-child(2) > div:nth-child(2)").click()
+        confirmEntryPresence([12], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+        cy.get("#entry-12 > button").click()
+        confirmEntryPresence([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], [])
+    })
+
+    it("Properly clears complex tag keys from refine query if they don't exist", function() {
+        cy.get("#content").type("@complextagkey:deletetest{enter}")
+        cy.get("body").type("{ctrl}", { release: false })
+        cy.get("#tags > div:nth-child(4)").click()
+        cy.get("body").type("{ctrl}")
+        confirmEntryPresence([12], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+        cy.get("#entry-12 > button").click()
+        confirmEntryPresence([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], [])
+    })
+
+    it("Properly clears complex tag vals from refine query if they don't exist", function() {
+        cy.get("#content").type("@complextagkey:deletetest{enter}")
+        cy.get("#tags > div:nth-child(4)").click()
+        cy.get("#tags > div:nth-child(4) > div").click()
+        confirmEntryPresence([12], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+        cy.get("#entry-12 > button").click()
+        confirmEntryPresence([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], [])
+    })
+
 })
