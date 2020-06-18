@@ -5,25 +5,27 @@ import { IndexedEntry } from "../classes/Entry"
 
 interface Refines {
     keys: Set<string>,
-    vals: Map<string, Tag>
+    vals: Map<string, Tag>,
+    simpleKeys: Map<string, Tag>
 }
 
 export class Search {
     public barQuery: Entry = new Entry("")
     public searchType: SearchType = SearchType.NONE
-    public refinesQuery: Refines = { keys: new Set(), vals: new Map() }
+    public refinesQuery: Refines = { keys: new Set(), vals: new Map(), simpleKeys: new Map() }
 
     get query(): Entry {
         return new Entry([
             this.barQuery.raw,
-            ...Array.from(this.refinesQuery.keys.values()).map(key => `${key}:`),
-            ...Array.from(this.refinesQuery.vals.keys())
+            ...Array.from(this.refinesQuery.keys.values()),
+            ...Array.from(this.refinesQuery.vals.keys()),
+            ...Array.from(this.refinesQuery.simpleKeys.keys())
         ].join(" "))
     }
 
     public reset() {
         this.barQuery = new Entry("")
-        this.refinesQuery = { keys: new Set(), vals: new Map() }
+        this.refinesQuery = { keys: new Set(), vals: new Map(), simpleKeys: new Map() }
     }
 
     public entries(): IndexedEntry[] | null {
