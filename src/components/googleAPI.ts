@@ -2,7 +2,7 @@ import m from "mithril"
 import { MockGapi } from "../mocks"
 import { TestMode } from "../types"
 import { journal, testMode, syncer } from ".."
-import { 
+import {
     getStoredSpreadsheetUrls, getStoredSpreadsheetSheetId, setStoredSpreadsheetUrls
 } from "../helpers"
 
@@ -52,22 +52,30 @@ export function googleAPI() {
     }
 
     function view() {
-        return m("#googleApi", [
-            (journal.showAddSpreadsheetTextbox) ? [spreadsheetsTextbox(), m("br")] : [],
-            (journal.isSignedIn) ? addSpreadsheetButton() : [],
-            (journal.spreadsheet !== null) ? spreadsheetsSelect() : [],
-            (journal.isActive) ? sheetsSelect() : [],
-            signInOutButton(),
-            m("script", gapiScriptSettings()),
-        ])
+        if (testMode === TestMode.DEMO) {
+            journal.isSignedIn = true
+            journal.load("https://docs.google.com/spreadsheets/d/demo/edit")
+            return []
+        } else {
+            return m("#googleApi", [
+                (journal.showAddSpreadsheetTextbox) ? [spreadsheetsTextbox(), m("br")] : [],
+                (journal.isSignedIn) ? addSpreadsheetButton() : [],
+                (journal.spreadsheet !== null) ? spreadsheetsSelect() : [],
+                (journal.isActive) ? sheetsSelect() : [],
+                signInOutButton(),
+                m("script", gapiScriptSettings()),
+            ])
+        }
     }
 
     function signInOutButton() {
         return (journal.isSignedIn)
-            ? m("button", { onclick: () => {
-                if (testMode === TestMode.RETURN_ROWS) { journal.unload() }
-                gapi_.auth2.getAuthInstance().signOut()
-            }, class: "authButton" }, "Sign Out")
+            ? m("button", {
+                onclick: () => {
+                    if (testMode === TestMode.RETURN_ROWS) { journal.unload() }
+                    gapi_.auth2.getAuthInstance().signOut()
+                }, class: "authButton"
+            }, "Sign Out")
             : m("button", { onclick: () => gapi_.auth2.getAuthInstance().signIn(), class: "authButton" }, "Sign In")
     }
 
