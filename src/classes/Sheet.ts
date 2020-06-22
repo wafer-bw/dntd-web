@@ -1,7 +1,7 @@
 import { Entry, Tag } from "."
 import { TagsMap } from "../classes/Entry"
-import { syncer, journal } from "../index"
 import { Spreadsheet } from "./Spreadsheet"
+import { syncer, journal, refines } from ".."
 
 export class Sheet {
     public id: number
@@ -20,6 +20,13 @@ export class Sheet {
     public async load(rows: string[]) {
         rows.map(row => this.entries.push(new Entry(row)))
         journal.switch()
+        if (
+            journal.spreadsheet !== null &&
+            journal.spreadsheet.sheet !== null &&
+            journal.spreadsheet.sheet.id === this.id
+        ) {
+            refines.build()
+        }
     }
 
     get tags(): TagsMap {

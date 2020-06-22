@@ -53,7 +53,6 @@ export function compose() {
             journal.spreadsheet!.sheet!.entries.push(newEntry)
             m.redraw()
             await journal.saveEntry(idx)
-            m.redraw()
         }
     }
 
