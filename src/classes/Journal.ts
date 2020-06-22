@@ -1,6 +1,6 @@
 import m from "mithril"
 import { Spreadsheet } from "."
-import { search, syncer } from ".."
+import { search, syncer, refines } from ".."
 import {
     spreadsheetIdPattern, getStoredHideTagRefines, getStoredHideEntriesKeys,
     setStoredSpreadsheetId, setStoredSpreadsheetSheetId, delStoredSpreadsheetSheetId,
@@ -26,7 +26,6 @@ export class Journal {
         let incomingSpreadsheetIds = this.getSpreadsheetIdsFromUrls(spreadsheetUrls)
         await this.loadNewSpreadsheets(incomingSpreadsheetIds)
         await this.removeOldSpreadsheets(incomingSpreadsheetIds)
-        this.switch()
     }
 
     public unload() {
@@ -110,6 +109,8 @@ export class Journal {
     public async deleteEntry(idx: number) {
         syncer.deleteRow(idx, this.spreadsheet!.id, this.spreadsheet!.sheet!.id)
         this.spreadsheet!.sheet!.entries.splice(idx, 1)[0]
+        refines.build()
+        m.redraw()
     }
 
     public async saveEntry(idx: number) {
@@ -117,5 +118,7 @@ export class Journal {
         if (entry.raw === entry.saved) { return }
         syncer.updateRow(idx, this.spreadsheet!.id, this.spreadsheet!.sheet!.id, this.spreadsheet!.sheet!.title, entry.raw)
         entry.saved = entry.raw
+        refines.build()
+        m.redraw()
     }
 }
