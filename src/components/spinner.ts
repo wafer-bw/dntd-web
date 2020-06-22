@@ -1,21 +1,22 @@
 import m from "mithril"
-import { journal, syncer } from ".."
+import { syncer } from ".."
+import { SyncerState } from "../types"
 
 export function spinner() {
 
     function view() {
-        return m("#spinner", [spinnerVnode(), unpauseVnode()])
+        return m("#status", m("span", [syncStateIcon(), unpauseVnode()]))
     }
 
-    function spinnerVnode() {
-        if (journal.loading && !syncer.paused) {
-            return m(".spinner", [m("div"), m("div"), m("div"), m("div")])
-        }
-        return
+    function syncStateIcon() {
+        return m("i", {
+            id: "syncState",
+            class: "material-icons material-icons-outlined md-dark"
+        }, syncer.state)
     }
 
     function unpauseVnode() {
-        if (syncer.paused) {
+        if (syncer.state === SyncerState.PAUSED) {
             return m("button", {
                 id: "unpauseSync",
                 onclick: () => syncer.unpause(),

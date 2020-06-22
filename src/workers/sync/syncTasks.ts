@@ -14,7 +14,11 @@ export class SyncerTasks {
         let response = await fetch(url, opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(`Failed to get spreadsheet details.\n${JSON.stringify(error)}`, response.status === 401)
+            throw new SyncerError(
+                JSON.stringify(error),
+                `Failed to get spreadsheet details for spreadsheet: ${task.spreadsheetId}`,
+                response.status === 401
+            )
         } else {
             let data: gapi.client.sheets.Spreadsheet = await response.json()
             return data.sheets || []
@@ -29,7 +33,10 @@ export class SyncerTasks {
         let response = await fetch(url, opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(`Failed to get sheet rows.\n${JSON.stringify(error)}`, response.status === 401)
+            throw new SyncerError(
+                JSON.stringify(error),
+                `Failed to get sheet rows: ${range}`,
+                response.status === 401)
         } else {
             let data: gapi.client.sheets.ValueRange = await response.json()
             let rows: string[] = (data.values) ? data.values.map(row => row[0]) : []
@@ -53,12 +60,12 @@ export class SyncerTasks {
                 let secondResponse = await fetch(url.toString(), opts)
                 if (!secondResponse.ok) {
                     let error: GapiErrorResponse = await response.json()
-                    throw new SyncerError(`Failed to update row:\n${JSON.stringify(error)}`, response.status === 401)
+                    throw new SyncerError(JSON.stringify(error), `Failed to update row: ${range}`, response.status === 401)
                 } else {
                     return
                 }
             }
-            throw new SyncerError(`Failed to update row:\n${JSON.stringify(data)}`, response.status === 401)
+            throw new SyncerError(JSON.stringify(data), `Failed to update row: ${range}`, response.status === 401)
         }
     }
 
@@ -71,7 +78,7 @@ export class SyncerTasks {
         let response = await fetch(url.toString(), opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(`Failed to delete row.\n${JSON.stringify(error)}`, response.status === 401)
+            throw new SyncerError(JSON.stringify(error), `Failed to delete row: ${task.idx}`, response.status === 401)
         }
     }
 
@@ -83,7 +90,7 @@ export class SyncerTasks {
         let response = await fetch(url.toString(), opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(`Failed to extend sheet.\n${JSON.stringify(error)}`, response.status === 401)
+            throw new SyncerError(JSON.stringify(error), "Failed to extend sheet", response.status === 401)
         }
     }
 

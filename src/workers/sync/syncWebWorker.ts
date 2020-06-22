@@ -1,8 +1,8 @@
 import { SyncerTasksMock } from "../../mocks"
-import { TestMode, SyncerTask, SyncerTaskType } from "../../types"
+import { TestMode, SyncerTask, SyncerTaskType, SyncerState } from "../../types"
 import {
     SyncerTasks, postQueueState, postRows, postSheets, syncRate, sleep, postError,
-    postReAuthRequest, instanceOfSyncerError
+    postReAuthRequest, instanceOfSyncerError, SyncerError
 } from "."
 
 const queue: any[] = []
@@ -39,21 +39,24 @@ function prequeue(msg: MessageEvent) {
 async function sync() {
     while (true) {
         await sleep(syncRate)
-        postQueueState(queue.length, paused)
         while (queue.length > 0 && token && !paused && syncerTasks) {
             let task: SyncerTask = queue[0]
             try {
                 switch (task.type) {
                     case SyncerTaskType.GET_ROWS:
+                        postQueueState(queue.length, SyncerState.DOWNLOADING)
                         postRows(task, await syncerTasks!.getRows(token!, task))
                         break
                     case SyncerTaskType.GET_SHEETS:
+                        postQueueState(queue.length, SyncerState.DOWNLOADING)
                         postSheets(task, await syncerTasks!.getSheets(token!, task))
                         break
                     case SyncerTaskType.UPDATE_ROW:
+                        postQueueState(queue.length, SyncerState.UPLOADING)
                         await syncerTasks!.updateRow(token!, task)
                         break
                     case SyncerTaskType.DELETE_ROW:
+                        postQueueState(queue.length, SyncerState.UPLOADING)
                         await syncerTasks!.deleteRow(token!, task)
                         break
                 }
@@ -65,9 +68,15 @@ async function sync() {
                     break
                 } else {
                     paused = true
-                    postError(e)
+                    postQueueState(queue.length, SyncerState.PAUSED)
+                    postError((instanceOfSyncerError(e))
+                        ? e
+                        : new SyncerError(e.message, "Unknown Error", false))
                     break
                 }
+            }
+            if (!paused && queue.length === 0) {
+                postQueueState(queue.length, SyncerState.SYNCED)
             }
         }
     }

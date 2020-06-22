@@ -2,11 +2,11 @@ import m from "mithril"
 import { journal, syncer } from ".."
 import { MockGoogleUser } from "../mocks"
 import { FriendlyError } from "../helpers"
-import { SyncerTask, SyncerTaskType, SyncerResponse, TestMode, SyncerResponseType } from "../types"
+import { SyncerTask, SyncerTaskType, SyncerResponse, TestMode, SyncerResponseType, SyncerState } from "../types"
 
 export class Syncer {
     public worker: Worker
-    public paused: boolean = false
+    public state: SyncerState = SyncerState.DOWNLOADING
     public user: gapi.auth2.GoogleUser | MockGoogleUser | null = null
 
     constructor(testMode: TestMode) {
@@ -70,16 +70,11 @@ export class Syncer {
     private onMessage(msg: MessageEvent) {
         let response: SyncerResponse = msg.data
         switch (response.type) {
-            case SyncerResponseType.QUEUE_STATE:
-                if (response.paused && !syncer.paused) {
-                    syncer.paused = true
-                } else if (!response.paused && syncer.paused) {
-                    syncer.paused = false
+            case SyncerResponseType.SYNCER_STATE:
+                if (response.state !== syncer.state) {
+                    syncer.state = response.state
+                    m.redraw()
                 }
-                if (journal.loading !== (response.length > 0)) {
-                    journal.loading = (response.length > 0)
-                }
-                m.redraw()
                 break
             case SyncerResponseType.SHEETS:
                 if (journal.spreadsheets.has(response.spreadsheetId)) {
@@ -95,8 +90,7 @@ export class Syncer {
                 }
                 break
             case SyncerResponseType.ERROR:
-                syncer.paused = true
-                new FriendlyError(response.error.message, "Unable to sync")
+                new FriendlyError(response.error.message, `Sync Error - ${response.friendlyMsg}`)
                 break
             case SyncerResponseType.REAUTH:
                 if (syncer.user !== null) {
