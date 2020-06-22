@@ -2,11 +2,7 @@ import m from "mithril"
 import { journal, syncer } from ".."
 import { MockGoogleUser } from "../mocks"
 import { FriendlyError } from "../helpers"
-import { SyncerTask, SyncerTaskType, SyncerResponse, TestMode } from "../types"
-import {
-    instanceOfQueueStateResponse, instanceOfRowsResponse, instanceOfSheetsResponse,
-    instanceOfErrorResponse, instanceOfReauthResponse
-} from "../workers/sync"
+import { SyncerTask, SyncerTaskType, SyncerResponse, TestMode, SyncerResponseType } from "../types"
 
 export class Syncer {
     public worker: Worker
@@ -73,40 +69,44 @@ export class Syncer {
 
     private onMessage(msg: MessageEvent) {
         let response: SyncerResponse = msg.data
-        if (instanceOfQueueStateResponse(response)) {
-            if (response.paused && !syncer.paused) {
+        switch (response.type) {
+            case SyncerResponseType.QUEUE_STATE:
+                if (response.paused && !syncer.paused) {
+                    syncer.paused = true
+                } else if (!response.paused && syncer.paused) {
+                    syncer.paused = false
+                }
+                if (journal.loading !== (response.length > 0)) {
+                    journal.loading = (response.length > 0)
+                }
+                m.redraw()
+                break
+            case SyncerResponseType.SHEETS:
+                if (journal.spreadsheets.has(response.spreadsheetId)) {
+                    journal.spreadsheets.get(response.spreadsheetId)!.load(response.sheets)
+                }
+                break
+            case SyncerResponseType.ROWS:
+                if (
+                    journal.spreadsheets.has(response.spreadsheetId)
+                    && journal.spreadsheets.get(response.spreadsheetId)!.sheets.has(response.sheetId)
+                ) {
+                    journal.spreadsheets.get(response.spreadsheetId)!.sheets.get(response.sheetId)!.load(response.rows)
+                }
+                break
+            case SyncerResponseType.ERROR:
                 syncer.paused = true
-                m.redraw()
-            } else if (!response.paused && syncer.paused) {
-                syncer.paused = false
-                m.redraw()
-            }
-            if (journal.loading !== (response.length > 0)) {
-                journal.loading = (response.length > 0)
-                m.redraw()
-            }
-        } else if (instanceOfSheetsResponse(response)) {
-            if (journal.spreadsheets.has(response.spreadsheetId)) {
-                journal.spreadsheets.get(response.spreadsheetId)!.load(response.sheets)
-            }
-        } else if (instanceOfRowsResponse(response)) {
-            if (
-                journal.spreadsheets.has(response.spreadsheetId)
-                && journal.spreadsheets.get(response.spreadsheetId)!.sheets.has(response.sheetId)
-            ) {
-                journal.spreadsheets.get(response.spreadsheetId)!.sheets.get(response.sheetId)!.load(response.rows)
-            }
-        } else if (instanceOfErrorResponse(response)) {
-            syncer.paused = true
-            new FriendlyError(response.error.message, "Unable to sync")
-        } else if (instanceOfReauthResponse(response)) {
-            if (syncer.user !== null) {
-                syncer.user.reloadAuthResponse().then((auth) => {
-                    syncer.updateAuth(auth.access_token)
-                }).catch((err) => {
-                    new FriendlyError(err, "You're signed out and need to sign back in.")
-                })
-            }
+                new FriendlyError(response.error.message, "Unable to sync")
+                break
+            case SyncerResponseType.REAUTH:
+                if (syncer.user !== null) {
+                    syncer.user.reloadAuthResponse().then((auth) => {
+                        syncer.updateAuth(auth.access_token)
+                    }).catch((err) => {
+                        new FriendlyError(err, "You're signed out and need to sign back in.")
+                    })
+                }
+                break
         }
     }
 }
