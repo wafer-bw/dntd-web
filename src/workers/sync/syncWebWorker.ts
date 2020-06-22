@@ -36,7 +36,6 @@ async function sync() {
     while (true) {
         await sleep(syncRate)
         postQueueState(queue.length, paused)
-        console.log(queue)
         while (queue.length > 0 && token && !paused && syncerTasks) {
             let task: SyncerTask = queue[0]
             try {
