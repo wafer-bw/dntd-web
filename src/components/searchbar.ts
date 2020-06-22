@@ -3,7 +3,7 @@ import { search } from ".."
 import { Caret } from "../types"
 import { getCaretPosition, setCaretPosition, escapeHtml } from "../helpers"
 
-export function searchBar() {
+export function searchbar() {
     var caret: Caret = { el: null, pos: null }
 
     function view() {
