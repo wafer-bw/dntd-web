@@ -1,6 +1,6 @@
 import { SyncerError } from "."
 import { 
-    SyncerResponse, SyncerResponseType, GetRowsTask, GetSheetsTask
+    SyncerResponse, SyncerResponseType, GetRowsTask, GetSheetsTask, SyncerState
 } from "../../types"
 
 export function postSheets(task: GetSheetsTask, sheets: gapi.client.sheets.Sheet[]) {
@@ -20,16 +20,17 @@ export function postRows(task: GetRowsTask, rows: string[]) {
     })
 }
 
-export function postQueueState(length: number, paused: boolean) {
+export function postQueueState(length: number, state: SyncerState) {
     postResponse({
         length: length,
-        paused: paused,
-        type: SyncerResponseType.QUEUE_STATE
+        state: state,
+        type: SyncerResponseType.SYNCER_STATE
     })
 }
 
-export function postError(error: Error | SyncerError) {
+export function postError(error: SyncerError) {
     postResponse({
+        friendlyMsg: error.friendlyMsg,
         error: error,
         type: SyncerResponseType.ERROR
     })

@@ -9,7 +9,6 @@ import {
 
 export class Journal {
     public errors: string[] = []
-    public loading: boolean = false
     public isSignedIn: boolean = false
     public entryInFocus: boolean = false
     public hideTagRefines: boolean = false
@@ -31,7 +30,6 @@ export class Journal {
     public unload() {
         this.removeOldSpreadsheets([])
         this.errors = []
-        this.loading = false
         this.isSignedIn = false
         this.entryInFocus = false
         this.hideTagRefines = false
