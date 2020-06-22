@@ -71,15 +71,14 @@ export class Syncer {
         let response: SyncerResponse = msg.data
         switch (response.type) {
             case SyncerResponseType.QUEUE_STATE:
-                if (response.paused && !syncer.paused) {
-                    syncer.paused = true
-                } else if (!response.paused && syncer.paused) {
-                    syncer.paused = false
+                if (response.paused !== syncer.paused) {
+                    syncer.paused = response.paused
+                    m.redraw()
                 }
                 if (journal.loading !== (response.length > 0)) {
                     journal.loading = (response.length > 0)
+                    m.redraw()
                 }
-                m.redraw()
                 break
             case SyncerResponseType.SHEETS:
                 if (journal.spreadsheets.has(response.spreadsheetId)) {
