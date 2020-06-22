@@ -17,9 +17,12 @@ sync()
 onmessage = (msg) => {
     let task: SyncerTask = msg.data
     if (instanceOfTestModeUpdateTask(task)) {
-        syncerTasks = (task.testMode === TestMode.OFF)
-            ? new SyncerTasks()
-            : new SyncerTasksMock(task.testMode)
+        if (task.testMode === TestMode.OFF) {
+            syncerTasks = new SyncerTasks()
+        } else {
+            token = "mock"
+            syncerTasks = new SyncerTasksMock(task.testMode)
+        }
     } else if (instanceOfAuthUpdateTask(task)) {
         token = task.token
     } else if (instanceOfUnpauseTask(task)) {
