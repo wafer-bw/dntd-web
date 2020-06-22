@@ -1,7 +1,7 @@
 import m from "mithril"
 import { getTestMode } from "./helpers"
 import { Journal, Search, Syncer, ServiceWorker } from "./classes"
-import { googleAPI, compose, entries, searchBar, toggles, spinner, refinesPane, errors } from "./components"
+import { googleAPI, compose, entries, searchbar, toggles, spinner, refinesPane, errors } from "./components"
 import { Refines } from "./classes/Refines"
 
 export const serviceWorker = new ServiceWorker()
@@ -24,7 +24,7 @@ function app() {
             (journal.isActive)
                 ? [
                     m("#searchWrap", [
-                        m(searchBar),
+                        m(searchbar),
                         m(toggles)
                     ]),
                     m(refinesPane),
