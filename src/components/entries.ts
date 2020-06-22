@@ -34,10 +34,7 @@ export function entries() {
     function deleteEntryButton(idx: number) {
         return m("button", {
             class: "del",
-            onclick: async () => {
-                await journal.deleteEntry(idx)
-                m.redraw()
-            }
+            onclick: async () => await journal.deleteEntry(idx)
         }, "del")
     }
 
@@ -74,7 +71,6 @@ export function entries() {
     async function onEntryBlur(entry: Entry, idx: number) {
         entry.focused = false
         await journal.saveEntry(idx)
-        m.redraw()
     }
 
     function onEntryMouseover(entry: Entry) {

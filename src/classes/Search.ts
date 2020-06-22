@@ -3,7 +3,7 @@ import { Entry, Tag } from "."
 import { SearchType } from "../types"
 import { IndexedEntry } from "../classes/Entry"
 
-interface Refines {
+interface RefinesQuery {
     keys: Set<string>,
     vals: Map<string, Tag>,
     simpleKeys: Map<string, Tag>
@@ -12,7 +12,7 @@ interface Refines {
 export class Search {
     public barQuery: Entry = new Entry("")
     public searchType: SearchType = SearchType.NONE
-    public refinesQuery: Refines = { keys: new Set(), vals: new Map(), simpleKeys: new Map() }
+    public refinesQuery: RefinesQuery = { keys: new Set(), vals: new Map(), simpleKeys: new Map() }
 
     get query(): Entry {
         return new Entry([
@@ -25,6 +25,7 @@ export class Search {
 
     public reset() {
         this.barQuery = new Entry("")
+        this.searchType = SearchType.NONE
         this.refinesQuery = { keys: new Set(), vals: new Map(), simpleKeys: new Map() }
     }
 
@@ -51,12 +52,12 @@ export class Search {
             switch (this.searchType) {
                 case SearchType.AND:
                     if (query.tokens.every(token => this.match(token, entry))) {
-                        entries.push({idx: idx, entry: entry})
+                        entries.push({ idx: idx, entry: entry })
                     }
                     break
                 case SearchType.OR:
                     if (query.tokens.some(token => this.match(token, entry))) {
-                        entries.push({idx: idx, entry: entry})
+                        entries.push({ idx: idx, entry: entry })
                     }
                     break
             }

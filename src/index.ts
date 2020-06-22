@@ -1,12 +1,14 @@
 import m from "mithril"
 import { getTestMode } from "./helpers"
 import { Journal, Search, Syncer, ServiceWorker } from "./classes"
-import { googleAPI, compose, entries, searchbar, toggles, spinner, refines, errors } from "./components"
+import { googleAPI, compose, entries, searchBar, toggles, spinner, refinesPane, errors } from "./components"
+import { Refines } from "./classes/Refines"
 
 export const serviceWorker = new ServiceWorker()
 export const testMode = getTestMode()
 export const syncer = new Syncer(testMode)
 export const search = new Search()
+export const refines = new Refines()
 export const journal = new Journal()
 
 let mountPoint = document.getElementById("dntd")
@@ -22,10 +24,10 @@ function app() {
             (journal.isActive)
                 ? [
                     m("#searchWrap", [
-                        m(searchbar),
+                        m(searchBar),
                         m(toggles)
                     ]),
-                    m(refines),
+                    m(refinesPane),
                     m("#entriesWrap", entriesWrappSettings(), [
                         m(entries),
                         m(compose),
