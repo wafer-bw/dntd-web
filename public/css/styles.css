@@ -1,11 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Outlined");
 
 body {
-    font-family: 'Open Sans', sans-serif;
-}
-
-#head, #callToAction {
-    text-align: center;
+    font-family: "Open Sans", sans-serif;
 }
 
 h1, h3, #badges {
@@ -47,10 +44,6 @@ h1, h3, #badges {
     text-overflow: ellipsis;
 }
 
-#googleApi {
-    text-align: center;
-}
-
 .del {
     margin-left: 5px;
 }
@@ -70,7 +63,7 @@ h1, h3, #badges {
     flex: 1 1 0px;
 }
 
-#searchWrap {
+#searchWrap, #status, #googleApi, #head, #callToAction {
     text-align: center;
 }
 
@@ -180,7 +173,15 @@ h1, h3, #badges {
     padding: 10px;
 }
 
-#sheetSelect, #spreadsheetSelect, #hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img {
+#googleApi {
+    padding-top: 2.5px;
+}
+
+#badges {
+    padding-bottom: 2.5px;
+}
+
+#sheetSelect, #spreadsheetSelect, #hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img, #unpauseSync, #syncStateText {
     margin-left: 5px;
 }
 
@@ -205,76 +206,18 @@ h1, h3, #badges {
     margin-top: 3px;
 }
 
-#spinner {
-    text-align: center;
-    height: 15px;
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+
+#syncStateText {
+    font-size: small;
 }
 
-.spinner {
-    display: inline-block;
-    position: relative;
-    width: 80px;
-    height: 15px;
+.syncState {
+    color: darkgray;
+    display: inline-flex;
+    vertical-align: middle;
 }
 
-.spinner div {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-radius: 25%;
-    background: darkslategrey;
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
-}
-
-.spinner div:nth-child(1) {
-    left: 8px;
-    animation: lds-ellipsis1 0.6s infinite;
-}
-
-.spinner div:nth-child(2) {
-    left: 8px;
-    animation: lds-ellipsis2 0.6s infinite;
-}
-
-.spinner div:nth-child(3) {
-    left: 32px;
-    animation: lds-ellipsis2 0.6s infinite;
-}
-
-.spinner div:nth-child(4) {
-    left: 56px;
-    animation: lds-ellipsis3 0.6s infinite;
-}
-
-@keyframes lds-ellipsis1 {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes lds-ellipsis3 {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(0);
-    }
-}
-
-@keyframes lds-ellipsis2 {
-    0% {
-        transform: translate(0, 0);
-    }
-    100% {
-        transform: translate(24px, 0);
-    }
-}
-
-[contenteditable=true]:empty:before {
-    content: attr(placeholder);
-    pointer-events: none;
-    color: gray;
+.warn {
+    color: rgba(255, 140, 0, 1) !important;
 }

@@ -1,6 +1,9 @@
 import { TestMode } from "./testing"
 
-export type SyncerTask = AuthUpdateTask | DeleteRowTask | UpdateRowTask | GetRowsTask | GetSheetsTask | TestModeUpdateTask | UnpauseTask
+export type SyncerTask = (
+    AuthUpdateTask | DeleteRowTask | UpdateRowTask | GetRowsTask |
+    GetSheetsTask | TestModeUpdateTask | UnpauseTask
+)
 
 export enum SyncerTaskType {
     AUTH_UPDATE,

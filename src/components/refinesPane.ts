@@ -1,5 +1,5 @@
 import { Tag } from "../classes"
-import m, { Vnode } from "mithril"
+import m from "mithril"
 import { journal, search, refines } from ".."
 
 export function refinesPane() {
@@ -15,7 +15,7 @@ export function refinesPane() {
         ]))
     }
 
-    function simpleRefinesVnodes(): Vnode {
+    function simpleRefinesVnodes(): m.Vnode {
         return m(".tagRefineWrap", (refines.simple.size === 0)? [] : [
             refineKeyVnode(simpleTagsHeader, refines.simple.size),
             Array.from(refines.simple, ([key, tag]) => [
@@ -24,7 +24,7 @@ export function refinesPane() {
         ])
     }
 
-    function complexRefinesVnodes(): Vnode[] {
+    function complexRefinesVnodes(): m.Vnode[] {
         return Array.from(refines.complex, ([key, tags]) => m(".tagRefineWrap", [
             refineKeyVnode(key, tags.length),
             tags.map(tag => [refineValVnode(key, tag)])
