@@ -1,14 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Outlined");
 
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-
 body {
     font-family: "Open Sans", sans-serif;
-}
-
-#head, #callToAction {
-    text-align: center;
 }
 
 h1, h3, #badges {
@@ -50,10 +44,6 @@ h1, h3, #badges {
     text-overflow: ellipsis;
 }
 
-#googleApi {
-    text-align: center;
-}
-
 .del {
     margin-left: 5px;
 }
@@ -73,7 +63,7 @@ h1, h3, #badges {
     flex: 1 1 0px;
 }
 
-#searchWrap {
+#searchWrap, #status, #googleApi, #head, #callToAction {
     text-align: center;
 }
 
@@ -191,7 +181,7 @@ h1, h3, #badges {
     padding-bottom: 2.5px;
 }
 
-#sheetSelect, #spreadsheetSelect, #hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img, #unpauseSync {
+#sheetSelect, #spreadsheetSelect, #hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img, #unpauseSync, #syncStateText {
     margin-left: 5px;
 }
 
@@ -216,11 +206,18 @@ h1, h3, #badges {
     margin-top: 3px;
 }
 
-#status {
-    text-align: center;
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+
+#syncStateText {
+    font-size: small;
 }
 
-#status > span {
+.syncState {
+    color: darkgray;
     display: inline-flex;
     vertical-align: middle;
+}
+
+.warn {
+    color: rgba(255, 140, 0, 1) !important;
 }
