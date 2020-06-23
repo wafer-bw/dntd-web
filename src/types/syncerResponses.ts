@@ -1,3 +1,5 @@
+import { SyncerError } from "../workers/sync"
+
 export type SyncerResponse = (
     RowsResponse | SheetsResponse | QueueStateResponse | ErrorResponse | ReauthResponse
 )
@@ -5,9 +7,16 @@ export type SyncerResponse = (
 export enum SyncerResponseType {
     ROWS,
     SHEETS,
-    QUEUE_STATE,
+    SYNCER_STATE,
     ERROR,
     REAUTH,
+}
+
+export enum SyncerState {
+    PAUSED = "cloud_off",
+    UPLOADING = "cloud_upload",
+    DOWNLOADING = "cloud_download",
+    SYNCED = "cloud_done",
 }
 
 export interface RowsResponse {
@@ -24,14 +33,15 @@ export interface SheetsResponse {
 }
 
 export interface QueueStateResponse {
-    type: SyncerResponseType.QUEUE_STATE
+    type: SyncerResponseType.SYNCER_STATE
     length: number
-    paused: boolean
+    state: SyncerState
 }
 
 export interface ErrorResponse {
     type: SyncerResponseType.ERROR
-    error: Error
+    error: SyncerError | Error
+    friendlyMsg: string
 }
 
 export interface ReauthResponse {

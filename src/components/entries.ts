@@ -1,5 +1,5 @@
 import { Caret } from "../types"
-import m, { Vnode } from "mithril"
+import m from "mithril"
 import { Entry } from "../classes"
 import { journal, search } from ".."
 import { getCaretPosition, setCaretPosition } from "../helpers"
@@ -24,7 +24,7 @@ export function entries() {
         return allEntries.map(([idx, entry]) => entryVnode(idx, entry))
     }
 
-    function entryVnode(idx: number, entry: Entry): Vnode {
+    function entryVnode(idx: number, entry: Entry): m.Vnode {
         return m(".entryWrap", { id: `entry-${idx}` }, [
             entryContent(entry, idx),
             deleteEntryButton(idx),
