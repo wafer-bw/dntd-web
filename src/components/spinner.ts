@@ -18,13 +18,12 @@ export function spinner() {
 
     function syncStateText() {
         let txt = ""
-        let class_ = "syncState"
+        let class_ = `syncState ${stateColorClass()}`
         switch (syncer.state) {
             case SyncerState.DOWNLOADING:
                 txt = "Downloading journal data from drive..."
                 break
             case SyncerState.PAUSED:
-                class_ += " warn"
                 txt = "Warning! - Syncing is paused."
                 break
             case SyncerState.SYNCED:
@@ -38,13 +37,8 @@ export function spinner() {
     }
 
     function syncStateIcon() {
-        let class_ = (syncer.state === SyncerState.PAUSED)
-            ? "material-icons material-icons-outlined syncState warn"
-            : "material-icons material-icons-outlined syncState md-dark"
-        return m("i", {
-            id: "syncStateIcon",
-            class: class_
-        }, syncer.state)
+        let class_ = `material-icons material-icons-outlined syncState ${stateColorClass()}`
+        return m("i", { id: "syncStateIcon", class: class_ }, syncer.state)
     }
 
     function unpauseSync() {
@@ -56,6 +50,17 @@ export function spinner() {
             }, "Unpause Syncing")
         }
         return
+    }
+
+    function stateColorClass() {
+        switch (syncer.state) {
+            case SyncerState.PAUSED:
+                return "error"
+            case SyncerState.SYNCED:
+                return "okay"
+            default:
+                return "warn"
+        }
     }
 
     return { view: view }

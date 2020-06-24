@@ -218,6 +218,14 @@ h1, h3, #badges {
     vertical-align: middle;
 }
 
+.error {
+    color: rgb(200, 0, 0, 0.54);
+}
+
 .warn {
-    color: rgba(255, 140, 0, 1) !important;
+    color: rgba(255, 140, 0, 0.54);
+}
+
+.okay {
+    color: rgb(0, 85, 20, 0.54);
 }
