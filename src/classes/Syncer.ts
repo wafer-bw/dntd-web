@@ -1,17 +1,17 @@
 import m from "mithril"
 import { journal, syncer } from ".."
 import { MockGoogleUser } from "../mocks"
-import { FriendlyError } from "../helpers"
-import { SyncerTask, SyncerTaskType, SyncerResponse, TestMode, SyncerResponseType, SyncerState } from "../types"
+import { FriendlyError, getTestMode } from "../helpers"
+import { SyncerTask, SyncerTaskType, SyncerResponse, SyncerResponseType, SyncerState, TestMode } from "../types"
 
 export class Syncer {
     public worker: Worker
     public state: SyncerState = SyncerState.DOWNLOADING
     public user: gapi.auth2.GoogleUser | MockGoogleUser | null = null
 
-    constructor(testMode: TestMode) {
+    constructor() {
         this.worker = new Worker("./js/syncWebWorker.js")
-        this.updateTestMode(testMode)
+        this.updateTestMode(getTestMode())
         this.worker.onmessage = (msg: MessageEvent) => this.onMessage(msg)
     }
 
