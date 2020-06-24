@@ -1,9 +1,9 @@
 import m from "mithril"
 import { MockGapi } from "../mocks"
 import { TestMode } from "../types"
-import { journal, testMode, syncer } from ".."
+import { journal, syncer } from ".."
 import {
-    getStoredSpreadsheetUrls, getStoredSpreadsheetSheetId, setStoredSpreadsheetUrls
+    getStoredSpreadsheetUrls, getStoredSpreadsheetSheetId, setStoredSpreadsheetUrls, getTestMode
 } from "../helpers"
 
 const scope = ["https://www.googleapis.com/auth/spreadsheets"].join(" ")
@@ -16,7 +16,7 @@ export function googleAPI() {
         return {
             async: true, defer: true, src: "https://apis.google.com/js/api.js",
             onload: () => {
-                gapi_ = (testMode === TestMode.OFF) ? gapi : new MockGapi()
+                gapi_ = (getTestMode() === TestMode.OFF) ? gapi : new MockGapi()
                 gapi_.load('auth2', initClient)
             }
         }
@@ -52,7 +52,7 @@ export function googleAPI() {
     }
 
     function view() {
-        if (testMode === TestMode.DEMO) {
+        if (getTestMode() === TestMode.DEMO) {
             journal.isSignedIn = true
             journal.load("https://docs.google.com/spreadsheets/d/demo/edit")
             return []
@@ -72,7 +72,7 @@ export function googleAPI() {
         return (journal.isSignedIn)
             ? m("button", {
                 onclick: () => {
-                    if (testMode === TestMode.RETURN_ROWS) { journal.unload() }
+                    if (getTestMode() === TestMode.RETURN_ROWS) { journal.unload() }
                     gapi_.auth2.getAuthInstance().signOut()
                 }, class: "authButton"
             }, "Sign Out")
