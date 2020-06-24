@@ -47,6 +47,7 @@ export function entries() {
     }
 
     function onEntryKeydown(event: any) {
+        event.redraw = false
         if (event.keyCode == 13 && !event.shiftKey) {
             event.preventDefault()
             event.target.blur()
@@ -59,25 +60,34 @@ export function entries() {
         entry.raw = event.target.innerText
     }
 
-    function onEntryUpdate() {
+    function onEntryUpdate(event: any) {
+        event.redraw = false
         setCaretPosition(caret.el, caret.pos)
         caret = { pos: null, el: null }
     }
 
-    function onEntryFocus(entry: Entry) {
+    function onEntryFocus(event: any, entry: Entry) {
+        event.redraw = false
         entry.focused = true
     }
 
-    async function onEntryBlur(entry: Entry, idx: number) {
+    async function onEntryBlur(event: any, entry: Entry, idx: number) {
+        event.redraw = false
         entry.focused = false
         await journal.saveEntry(idx)
     }
 
-    function onEntryMouseover(entry: Entry) {
+    function onEntryMouseover(event: any, entry: Entry) {
+        if (!journal.hideEntriesKeys) {
+            event.redraw = false
+        }
         entry.hovered = true
     }
 
-    function onEntryMouseout(entry: Entry) {
+    function onEntryMouseout(event: any, entry: Entry) {
+        if (!journal.hideEntriesKeys) {
+            event.redraw = false
+        }
         entry.hovered = false
     }
 
@@ -88,11 +98,11 @@ export function entries() {
             class: "entry breakwrap column",
             onkeydown: (event: any) => onEntryKeydown(event),
             oninput: (event: any) => onEntryInput(event, entry),
-            onupdate: () => onEntryUpdate(),
-            onblur: () => onEntryBlur(entry, idx),
-            onmouseover: () => onEntryMouseover(entry),
-            onmouseout: () => onEntryMouseout(entry),
-            onfocus: () => onEntryFocus(entry),
+            onupdate: (event: any) => onEntryUpdate(event),
+            onblur: (event: any) => onEntryBlur(event, entry, idx),
+            onmouseover: (event: any) => onEntryMouseover(event, entry),
+            onmouseout: (event: any) => onEntryMouseout(event, entry),
+            onfocus: (event: any) => onEntryFocus(event, entry),
         }
     }
 

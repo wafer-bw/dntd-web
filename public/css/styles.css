@@ -63,7 +63,7 @@ h1, h3, #badges {
     flex: 1 1 0px;
 }
 
-#searchWrap, #status, #googleApi, #head, #callToAction {
+#searchWrap, #status, #googleApi, #head, #callToAction, #navLinks {
     text-align: center;
 }
 
@@ -218,6 +218,20 @@ h1, h3, #badges {
     vertical-align: middle;
 }
 
+.error {
+    color: rgb(200, 0, 0, 0.54);
+}
+
 .warn {
-    color: rgba(255, 140, 0, 1) !important;
+    color: rgba(255, 140, 0, 0.54);
+}
+
+.okay {
+    color: rgb(0, 85, 20, 0.54);
+}
+
+[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    pointer-events: none;
+    color: gray;
 }
