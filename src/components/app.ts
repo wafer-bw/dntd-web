@@ -1,16 +1,17 @@
 import m from "mithril"
 import { journal } from ".."
-import {
-    googleAPI, compose, entries, searchbar, toggles, spinner, refinesPane, errors, links
-} from "."
 import { getHash } from "../helpers"
+import {
+    googleAPI, compose, entries, searchbar, toggles, syncStateIndicator, refinesPane, errors, links
+} from "."
 
 export function app() {
 
     function view() {
+        let hash = getHash()
         return [
-            (getHash() === "#!") ? null : m(links),
-            m(spinner),
+            (hash === "#!" || hash === "") ? null : m(links),
+            m(syncStateIndicator),
             m(googleAPI),
             m("#errorsWrap", m(errors)),
             (journal.isActive)

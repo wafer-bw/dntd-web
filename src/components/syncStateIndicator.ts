@@ -1,14 +1,15 @@
 import m from "mithril"
-import { syncer } from ".."
+import { syncer, journal } from ".."
 import { SyncerState } from "../types"
 
-export function spinner() {
+export function syncStateIndicator() {
 
     function view() {
         return m("#status", m("span", syncState()))
     }
 
     function syncState() {
+        if (journal.spreadsheets.size === 0) { return }
         return m("span", [
             syncStateIcon(),
             syncStateText(),

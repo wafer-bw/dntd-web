@@ -1,7 +1,6 @@
 import m from "mithril"
 import { app, about } from "./components"
-import { Refines } from "./classes/Refines"
-import { Journal, Search, Syncer, ServiceWorker } from "./classes"
+import { Journal, Search, Syncer, ServiceWorker, Refines } from "./classes"
 
 export const serviceWorker = new ServiceWorker()
 export const syncer = new Syncer()
