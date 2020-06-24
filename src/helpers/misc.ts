@@ -1,8 +1,13 @@
 import { TestMode } from "../types"
 
+export function getHash(): string {
+    let url = new URL(window.location.href)
+    return url.hash
+}
+
 export function getTestMode(): TestMode {
     let url = new URL(window.location.href)
-    if (url.pathname === "/demo") {
+    if (url.hash === "#!demo") {
         return TestMode.DEMO
     }
     let test = url.searchParams.get("test")

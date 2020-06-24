@@ -63,7 +63,7 @@ h1, h3, #badges {
     flex: 1 1 0px;
 }
 
-#searchWrap, #status, #googleApi, #head, #callToAction {
+#searchWrap, #status, #googleApi, #head, #callToAction, #navLinks {
     text-align: center;
 }
 
