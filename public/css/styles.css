@@ -229,3 +229,9 @@ h1, h3, #badges {
 .okay {
     color: rgb(0, 85, 20, 0.54);
 }
+
+[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    pointer-events: none;
+    color: gray;
+}
