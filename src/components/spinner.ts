@@ -19,6 +19,7 @@ export function spinner() {
     function syncStateText() {
         let txt = ""
         let class_ = `syncState ${stateColorClass()}`
+
         switch (syncer.state) {
             case SyncerState.DOWNLOADING:
                 txt = "Downloading journal data from drive..."
