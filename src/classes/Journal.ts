@@ -70,6 +70,7 @@ export class Journal {
             }
         }
 
+        refines.build()
         m.redraw()
     }
 
