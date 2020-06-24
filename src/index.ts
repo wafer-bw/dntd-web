@@ -1,11 +1,9 @@
 import m from "mithril"
-import { getTestMode } from "./helpers"
 import { app, about } from "./components"
 import { Refines } from "./classes/Refines"
 import { Journal, Search, Syncer, ServiceWorker } from "./classes"
 
 export const serviceWorker = new ServiceWorker()
-export const testMode = getTestMode()
 export const syncer = new Syncer()
 export const search = new Search()
 export const refines = new Refines()
