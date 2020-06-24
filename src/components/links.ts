@@ -6,10 +6,11 @@ import { getHash } from "../helpers"
 export function links() {
 
     function view() {
+        let hash = getHash()
         let linkList: m.Vnode[] = []
-        if (getHash() !== "#!about") linkList.push(m("a", { href: "/#!about" }, "About"))
-        if (getHash() !== "#!demo") linkList.push(m("a", { href: "/#!demo", onclick: () => syncer.updateTestMode(TestMode.DEMO) }, "Demo"))
-        if (getHash() !== "#!") linkList.push(m("a", { href: "/#!", onclick: () => syncer.updateTestMode(TestMode.OFF) }, "Start"))
+        if (hash !== "#!about") linkList.push(m("a", { href: "/#!about" }, "About"))
+        if (hash !== "#!demo") linkList.push(m("a", { href: "/#!demo", onclick: () => syncer.updateTestMode(TestMode.DEMO) }, "Demo"))
+        if (hash !== "#!" && hash !== "") linkList.push(m("a", { href: "/#!", onclick: () => syncer.updateTestMode(TestMode.OFF) }, "Start"))
         return m("#navLinks", drawLinks(linkList))
     }
 
