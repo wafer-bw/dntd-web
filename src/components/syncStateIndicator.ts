@@ -5,7 +5,6 @@ import { SyncerState } from "../types"
 export function syncStateIndicator() {
 
     function view() {
-        console.log("REDRAW")
         return m("#status", m("span", syncState()))
     }
 
