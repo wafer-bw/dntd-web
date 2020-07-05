@@ -1,4 +1,5 @@
 import m from "mithril"
+import { signinView } from "./views"
 import { app, about } from "./components"
 import { Journal, Search, Syncer, ServiceWorker, Refines } from "./classes"
 
@@ -13,6 +14,7 @@ let root = document.getElementById("root")
 if (root !== null) {
     m.route(root, "/", {
         "/": app,
+        "/signin": signinView,
         "/demo" : app,
         "/about": about,
     })
