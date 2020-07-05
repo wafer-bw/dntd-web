@@ -1,6 +1,6 @@
 import m from "mithril"
 import { googleModel } from "../models"
-import { googleComponent } from "."
+import { googleComponent } from "./components"
 
 export function signinView() {
 

@@ -1,5 +1,5 @@
 import m from "mithril"
-import { googleComponent, journalsComponent } from "."
+import { googleComponent, journalsComponent } from "./components"
 
 export function shelfView() {
 
