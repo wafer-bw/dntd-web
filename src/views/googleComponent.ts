@@ -6,13 +6,14 @@ export function googleComponent() {
 
     function view() {
         return m("#googleApi", [
+            preambleMessage(),
             signInOutButton(),
             m("script", gapiScriptSettings()),
         ])
     }
 
     function gapiScriptSettings() {
-        return { async: true, defer: true, src: googleModel.src, onload: () => { googleController.setGapi() }
+        return { async: true, defer: true, src: googleModel.src, onload: () => { googleController.initGapi() }
         }
     }
 
@@ -20,6 +21,12 @@ export function googleComponent() {
         return (googleModel.isSignedIn)
             ? m("button", { onclick: () => googleController.signOut(), class: "authButton" }, "Sign Out")
             : m("button", { onclick: () => googleController.signIn(), class: "authButton" }, "Sign In")
+    }
+
+    function preambleMessage() {
+        return (googleModel.isSignedIn !== undefined && !googleModel.isSignedIn)
+            ? m(".preamble", "PREAMBLE MSG") // TODO: fill out
+            : null
     }
 
     return { view: view }

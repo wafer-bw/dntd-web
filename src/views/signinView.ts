@@ -1,19 +1,18 @@
 import m from "mithril"
 import { googleModel } from "../models"
-import { googleComponent, preambleComponent } from "."
+import { googleComponent } from "."
 
 export function signinView() {
 
     function view() {
         return m("#auth", [
-            m(preambleComponent),
             m(googleComponent),
         ])
     }
 
     function onupdate() {
         if (googleModel.isSignedIn) {
-            window.location.hash = "/" // TODO: redirect to correct place
+            window.location.hash = "/library" // TODO: redirect to correct place
         }
     }
 

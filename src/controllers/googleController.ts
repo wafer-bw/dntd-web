@@ -7,7 +7,7 @@ import { getTestMode } from "../helpers"
 export const googleController = {
     signIn: signIn,
     signOut: signOut,
-    setGapi: setGapi,
+    initGapi: initGapi,
 }
 
 function signOut() {
@@ -18,7 +18,7 @@ function signIn() {
     googleModel.gapi_!.auth2.getAuthInstance().signIn()
 }
 
-function setGapi() {
+function initGapi() {
     let gapi_ = (getTestMode() === TestMode.OFF) ? gapi : new MockGapi()
     gapi_.load('auth2', () => {
         gapi_.auth2.init({

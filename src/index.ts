@@ -1,6 +1,6 @@
 import m from "mithril"
-import { signinView } from "./views"
-import { app, about } from "./components"
+import { signinView, libraryView, shelfView } from "./views"
+import { app } from "./components"
 import { Journal, Search, Syncer, ServiceWorker, Refines } from "./classes"
 
 export const syncer = new Syncer()
@@ -15,7 +15,9 @@ if (root !== null) {
     m.route(root, "/", {
         "/": app,
         "/signin": signinView,
-        "/demo" : app,
-        "/about": about,
+        "/library": libraryView,
+        "/library/:shelfId": shelfView,
+        // "/demo" : app,
+        // "/about": about,
     })
 }
