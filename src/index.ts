@@ -17,6 +17,7 @@ if (root !== null) {
         "/signin": signinView,
         "/library": libraryView,
         "/library/:shelfId": shelfView,
+        // "/library/:shelfId/:journalId": journalView // TODO
         // "/demo" : app,
         // "/about": about,
     })
