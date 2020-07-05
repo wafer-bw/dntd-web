@@ -1,5 +1,5 @@
 import m from "mithril"
-import { googleComponent, shelvesComponent } from "."
+import { googleComponent, shelvesComponent } from "./components"
 
 export function libraryView() {
 
