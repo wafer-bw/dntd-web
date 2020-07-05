@@ -1,3 +1,7 @@
+export * from "./shelfView"
 export * from "./signinView"
+export * from "./libraryView"
+
 export * from "./googleComponent"
-export * from "./preambleComponent"
+export * from "./shelvesComponent"
+export * from "./journalsComponent"
