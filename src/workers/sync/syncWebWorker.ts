@@ -1,5 +1,5 @@
 import { SyncerTasksMock } from "../../mocks"
-import { TestMode, SyncerTask, SyncerTaskType, SyncerState } from "../../types"
+import { SyncerTask, SyncerTaskType, SyncerState } from "../../types"
 import {
     SyncerTasks, postQueueState, postRows, postSheets, syncRate, sleep, postError,
     postReAuthRequest, instanceOfSyncerError, SyncerError
@@ -14,27 +14,47 @@ sync()
 onmessage = (msg) => prequeue(msg)
 
 function prequeue(msg: MessageEvent) {
-    let task: SyncerTask = msg.data
-    switch (task.type) {
-        case SyncerTaskType.TEST_MODE_UPDATE:
-            if (task.testMode === TestMode.OFF) {
-                syncerTasks = new SyncerTasks()
-            } else {
-                token = "mock"
-                syncerTasks = new SyncerTasksMock(task.testMode)
-            }
-            break
-        case SyncerTaskType.AUTH_UPDATE:
-            token = task.token
-            break
-        case SyncerTaskType.UNPAUSE:
-            paused = false
-            break
-        default:
-            queue.push(task)
-            break
-    }
+    const { id, task }: { id: string, task: SyncerTask } = msg.data
+    // turn task into object with .work()
+    // place task in sync queue or do task async
+    dowork(task) // TODO: relocate
+        .then((task: any) => { postMessage({ id, task }) })
+        .catch((error: Error) => { postMessage({ id, error }) })
 }
+
+async function dowork(task: any) {
+    // Instead of directly raising errors they should be caught and sent back as a
+    // separate message so the promise isn't terminated
+    console.log("WORKING TASK:")
+    console.log(task)
+    return task
+}
+
+// function prequeue(msg: MessageEvent) {
+//     let task: SyncerTask = msg.data
+//     switch (task.type) {
+//         case SyncerTaskType.TEST_MODE_UPDATE:
+//             if (task.testMode === TestMode.OFF) {
+//                 syncerTasks = new SyncerTasks()
+//             } else {
+//                 token = "mock"
+//                 syncerTasks = new SyncerTasksMock(task.testMode)
+//             }
+//             break
+//         case SyncerTaskType.AUTH_UPDATE:
+//             token = task.token
+//             break
+//         case SyncerTaskType.UNPAUSE:
+//             paused = false
+//             break
+//         case SyncerTaskType.GET_ROWS:
+//             promisePrequeue(msg)
+//             break
+//         default:
+//             queue.push(task)
+//             break
+//     }
+// }
 
 async function sync() {
     while (true) {

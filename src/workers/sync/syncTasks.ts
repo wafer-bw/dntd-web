@@ -44,6 +44,9 @@ export class SyncerTasks {
         }
     }
 
+    // TODO: public async createRow(...) {}
+    // https://developers.google.com/sheets/api/samples/rowcolumn#insert_an_empty_row_or_column
+
     public async updateRow(token: string, task: UpdateRowTask) {
         let range = `${task.sheetTitle}!A${task.idx + 1}:A${task.idx + 1}`
         let url = new URL(`https://sheets.googleapis.com/v4/spreadsheets/${task.spreadsheetId}/values/${range}`)
@@ -81,6 +84,9 @@ export class SyncerTasks {
             throw new SyncerError(JSON.stringify(error), `Failed to delete row: ${task.idx}`, response.status === 401)
         }
     }
+
+    // TODO: public async moveRow() {}
+    // https://developers.google.com/sheets/api/samples/rowcolumn#move_a_row_or_column
 
     private async extendSheet(token: string, spreadsheetId: string, sheetId: number) {
         let url = new URL(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`)
