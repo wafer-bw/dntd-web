@@ -1,6 +1,6 @@
 import { SyncerError } from ".."
 import { BaseTask } from "./BaseTask"
-import { GapiErrorResponse, GetRowsPayload } from "../../../types"
+import { GapiErrorResponse, GetRowsPayload, TestMode } from "../../../types"
 
 export class GetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
     constructor(payload: P) { super(payload) }
@@ -20,6 +20,19 @@ export class GetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
         } else {
             let data: gapi.client.sheets.ValueRange = await response.json()
             this.payload.rows = (data.values) ? data.values.map(row => row[0]) : []
+        }
+        return this.payload
+    }
+}
+
+export class MockGetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
+    constructor(payload: P) { super(payload) }
+
+    public async work(_token: string): Promise<P> {
+        if (this.testMode === TestMode.FAIL_GET_RANGE) {
+            throw new Error("mock fail")
+        } else if (this.testMode === TestMode.RETURN_ROWS) {
+            this.payload.rows = ["aaa", "bbb", "ccc", "@tag", "@key:value"]
         }
         return this.payload
     }

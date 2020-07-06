@@ -1,60 +1,45 @@
 import { SyncerTasksMock } from "../../mocks"
-import { SyncerState, SyncerTaskPayload } from "../../types"
+import { SyncerState, SyncerTaskPayload, TestMode, SyncerPayloadType } from "../../types"
 import {
     SyncerTasks, postQueueState, postRows, postSheets, syncRate, sleep, postError,
     postReAuthRequest, instanceOfSyncerError, SyncerError
 } from "."
+import { TaskFactory } from "./tasks"
 
 const queue: any[] = []
 let paused: boolean = false
-let token: string | null = null
+let token: string | undefined = undefined
+let testMode: TestMode = TestMode.OFF
 let syncerTasks: SyncerTasks | SyncerTasksMock | null = null
+const taskFactory = new TaskFactory()
 
 sync()
 onmessage = (msg) => prequeue(msg)
 
 function prequeue(msg: MessageEvent) {
     const { id, payload }: { id: string, payload: SyncerTaskPayload } = msg.data
-    // turn task into object with .work()
-    // place task in sync queue or do task async
-    dowork(payload)
+    // Handle non-tasked work
+    if (payload.type === SyncerPayloadType.TEST_MODE_UPDATE) {
+        testMode = payload.testMode
+        if (testMode !== TestMode.OFF) {
+            token = "mock"
+        }
+    } else if (payload.type === SyncerPayloadType.AUTH_UPDATE) {
+        token = payload.token
+    } else if (payload.type === SyncerPayloadType.UNPAUSE) {
+        paused = false
+    }
+
+    let task = taskFactory.createTask(payload, testMode)
+
+    if (task === undefined) { return }
+
+    // place task and task id in series or parallel queue to be worked
+
+    task.work(token) // TODO: RELOCATE
         .then((payload: any) => { postMessage({ id, payload }) })
         .catch((error: Error) => { postMessage({ id, error }) })
 }
-
-async function dowork(task: any) {
-    // Instead of directly raising errors they should be caught and sent back as a
-    // separate message so the promise isn't terminated
-    console.log("WORKING TASK:")
-    console.log(task)
-    return task
-}
-
-// function prequeue(msg: MessageEvent) {
-//     let task: SyncerTask = msg.data
-//     switch (task.type) {
-//         case SyncerTaskType.TEST_MODE_UPDATE:
-//             if (task.testMode === TestMode.OFF) {
-//                 syncerTasks = new SyncerTasks()
-//             } else {
-//                 token = "mock"
-//                 syncerTasks = new SyncerTasksMock(task.testMode)
-//             }
-//             break
-//         case SyncerTaskType.AUTH_UPDATE:
-//             token = task.token
-//             break
-//         case SyncerTaskType.UNPAUSE:
-//             paused = false
-//             break
-//         case SyncerTaskType.GET_ROWS:
-//             promisePrequeue(msg)
-//             break
-//         default:
-//             queue.push(task)
-//             break
-//     }
-// }
 
 async function sync() {
     while (true) {
@@ -62,24 +47,24 @@ async function sync() {
         while (queue.length > 0 && token && !paused && syncerTasks) {
             let task: SyncerTask = queue[0]
             try {
-                switch (task.type) {
-                    case SyncerTaskType.GET_ROWS:
-                        postQueueState(queue.length, SyncerState.DOWNLOADING)
-                        postRows(task, await syncerTasks!.getRows(token!, task))
-                        break
-                    case SyncerTaskType.GET_SHEETS:
-                        postQueueState(queue.length, SyncerState.DOWNLOADING)
-                        postSheets(task, await syncerTasks!.getSheets(token!, task))
-                        break
-                    case SyncerTaskType.UPDATE_ROW:
-                        postQueueState(queue.length, SyncerState.UPLOADING)
-                        await syncerTasks!.updateRow(token!, task)
-                        break
-                    case SyncerTaskType.DELETE_ROW:
-                        postQueueState(queue.length, SyncerState.UPLOADING)
-                        await syncerTasks!.deleteRow(token!, task)
-                        break
-                }
+                // switch (task.type) {
+                //     case SyncerTaskType.GET_ROWS:
+                //         postQueueState(queue.length, SyncerState.DOWNLOADING)
+                //         postRows(task, await syncerTasks!.getRows(token!, task))
+                //         break
+                //     case SyncerTaskType.GET_SHEETS:
+                //         postQueueState(queue.length, SyncerState.DOWNLOADING)
+                //         postSheets(task, await syncerTasks!.getSheets(token!, task))
+                //         break
+                //     case SyncerTaskType.UPDATE_ROW:
+                //         postQueueState(queue.length, SyncerState.UPLOADING)
+                //         await syncerTasks!.updateRow(token!, task)
+                //         break
+                //     case SyncerTaskType.DELETE_ROW:
+                //         postQueueState(queue.length, SyncerState.UPLOADING)
+                //         await syncerTasks!.deleteRow(token!, task)
+                //         break
+                // }
                 queue.shift()
             } catch (e) {
                 if (instanceOfSyncerError(e) && e.needsReAuth) {
