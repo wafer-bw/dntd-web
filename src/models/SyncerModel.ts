@@ -25,6 +25,9 @@ class SyncerModel {
 
     private onMessage<P extends SyncerTaskPayload>(msg: MessageEvent) {
         let { id, payload, error }: { id: string | null, payload: P, error: Error } = msg.data
+        console.log(id)
+        console.log(payload)
+        console.log(error)
         if (id !== null && this.requests.has(id)) {
             this.requests.get(id)!({ payload, error })
             this.requests.delete(id)
