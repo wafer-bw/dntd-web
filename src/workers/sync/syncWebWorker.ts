@@ -29,14 +29,13 @@ function prequeue(msg: MessageEvent) {
     } else if (payload.type === SyncerPayloadType.UNPAUSE) {
         paused = false
     }
-
+    // Create a task based on the payload
     let task = taskFactory.createTask(payload, testMode)
-
     if (task === undefined) { return }
 
     // place task and task id in series or parallel queue to be worked
 
-    task.work(token) // TODO: RELOCATE
+    task.work(token) // TODO: RELOCATE work
         .then((payload: any) => { postMessage({ id, payload }) })
         .catch((error: Error) => { postMessage({ id, error }) })
 }
