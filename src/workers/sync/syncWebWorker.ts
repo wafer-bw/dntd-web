@@ -1,5 +1,5 @@
 import { SyncerTasksMock } from "../../mocks"
-import { SyncerTask, SyncerTaskType, SyncerState } from "../../types"
+import { SyncerState, SyncerTaskPayload } from "../../types"
 import {
     SyncerTasks, postQueueState, postRows, postSheets, syncRate, sleep, postError,
     postReAuthRequest, instanceOfSyncerError, SyncerError
@@ -14,11 +14,11 @@ sync()
 onmessage = (msg) => prequeue(msg)
 
 function prequeue(msg: MessageEvent) {
-    const { id, task }: { id: string, task: SyncerTask } = msg.data
+    const { id, payload }: { id: string, payload: SyncerTaskPayload } = msg.data
     // turn task into object with .work()
     // place task in sync queue or do task async
-    dowork(task) // TODO: relocate
-        .then((task: any) => { postMessage({ id, task }) })
+    dowork(payload)
+        .then((payload: any) => { postMessage({ id, payload }) })
         .catch((error: Error) => { postMessage({ id, error }) })
 }
 
