@@ -1,9 +1,10 @@
 import { syncerModel } from "../models"
-import { SyncerTaskType, TestMode, GetRowsTask, GetSheetsTask } from "../types"
+import { SyncerPayloadType, TestMode, GetSpreadsheetPayload, GetSheetsPayload, GetRowsPayload } from "../types"
 
 export const syncerController = {
     updateTestMode: updateTestMode,
     updateAuth: updateAuth,
+    getSpreadsheet: getSpreadsheet,
     getSheets: getSheets,
     getRows: getRows,
     deleteRow: deleteRow,
@@ -13,33 +14,45 @@ export const syncerController = {
 
 async function updateTestMode(testMode: TestMode) {
     return await syncerModel.pushSyncerTask({
-        type: SyncerTaskType.TEST_MODE_UPDATE,
+        type: SyncerPayloadType.TEST_MODE_UPDATE,
         testMode: testMode,
     })
 }
 
 async function updateAuth(token: string) {
     return await syncerModel.pushSyncerTask({
-        type: SyncerTaskType.AUTH_UPDATE,
+        type: SyncerPayloadType.AUTH_UPDATE,
         token: token,
     })
 }
 
-async function getSheets(spreadsheetId: string) {
-    let task: GetSheetsTask = {
-        type: SyncerTaskType.GET_SHEETS,
+async function getSpreadsheet(spreadsheetId: string) {
+    let task: GetSpreadsheetPayload = {
+        type: SyncerPayloadType.GET_SPREADSHEET,
         spreadsheetId: spreadsheetId,
+        spreadsheet: undefined
+    }
+    let result = await syncerModel.pushSyncerTask(task)
+    return result
+}
+
+async function getSheets(spreadsheetId: string) {
+    let task: GetSheetsPayload = {
+        type: SyncerPayloadType.GET_SHEETS,
+        spreadsheetId: spreadsheetId,
+        sheets: []
     }
     let result = await syncerModel.pushSyncerTask(task)
     return result
 }
 
 async function getRows(spreadsheetId: string, sheetId: number, sheetTitle: string) {
-    let task: GetRowsTask = {
-        type: SyncerTaskType.GET_ROWS,
+    let task: GetRowsPayload = {
+        type: SyncerPayloadType.GET_ROWS,
         spreadsheetId: spreadsheetId,
         sheetTitle: sheetTitle,
         sheetId: sheetId,
+        rows: []
     }
     let result = await syncerModel.pushSyncerTask(task)
     return result
@@ -47,7 +60,7 @@ async function getRows(spreadsheetId: string, sheetId: number, sheetTitle: strin
 
 async function deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
     return await syncerModel.pushSyncerTask({
-        type: SyncerTaskType.DELETE_ROW,
+        type: SyncerPayloadType.DELETE_ROW,
         spreadsheetId: spreadsheetId,
         sheetId: sheetId,
         idx: idx,
@@ -56,7 +69,7 @@ async function deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
 
 async function updateRow(idx: number, spreadsheetId: string, sheetId: number, sheetTitle: string, content: string) {
     return await syncerModel.pushSyncerTask({
-        type: SyncerTaskType.UPDATE_ROW,
+        type: SyncerPayloadType.UPDATE_ROW,
         spreadsheetId: spreadsheetId,
         sheetTitle: sheetTitle,
         sheetId: sheetId,
@@ -66,5 +79,5 @@ async function updateRow(idx: number, spreadsheetId: string, sheetId: number, sh
 }
 
 async function unpause() {
-    return await syncerModel.pushSyncerTask({ type: SyncerTaskType.UNPAUSE })
+    return await syncerModel.pushSyncerTask({ type: SyncerPayloadType.UNPAUSE })
 }

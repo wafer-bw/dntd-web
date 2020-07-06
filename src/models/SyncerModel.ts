@@ -1,5 +1,5 @@
 import { MockGoogleUser } from "../mocks"
-import { SyncerTask, SyncerState } from "../types"
+import { SyncerState, SyncerTaskPayload } from "../types"
 
 class SyncerModel {
     public worker: Worker
@@ -13,20 +13,20 @@ class SyncerModel {
         this.worker.onmessage = (msg: MessageEvent) => this.onMessage(msg)
     }
 
-    public pushSyncerTask<T extends SyncerTask>(task: T): Promise<T> {
-        let id = `task-${this.requestsCounter++}`
+    public pushSyncerTask<P extends SyncerTaskPayload>(payload: P): Promise<P> {
+        let id = `payload-${this.requestsCounter++}`
         return new Promise((resolve, reject) => {
-            this.requests.set(id, ({ task, error }: { task: T, error: Error }) => {
-                (error) ? reject(error) : resolve(task)
+            this.requests.set(id, ({ payload, error }: { payload: P, error: Error }) => {
+                (error) ? reject(error) : resolve(payload)
             })
-            this.worker.postMessage({ id, task })
+            this.worker.postMessage({ id, payload })
         })
     }
 
-    private onMessage<T extends SyncerTask>(msg: MessageEvent) {
-        let { id, task, error }: { id: string | null, task: T, error: Error } = msg.data
+    private onMessage<P extends SyncerTaskPayload>(msg: MessageEvent) {
+        let { id, payload, error }: { id: string | null, payload: P, error: Error } = msg.data
         if (id !== null && this.requests.has(id)) {
-            this.requests.get(id)!({ task, error })
+            this.requests.get(id)!({ payload, error })
             this.requests.delete(id)
         } else {
             // Handle tasks sent from the sync worker that were not

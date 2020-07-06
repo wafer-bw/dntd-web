@@ -6,7 +6,8 @@ class LibraryFactory {
     public createLibrary() {
         let spreadsheetUrlsString = getStoredSpreadsheetUrls()
         let spreadsheetIds = this.getSpreadsheetIdsFromUrls(spreadsheetUrlsString)
-        this.getSpreadsheetsMetadata(spreadsheetIds) // TODO: #!# check this response data covers what we need and get syncerworking with a switch case for now
+        let spreadsheets = this.getSpreadsheets(spreadsheetIds)
+
         return new LibraryModel(spreadsheetIds)
     }
 
@@ -19,9 +20,10 @@ class LibraryFactory {
         return ids
     }
 
-    private getSpreadsheetsMetadata(spreadsheetIds: string[]) {
+    private getSpreadsheets(spreadsheetIds: string[]) {
+        let spreadsheets: gapi.client.sheets.Spreadsheet[] = []
         Promise.all(spreadsheetIds.map(
-            spreadsheetId => syncerController.getSheets(spreadsheetId)
+            spreadsheetId => syncerController.getSpreadsheet(spreadsheetId)
         )).then(tasks => tasks.forEach(task => console.log(task)))
     }
 
@@ -29,10 +31,10 @@ class LibraryFactory {
 
 class LibraryModel {
 
-    public shelfIds: string[]
+    public shelves: Shelf[]
 
-    constructor(shelfIds: string[]) {
-        this.shelfIds = shelfIds
+    constructor(shelves: Shelf[]) {
+        this.shelves = shelves
     }
 
     // TODO: add/remove shelves
