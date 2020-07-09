@@ -1,19 +1,28 @@
 import { SyncerTaskPayload, TestMode, SyncerPayloadType } from "../../../types"
-import { GetRowsTask, MockGetRowsTask, GetSpreadsheetTask } from "."
+import {
+    createGetRowsTask, createGetSpreadsheetTask, createGetSheetsTask,
+    createDeleteRowTask, createUpdateRowTask
+} from "."
 
 export class TaskFactory {
     public createTask(payload: SyncerTaskPayload, testMode: TestMode): BaseTask<SyncerTaskPayload> | undefined {
         switch(payload.type) {
             case SyncerPayloadType.GET_ROWS:
-                return (testMode === TestMode.OFF)
-                    ? new GetRowsTask(payload)
-                    : new MockGetRowsTask(payload)
-        }
-        switch(payload.type) {
+                return createGetRowsTask(payload, testMode)
             case SyncerPayloadType.GET_SPREADSHEET:
-                return (testMode === TestMode.OFF)
-                    ? new GetSpreadsheetTask(payload)
-                    : undefined // new MockGetSpreadsheetTask(payload) // TODO
+                return createGetSpreadsheetTask(payload, testMode)
+            case SyncerPayloadType.GET_SHEETS:
+                return createGetSheetsTask(payload, testMode)
+            case SyncerPayloadType.DELETE_ROW:
+                return createDeleteRowTask(payload, testMode)
+            case SyncerPayloadType.UPDATE_ROW:
+                return createUpdateRowTask(payload, testMode)
+            // case SyncerPayloadType.CREATE_ROW:
+            //     return undefined // TODO
+            // case SyncerPayloadType.MOVE_ROW:
+            //     return undefined // TODO
+            default:
+                return undefined
         }
         return
     }
