@@ -1,6 +1,12 @@
 import { SyncerError } from ".."
 import { BaseTask } from "./BaseTask"
-import { GapiErrorResponse, GetSpreadsheetPayload } from "../../../types"
+import { GapiErrorResponse, GetSpreadsheetPayload, TestMode } from "../../../types"
+
+export function createGetSpreadsheetTask<P extends GetSpreadsheetPayload>(payload: P, testMode: TestMode): BaseTask<P> | undefined {
+    return (testMode === TestMode.OFF)
+        ? new GetSpreadsheetTask(payload)
+        : undefined // new MockGetSpreadsheetTask(payload, testMode)
+}
 
 export class GetSpreadsheetTask<P extends GetSpreadsheetPayload> extends BaseTask<P> {
     constructor(payload: P) { super(payload) }
