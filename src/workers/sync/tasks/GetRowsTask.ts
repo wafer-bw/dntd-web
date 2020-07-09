@@ -2,6 +2,12 @@ import { SyncerError } from ".."
 import { BaseTask } from "./BaseTask"
 import { GapiErrorResponse, GetRowsPayload, TestMode } from "../../../types"
 
+export function createGetRowsTask<P extends GetRowsPayload>(payload: P, testMode: TestMode): BaseTask<P> {
+    return (testMode === TestMode.OFF)
+        ? new GetRowsTask(payload)
+        : new MockGetRowsTask(payload, testMode)
+}
+
 export class GetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
     constructor(payload: P) { super(payload) }
 
@@ -26,7 +32,7 @@ export class GetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
 }
 
 export class MockGetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
-    constructor(payload: P) { super(payload) }
+    constructor(payload: P, testMode: TestMode) { super(payload, testMode) }
 
     public async work(_token: string): Promise<P> {
         if (this.testMode === TestMode.FAIL_GET_RANGE) {

@@ -1,7 +1,13 @@
 import { SyncerError } from ".."
 import { BaseTask } from "./BaseTask"
-import { GapiErrorResponse, UpdateRowPayload, SyncerTaskType, SyncerTaskPayload } from "../../../types"
+import { GapiErrorResponse, UpdateRowPayload, SyncerTaskPayload, TestMode } from "../../../types"
 import { ExtendSheetTask } from "./ExtendSheetTask"
+
+export function createUpdateRowTask<P extends UpdateRowPayload>(payload: P, testMode: TestMode): BaseTask<P> | undefined {
+    return (testMode === TestMode.OFF)
+        ? new UpdateRowTask(payload)
+        : undefined // new MockUpdateRowTask(payload, testMode) // TODO
+}
 
 export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
     constructor(payload: P) { super(payload) }
