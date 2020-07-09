@@ -17,6 +17,8 @@ export enum SyncerPayloadType {
     UNPAUSE,
     GET_SPREADSHEET,
     EXTEND_SHEET,
+    CREATE_ROW,
+    MOVE_ROW,
 }
 
 export interface TestModeUpdatePayload {

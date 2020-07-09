@@ -1,24 +1,9 @@
 import { SyncerError } from "."
 import { 
-    SyncerResponse, SyncerResponseType, GetRowsTask, GetSheetsTask, SyncerState
+    SyncerResponse, SyncerResponseType, SyncerState
 } from "../../types"
 
-export function postSheets(task: GetSheetsTask, sheets: gapi.client.sheets.Sheet[]) {
-    postResponse({
-        spreadsheetId: task.spreadsheetId,
-        sheets: sheets,
-        type: SyncerResponseType.SHEETS
-    })
-}
-
-export function postRows(task: GetRowsTask, rows: string[]) {
-    postResponse({
-        spreadsheetId: task.spreadsheetId,
-        sheetId: task.sheetId,
-        rows: rows,
-        type: SyncerResponseType.ROWS
-    })
-}
+// TODO: convert these to use new pattern
 
 export function postQueueState(length: number, state: SyncerState) {
     postResponse({
