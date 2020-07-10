@@ -9,7 +9,10 @@ export function createGetSpreadsheetTask<P extends GetSpreadsheetPayload>(payloa
 }
 
 export class GetSpreadsheetTask<P extends GetSpreadsheetPayload> extends BaseTask<P> {
-    constructor(payload: P) { super(payload) }
+    constructor(payload: P) {
+        super(payload)
+        this.async = true
+    }
 
     public async work(token: string): Promise<P> {
         let url = `https://sheets.googleapis.com/v4/spreadsheets/${this.payload.spreadsheetId}`

@@ -1,15 +1,17 @@
 import { SyncerState, SyncerTaskPayload, TestMode, SyncerPayloadType } from "../../types"
 import {
-    postQueueState, syncRate, sleep, postError,
+    postQueueState, postError,
     postReAuthRequest, instanceOfSyncerError, SyncerError
 } from "."
 import { TaskFactory, BaseTask } from "./tasks"
 
+const syncRate = 250 // ms
 let paused: boolean = false
 let testMode: TestMode = TestMode.OFF
 const taskFactory = new TaskFactory()
 let token: string | undefined = undefined
-const queue: {id: string, task: BaseTask<SyncerTaskPayload>}[] = []
+const parallelQueue: Map<string, BaseTask<SyncerTaskPayload>> = new Map()
+const seriesQueue: { id: string, task: BaseTask<SyncerTaskPayload> }[] = []
 
 sync()
 onmessage = (msg) => prequeue(msg)
@@ -29,39 +31,65 @@ function prequeue(msg: MessageEvent) {
     }
 
     let task = taskFactory.createTask(payload, testMode)
-    if (task === undefined) { return }
+    if (task === undefined) {
+        return
+    }
 
-    // TODO figure out how to execute async tasks immediately and asynchronously here
-
-    queue.push({id, task})
+    if (task.async) {
+        parallelQueue.set(id, task)
+    } else {
+        seriesQueue.push({ id, task })
+    }
 }
 
 async function sync() {
     while (true) {
         await sleep(syncRate)
-        if (!paused && queue.length === 0) {
-            postQueueState(queue.length, SyncerState.SYNCED)
+        if (!paused && seriesQueue.length === 0 && parallelQueue.size === 0) {
+            postQueueState(seriesQueue.length, SyncerState.SYNCED)
         }
-        while (queue.length !== 0 && token && !paused) {
-            let { id, task } = queue[0]
-            try {
-                let payload = await task.work(token)
-                postMessage({ id, payload })
-                queue.shift()
-            } catch (e) {
-                if (instanceOfSyncerError(e) && e.needsReAuth) {
-                    postReAuthRequest()
-                    token = undefined
-                    break
-                } else {
-                    paused = true
-                    postQueueState(queue.length, SyncerState.PAUSED)
-                    postError((instanceOfSyncerError(e))
-                        ? e
-                        : new SyncerError(e.message, "Unknown Error", false))
-                    break
-                }
+        try {
+            workParallelQueueTasks()
+            await workSeriesQueueTasks()
+        } catch (e) {
+            if (instanceOfSyncerError(e) && e.needsReAuth) {
+                postReAuthRequest()
+                token = undefined
+            } else {
+                paused = true
+                postQueueState(seriesQueue.length, SyncerState.PAUSED)
+                postError((instanceOfSyncerError(e))
+                    ? e
+                    : new SyncerError(e.message, "Unknown Error", false))
             }
         }
     }
+}
+
+async function workSeriesQueueTasks() {
+    while (seriesQueue.length !== 0 && token && !paused) {
+        let { id, task } = seriesQueue[0]
+        let payload = await task.work(token)
+        postMessage({ id, payload })
+        seriesQueue.shift()
+    }
+}
+
+function workParallelQueueTasks() {
+    if (parallelQueue.size === 0 || !token || paused) {
+        return
+    }
+    for (let [id, task] of parallelQueue.entries()) {
+        parallelQueue.delete(id)
+        task.work(token).then((payload: SyncerTaskPayload) => {
+            postMessage({ id, payload })
+        }).catch((error: Error) => {
+            parallelQueue.set(id, task)
+            throw error
+        })
+    }
+}
+
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
