@@ -9,7 +9,10 @@ export function createGetRowsTask<P extends GetRowsPayload>(payload: P, testMode
 }
 
 export class GetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
-    constructor(payload: P) { super(payload) }
+    constructor(payload: P) {
+        super(payload)
+        this.async = true
+    }
 
     public async work(token: string): Promise<P> {
         let range = `${this.payload.sheetTitle}!A:A`
@@ -32,7 +35,10 @@ export class GetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
 }
 
 export class MockGetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
-    constructor(payload: P, testMode: TestMode) { super(payload, testMode) }
+    constructor(payload: P, testMode: TestMode) {
+        super(payload, testMode)
+        this.async = true
+    }
 
     public async work(_token: string): Promise<P> {
         if (this.testMode === TestMode.FAIL_GET_RANGE) {

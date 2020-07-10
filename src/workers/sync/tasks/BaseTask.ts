@@ -31,6 +31,7 @@ export class TaskFactory {
 
 export abstract class BaseTask<P extends SyncerTaskPayload> {
     public payload: P
+    public async: boolean | undefined
     public testMode: TestMode = TestMode.OFF
 
     constructor(payload: P, testMode?: TestMode) {
