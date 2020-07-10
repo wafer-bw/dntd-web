@@ -1,7 +1,7 @@
 import { MockGoogleUser } from "../mocks"
 import { SyncerState, SyncerTaskPayload } from "../types"
 
-class SyncerModel {
+export class SyncerModel {
     public worker: Worker
     private requestsCounter = 0
     private requests: Map<string, Function> = new Map()
@@ -25,9 +25,9 @@ class SyncerModel {
 
     private onMessage<P extends SyncerTaskPayload>(msg: MessageEvent) {
         let { id, payload, error }: { id: string | null, payload: P, error: Error } = msg.data
-        console.log(id)
-        console.log(payload)
-        console.log(error)
+        // console.log(id)
+        // console.log(payload)
+        // console.log(error)
         if (id !== null && this.requests.has(id)) {
             this.requests.get(id)!({ payload, error })
             this.requests.delete(id)
@@ -38,5 +38,3 @@ class SyncerModel {
     }
 
 }
-
-export const syncerModel = new SyncerModel()

@@ -1,7 +1,7 @@
 export { Tag } from "./Tag"
 export { Entry } from "./Entry"
 export { Sheet } from "./Sheet"
-// export { Syncer } from "./Syncer"
+export { Syncer } from "./Syncer"
 export { Search } from "./Search"
 export { Refines } from "./Refines"
 export { Journal } from "./Journal"

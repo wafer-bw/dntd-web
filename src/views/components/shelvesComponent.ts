@@ -4,9 +4,13 @@ import { libraryModel } from "../../models"
 export function shelvesComponent() {
 
     function view() {
-        return m("#shelves", libraryModel.shelves
-            .map(shelfId => m("li", m("a", { href: `#/library/${shelfId}` }, shelfId)))
-        )
+        if (libraryModel === undefined) {
+            return m("#shelves", "Library Loading")
+        } else {
+            return m("#shelves", libraryModel.shelves.map(shelf => {
+                m("li", m("a", { href: `#/library/${shelf.id}` }, shelf.id))
+            }))
+        }
     }
 
     return {

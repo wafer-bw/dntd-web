@@ -1,6 +1,7 @@
 import m from "mithril"
-import { syncer, journal } from ".."
-import { SyncerState } from "../types"
+import { syncerModel } from "../.."
+import { SyncerState } from "../../types"
+import { syncerController } from "../.."
 
 export function syncStateIndicator() {
 
@@ -9,7 +10,6 @@ export function syncStateIndicator() {
     }
 
     function syncState() {
-        if (journal.spreadsheets.size === 0) { return }
         return m("span", [
             syncStateIcon(),
             syncStateText(),
@@ -21,7 +21,7 @@ export function syncStateIndicator() {
         let txt = ""
         let class_ = `syncState ${stateColorClass()}`
 
-        switch (syncer.state) {
+        switch (syncerModel.state) {
             case SyncerState.DOWNLOADING:
                 txt = "Downloading journal data from drive..."
                 break
@@ -40,22 +40,22 @@ export function syncStateIndicator() {
 
     function syncStateIcon() {
         let class_ = `material-icons material-icons-outlined syncState ${stateColorClass()}`
-        return m("i", { id: "syncStateIcon", class: class_ }, syncer.state)
+        return m("i", { id: "syncStateIcon", class: class_ }, syncerModel.state)
     }
 
     function unpauseSync() {
-        if (syncer.state === SyncerState.PAUSED) {
+        if (syncerModel.state === SyncerState.PAUSED) {
             return m("button", {
                 id: "unpauseSync",
                 class: "syncState",
-                onclick: () => syncer.unpause()
+                onclick: () => syncerController.unpause()
             }, "Unpause Syncing")
         }
         return
     }
 
     function stateColorClass() {
-        switch (syncer.state) {
+        switch (syncerModel.state) {
             case SyncerState.PAUSED:
                 return "error"
             case SyncerState.SYNCED:
