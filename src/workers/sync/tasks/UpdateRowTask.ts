@@ -1,6 +1,6 @@
 import { SyncerError } from ".."
 import { BaseTask } from "./BaseTask"
-import { GapiErrorResponse, UpdateRowPayload, SyncerTaskPayload, TestMode } from "../../../types"
+import { GapiErrorResponse, UpdateRowPayload, SyncerTaskPayload, TestMode, SyncerPayloadType } from "../../../types"
 import { ExtendSheetTask } from "./ExtendSheetTask"
 
 export function createUpdateRowTask<P extends UpdateRowPayload>(payload: P, testMode: TestMode): BaseTask<P> | undefined {
@@ -25,7 +25,7 @@ export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
         if (!response.ok) {
             if (data.error.message.includes("exceeds grid limits")) {
                 let extendSheetTask: SyncerTaskPayload = {
-                    type: SyncerTaskType.EXTEND_SHEET,
+                    type: SyncerPayloadType.EXTEND_SHEET,
                     spreadsheetId: this.payload.spreadsheetId,
                     sheetId: this.payload.sheetId
                 }

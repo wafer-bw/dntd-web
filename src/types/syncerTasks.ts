@@ -1,5 +1,4 @@
 import { TestMode } from "./testing"
-import { Spreadsheet } from "../classes"
 
 export type SyncerTaskPayload = (
     GetRowsPayload | GetSheetsPayload | GetSpreadsheetPayload | UpdateRowPayload |
@@ -60,7 +59,7 @@ export interface UpdateRowPayload {
 export interface GetSpreadsheetPayload {
     type: SyncerPayloadType.GET_SPREADSHEET
     spreadsheetId: string
-    spreadsheet?: Spreadsheet
+    spreadsheet?: gapi.client.sheets.Spreadsheet
 }
 
 export interface GetRowsPayload {

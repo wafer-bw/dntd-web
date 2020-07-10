@@ -6,4 +6,4 @@ export * from "./UpdateRowTask"
 export * from "./ExtendSheetTask"
 export * from "./DeleteRowTask"
 // export * from "./CreateRowTask"
-export * from "./GetSpreadsheetTask"\
+export * from "./GetSpreadsheetTask"
