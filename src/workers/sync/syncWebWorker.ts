@@ -13,6 +13,7 @@ let token: string | undefined = undefined
 const parallelQueue: Map<string, BaseTask<SyncerTaskPayload>> = new Map()
 const seriesQueue: { id: string, task: BaseTask<SyncerTaskPayload> }[] = []
 
+console.log("worker running")
 sync()
 onmessage = (msg) => prequeue(msg)
 

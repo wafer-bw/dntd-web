@@ -1,5 +1,5 @@
+import { syncerController } from ".."
 import { ShelfFactory, ShelfModel } from "."
-import { syncerController } from "../controllers"
 import { getStoredSpreadsheetUrls, spreadsheetIdPattern } from "../helpers"
 
 class LibraryFactory {
@@ -7,6 +7,7 @@ class LibraryFactory {
     private shelfFactory = new ShelfFactory()
 
     public async createLibrary() {
+        console.log("here")
         let spreadsheetUrlsString = getStoredSpreadsheetUrls()
         let spreadsheetIds = this.getSpreadsheetIdsFromUrls(spreadsheetUrlsString)
         let spreadsheets = await this.getSpreadsheets(spreadsheetIds)
@@ -24,13 +25,19 @@ class LibraryFactory {
 
     private async getSpreadsheets(spreadsheetIds: string[]) {
         let spreadsheets: gapi.client.sheets.Spreadsheet[] = []
-        await Promise.all(spreadsheetIds.map(
-            spreadsheetId => syncerController.getSpreadsheet(spreadsheetId)
-        )).then(tasks => tasks.forEach(task => {
-            if (task.spreadsheet !== undefined) {
-                spreadsheets.push(task.spreadsheet)
-            }
-        }))
+        for (let spreadsheetId of spreadsheetIds) {
+            console.log(spreadsheetId)
+            await syncerController.getSpreadsheet(spreadsheetId)
+        }
+        // Promise.all(spreadsheetIds.map(spreadsheetId => {
+        //     console.log(spreadsheetId)
+        //     return syncerController.getSpreadsheet(spreadsheetId)
+        // })).then(tasks => tasks.forEach(task => {
+        //     console.log(task)
+        //     if (task.spreadsheet !== undefined) {
+        //         spreadsheets.push(task.spreadsheet)
+        //     }
+        // }))
         return spreadsheets
     }
 
@@ -50,12 +57,13 @@ class LibraryModel {
 
     public shelves: ShelfModel[]
 
-    constructor(shelvess: Promise<ShelfModel[]>) {
-        shelvess.then(shelves => this.shelves = shelves)
+    constructor(shelves: ShelfModel[]) {
+        this.shelves = shelves
     }
 
     // TODO: add/remove shelves
 
 }
 
-export const libraryModel = new LibraryFactory().createLibrary()
+export var libraryModel: LibraryModel | undefined = undefined
+new LibraryFactory().createLibrary().then(model => libraryModel = model)

@@ -1,4 +1,4 @@
-import { syncerModel } from "../models"
+import { syncerModel } from ".."
 import { SyncerPayloadType, TestMode, GetSpreadsheetPayload, GetSheetsPayload, GetRowsPayload } from "../types"
 
 export const syncerController = {
