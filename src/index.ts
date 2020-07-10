@@ -1,15 +1,18 @@
 import m from "mithril"
-import { ServiceWorkerModel, SyncerModel } from "./models"
+import { SyncerController } from "./controllers"
 import { signinView, libraryView, shelfView, journalView } from "./views"
+import { ServiceWorkerModel, SyncerModel, LibraryFactory } from "./models"
 
 const root = document.getElementById("root")
 
 export const syncerModel = new SyncerModel()
+export const syncerController = new SyncerController(syncerModel)
 export const serviceWorkerModel = new ServiceWorkerModel()
+export const libraryModel = new LibraryFactory().createLibrary()
 
 if (root !== null) {
     m.route(root, "/", {
-        "/": libraryView,                                   // TODO decide what this should be
+        "/": signinView,                                   // TODO decide what this should be
         "/signin": signinView,
         "/library": libraryView,
         "/library/:shelfId": shelfView,

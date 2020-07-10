@@ -1,83 +1,81 @@
-import { syncerModel } from ".."
+import { SyncerModel } from "../models"
 import { SyncerPayloadType, TestMode, GetSpreadsheetPayload, GetSheetsPayload, GetRowsPayload } from "../types"
 
-export const syncerController = {
-    updateTestMode: updateTestMode,
-    updateAuth: updateAuth,
-    getSpreadsheet: getSpreadsheet,
-    getSheets: getSheets,
-    getRows: getRows,
-    deleteRow: deleteRow,
-    updateRow: updateRow,
-    unpause: unpause,
-}
+export class SyncerController {
 
-async function updateTestMode(testMode: TestMode) {
-    return await syncerModel.pushSyncerTask({
-        type: SyncerPayloadType.TEST_MODE_UPDATE,
-        testMode: testMode,
-    })
-}
+    private syncerModel: SyncerModel
 
-async function updateAuth(token: string) {
-    return await syncerModel.pushSyncerTask({
-        type: SyncerPayloadType.AUTH_UPDATE,
-        token: token,
-    })
-}
-
-async function getSpreadsheet(spreadsheetId: string) {
-    let task: GetSpreadsheetPayload = {
-        type: SyncerPayloadType.GET_SPREADSHEET,
-        spreadsheetId: spreadsheetId,
-        spreadsheet: undefined
+    constructor(syncerModel: SyncerModel) {
+        console.log(syncerModel)
+        this.syncerModel = syncerModel
     }
-    let result = await syncerModel.pushSyncerTask(task)
-    return result
-}
 
-async function getSheets(spreadsheetId: string) {
-    let task: GetSheetsPayload = {
-        type: SyncerPayloadType.GET_SHEETS,
-        spreadsheetId: spreadsheetId,
-        sheets: []
+    public async updateTestMode(testMode: TestMode) {
+        return await this.syncerModel.pushSyncerTask({
+            type: SyncerPayloadType.TEST_MODE_UPDATE,
+            testMode: testMode,
+        })
     }
-    let result = await syncerModel.pushSyncerTask(task)
-    return result
-}
 
-async function getRows(spreadsheetId: string, sheetId: number, sheetTitle: string) {
-    let task: GetRowsPayload = {
-        type: SyncerPayloadType.GET_ROWS,
-        spreadsheetId: spreadsheetId,
-        sheetTitle: sheetTitle,
-        sheetId: sheetId,
-        rows: []
+    public updateAuth(token: string) {
+        return this.syncerModel.pushSyncerTask({
+            type: SyncerPayloadType.AUTH_UPDATE,
+            token: token,
+        })
     }
-    let result = await syncerModel.pushSyncerTask(task)
-    return result
-}
 
-async function deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
-    return await syncerModel.pushSyncerTask({
-        type: SyncerPayloadType.DELETE_ROW,
-        spreadsheetId: spreadsheetId,
-        sheetId: sheetId,
-        idx: idx,
-    })
-}
+    public getSpreadsheet(spreadsheetId: string) {
+        let task: GetSpreadsheetPayload = {
+            type: SyncerPayloadType.GET_SPREADSHEET,
+            spreadsheetId: spreadsheetId,
+            spreadsheet: undefined
+        }
+        return this.syncerModel.pushSyncerTask(task)
+    }
 
-async function updateRow(idx: number, spreadsheetId: string, sheetId: number, sheetTitle: string, content: string) {
-    return await syncerModel.pushSyncerTask({
-        type: SyncerPayloadType.UPDATE_ROW,
-        spreadsheetId: spreadsheetId,
-        sheetTitle: sheetTitle,
-        sheetId: sheetId,
-        content: content,
-        idx: idx,
-    })
-}
+    public async getSheets(spreadsheetId: string) {
+        let task: GetSheetsPayload = {
+            type: SyncerPayloadType.GET_SHEETS,
+            spreadsheetId: spreadsheetId,
+            sheets: []
+        }
+        let result = await this.syncerModel.pushSyncerTask(task)
+        return result
+    }
 
-async function unpause() {
-    return await syncerModel.pushSyncerTask({ type: SyncerPayloadType.UNPAUSE })
+    public async getRows(spreadsheetId: string, sheetId: number, sheetTitle: string) {
+        let task: GetRowsPayload = {
+            type: SyncerPayloadType.GET_ROWS,
+            spreadsheetId: spreadsheetId,
+            sheetTitle: sheetTitle,
+            sheetId: sheetId,
+            rows: []
+        }
+        let result = await this.syncerModel.pushSyncerTask(task)
+        return result
+    }
+
+    public async deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
+        return await this.syncerModel.pushSyncerTask({
+            type: SyncerPayloadType.DELETE_ROW,
+            spreadsheetId: spreadsheetId,
+            sheetId: sheetId,
+            idx: idx,
+        })
+    }
+
+    public async updateRow(idx: number, spreadsheetId: string, sheetId: number, sheetTitle: string, content: string) {
+        return await this.syncerModel.pushSyncerTask({
+            type: SyncerPayloadType.UPDATE_ROW,
+            spreadsheetId: spreadsheetId,
+            sheetTitle: sheetTitle,
+            sheetId: sheetId,
+            content: content,
+            idx: idx,
+        })
+    }
+
+    public async unpause() {
+        return await this.syncerModel.pushSyncerTask({ type: SyncerPayloadType.UNPAUSE })
+    }
 }

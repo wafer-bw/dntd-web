@@ -2,16 +2,12 @@ import { syncerController } from ".."
 import { ShelfFactory, ShelfModel } from "."
 import { getStoredSpreadsheetUrls, spreadsheetIdPattern } from "../helpers"
 
-class LibraryFactory {
+export class LibraryFactory {
 
-    private shelfFactory = new ShelfFactory()
-
-    public async createLibrary() {
-        console.log("here")
+    public createLibrary() {
         let spreadsheetUrlsString = getStoredSpreadsheetUrls()
         let spreadsheetIds = this.getSpreadsheetIdsFromUrls(spreadsheetUrlsString)
-        let spreadsheets = await this.getSpreadsheets(spreadsheetIds)
-        return new LibraryModel(this.getShelves(spreadsheets))
+        return new LibraryModel(spreadsheetIds)
     }
 
     private getSpreadsheetIdsFromUrls(urls: string | undefined): string[] {
@@ -21,6 +17,35 @@ class LibraryFactory {
             matches.forEach(match => ids.push(match[1]))
         }
         return ids
+    }
+
+}
+
+class LibraryModel {
+
+    public shelfIds: string[]
+    public shelves: ShelfModel[] = []
+    private shelfFactory = new ShelfFactory()
+
+    constructor(spreadsheetIds: string[]) {
+        this.shelfIds = spreadsheetIds
+    }
+
+    public async load() {
+        let spreadsheets = await this.getSpreadsheets(this.shelfIds)
+        console.log(spreadsheets)
+        this.shelves = this.getShelves(spreadsheets)
+    }
+
+
+    private getShelves(spreadsheets: gapi.client.sheets.Spreadsheet[]) {
+        let shelves: ShelfModel[] = []
+        spreadsheets.forEach(spreadsheet => {
+            let shelf = this.shelfFactory.createShelf(spreadsheet)
+            if (shelf === undefined) return
+            shelves.push(shelf)
+        })
+        return shelves
     }
 
     private async getSpreadsheets(spreadsheetIds: string[]) {
@@ -41,29 +66,7 @@ class LibraryFactory {
         return spreadsheets
     }
 
-    private getShelves(spreadsheets: gapi.client.sheets.Spreadsheet[]) {
-        let shelves: ShelfModel[] = []
-        spreadsheets.forEach(spreadsheet => {
-            let shelf = this.shelfFactory.createShelf(spreadsheet)
-            if (shelf === undefined) return
-            shelves.push(shelf)
-        })
-        return shelves
-    }
-
-}
-
-class LibraryModel {
-
-    public shelves: ShelfModel[]
-
-    constructor(shelves: ShelfModel[]) {
-        this.shelves = shelves
-    }
-
     // TODO: add/remove shelves
 
 }
 
-export var libraryModel: LibraryModel | undefined = undefined
-new LibraryFactory().createLibrary().then(model => libraryModel = model)
