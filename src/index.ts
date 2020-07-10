@@ -1,9 +1,8 @@
 import m from "mithril"
 import { app } from "./components"
 import { signinView, libraryView, shelfView, journalView } from "./views"
-import { Journal, Search, Syncer, ServiceWorker, Refines } from "./classes"
+import { Journal, Search, ServiceWorker, Refines } from "./classes"
 
-export const syncer = new Syncer()
 export const search = new Search()
 export const refines = new Refines()
 export const journal = new Journal()

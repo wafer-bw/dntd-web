@@ -1,18 +1,24 @@
 import { EntryModel, TagsMap, TagModel } from "."
 
+export class JournalFactory {
+    public createJournal(id: number, shelfId: string, title: string) {
+        return new JournalModel(id, shelfId, title)
+    }
+}
+
 export class JournalModel {
     public id: number
     public tags: TagsMap
     public title: string
     public shelfId: string
-    public entries: EntryModel[]
+    public entries: EntryModel[] = []
 
-    constructor(id: number, shelfId: string, title: string, rows: string[]) {
+    constructor(id: number, shelfId: string, title: string) {
         this.id = id
         this.title = title
         this.tags = new Map()
         this.shelfId = shelfId
-        this.entries = rows.map(row => new EntryModel(row))
+        // this.entries = rows.map(row => new EntryModel(row))
     }
 
     private buildTags(): TagsMap {

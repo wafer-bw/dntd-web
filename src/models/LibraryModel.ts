@@ -1,14 +1,16 @@
+import { ShelfFactory, ShelfModel } from "."
 import { syncerController } from "../controllers"
 import { getStoredSpreadsheetUrls, spreadsheetIdPattern } from "../helpers"
 
 class LibraryFactory {
 
-    public createLibrary() {
+    private shelfFactory = new ShelfFactory()
+
+    public async createLibrary() {
         let spreadsheetUrlsString = getStoredSpreadsheetUrls()
         let spreadsheetIds = this.getSpreadsheetIdsFromUrls(spreadsheetUrlsString)
-        let spreadsheets = this.getSpreadsheets(spreadsheetIds)
-
-        return new LibraryModel(spreadsheetIds)
+        let spreadsheets = await this.getSpreadsheets(spreadsheetIds)
+        return new LibraryModel(this.getShelves(spreadsheets))
     }
 
     private getSpreadsheetIdsFromUrls(urls: string | undefined): string[] {
@@ -20,21 +22,36 @@ class LibraryFactory {
         return ids
     }
 
-    private getSpreadsheets(spreadsheetIds: string[]) {
+    private async getSpreadsheets(spreadsheetIds: string[]) {
         let spreadsheets: gapi.client.sheets.Spreadsheet[] = []
-        Promise.all(spreadsheetIds.map(
+        await Promise.all(spreadsheetIds.map(
             spreadsheetId => syncerController.getSpreadsheet(spreadsheetId)
-        )).then(tasks => tasks.forEach(task => console.log(task)))
+        )).then(tasks => tasks.forEach(task => {
+            if (task.spreadsheet !== undefined) {
+                spreadsheets.push(task.spreadsheet)
+            }
+        }))
+        return spreadsheets
+    }
+
+    private getShelves(spreadsheets: gapi.client.sheets.Spreadsheet[]) {
+        let shelves: ShelfModel[] = []
+        spreadsheets.forEach(spreadsheet => {
+            let shelf = this.shelfFactory.createShelf(spreadsheet)
+            if (shelf === undefined) return
+            shelves.push(shelf)
+        })
+        return shelves
     }
 
 }
 
 class LibraryModel {
 
-    public shelves: Shelf[]
+    public shelves: ShelfModel[]
 
-    constructor(shelves: Shelf[]) {
-        this.shelves = shelves
+    constructor(shelvess: Promise<ShelfModel[]>) {
+        shelvess.then(shelves => this.shelves = shelves)
     }
 
     // TODO: add/remove shelves
