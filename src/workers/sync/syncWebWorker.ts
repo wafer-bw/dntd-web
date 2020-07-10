@@ -10,6 +10,7 @@ let paused: boolean = false
 let testMode: TestMode = TestMode.OFF
 const taskFactory = new TaskFactory()
 let token: string | undefined = undefined
+let state: SyncerState = SyncerState.SYNCED
 const parallelQueue: Map<string, BaseTask<SyncerTaskPayload>> = new Map()
 const seriesQueue: { id: string, task: BaseTask<SyncerTaskPayload> }[] = []
 
@@ -25,16 +26,21 @@ function prequeue(msg: MessageEvent) {
         if (testMode !== TestMode.OFF) {
             token = "mock"
         }
+        return
     } else if (payload.type === SyncerPayloadType.AUTH_UPDATE) {
         token = payload.token
+        return
     } else if (payload.type === SyncerPayloadType.UNPAUSE) {
         paused = false
+        return
     }
 
     let task = taskFactory.createTask(payload, testMode)
     if (task === undefined) {
         return
     }
+
+    console.log(`${id} async: ${task.async}`)
 
     if (task.async) {
         parallelQueue.set(id, task)
@@ -46,8 +52,9 @@ function prequeue(msg: MessageEvent) {
 async function sync() {
     while (true) {
         await sleep(syncRate)
-        if (!paused && seriesQueue.length === 0 && parallelQueue.size === 0) {
-            postQueueState(seriesQueue.length, SyncerState.SYNCED)
+        if (!paused && state !== SyncerState.SYNCED && seriesQueue.length === 0 && parallelQueue.size === 0) {
+            state = SyncerState.SYNCED
+            postQueueState(seriesQueue.length, state)
         }
         try {
             workParallelQueueTasks()
@@ -58,7 +65,8 @@ async function sync() {
                 token = undefined
             } else {
                 paused = true
-                postQueueState(seriesQueue.length, SyncerState.PAUSED)
+                state = SyncerState.PAUSED
+                postQueueState(seriesQueue.length, state)
                 postError((instanceOfSyncerError(e))
                     ? e
                     : new SyncerError(e.message, "Unknown Error", false))
@@ -81,6 +89,7 @@ function workParallelQueueTasks() {
         return
     }
     for (let [id, task] of parallelQueue.entries()) {
+        console.log(`About to work task ${id}`)
         parallelQueue.delete(id)
         task.work(token).then((payload: SyncerTaskPayload) => {
             postMessage({ id, payload })
