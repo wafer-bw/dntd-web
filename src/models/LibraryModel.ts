@@ -33,7 +33,6 @@ class LibraryModel {
 
     public async load() {
         let spreadsheets = await this.getSpreadsheets(this.shelfIds)
-        console.log(spreadsheets)
         this.shelves = this.getShelves(spreadsheets)
     }
 
@@ -50,19 +49,13 @@ class LibraryModel {
 
     private async getSpreadsheets(spreadsheetIds: string[]) {
         let spreadsheets: gapi.client.sheets.Spreadsheet[] = []
-        for (let spreadsheetId of spreadsheetIds) {
-            console.log(spreadsheetId)
-            await syncerController.getSpreadsheet(spreadsheetId)
-        }
-        // Promise.all(spreadsheetIds.map(spreadsheetId => {
-        //     console.log(spreadsheetId)
-        //     return syncerController.getSpreadsheet(spreadsheetId)
-        // })).then(tasks => tasks.forEach(task => {
-        //     console.log(task)
-        //     if (task.spreadsheet !== undefined) {
-        //         spreadsheets.push(task.spreadsheet)
-        //     }
-        // }))
+        await Promise.all(spreadsheetIds.map(spreadsheetId => {
+            return syncerController.getSpreadsheet(spreadsheetId)
+        })).then(tasks => tasks.forEach(task => {
+            if (task.spreadsheet !== undefined) {
+                spreadsheets.push(task.spreadsheet)
+            }
+        }))
         return spreadsheets
     }
 

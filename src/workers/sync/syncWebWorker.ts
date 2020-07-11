@@ -14,7 +14,6 @@ let state: SyncerState = SyncerState.SYNCED
 const parallelQueue: Map<string, BaseTask<SyncerTaskPayload>> = new Map()
 const seriesQueue: { id: string, task: BaseTask<SyncerTaskPayload> }[] = []
 
-console.log("worker running")
 sync()
 onmessage = (msg) => prequeue(msg)
 
@@ -40,7 +39,6 @@ function prequeue(msg: MessageEvent) {
         return
     }
 
-    console.log(`${id} async: ${task.async}`)
 
     if (task.async) {
         parallelQueue.set(id, task)
