@@ -6,7 +6,6 @@ export class SyncerController {
     private syncerModel: SyncerModel
 
     constructor(syncerModel: SyncerModel) {
-        console.log(syncerModel)
         this.syncerModel = syncerModel
     }
 

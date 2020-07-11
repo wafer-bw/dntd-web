@@ -8,7 +8,6 @@ export function googleComponent() {
         return m("#googleApi", [
             preambleMessage(),
             signInOutButton(),
-            m("a", { href: `#/library` }, "Library"),
             m("script", gapiScriptSettings()),
         ])
     }
