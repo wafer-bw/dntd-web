@@ -3,67 +3,65 @@ import { ShelfFactory, ShelfModel } from "."
 import { getStoredSpreadsheetUrls, spreadsheetIdPattern } from "../helpers"
 
 export class LibraryFactory {
-
     public createLibrary() {
-        let spreadsheetUrlsString = getStoredSpreadsheetUrls()
-        let spreadsheetIds = this.getSpreadsheetIdsFromUrls(spreadsheetUrlsString)
-        return new LibraryModel(spreadsheetIds)
+        return new LibraryModel(getStoredSpreadsheetUrls())
+    }
+}
+
+class LibraryModel {
+
+    private shelfFactory = new ShelfFactory()
+    public shelves: Map<string, ShelfModel | undefined>
+
+    constructor(spreadsheetUrls?: string) {
+        this.shelves = new Map()
+        this.addNewShelves(this.getSpreadsheetIdsFromUrls(spreadsheetUrls))
+    }
+
+    // TODO: MOST LOGIC IN THIS CLASS NEEDS  TO BE MOVED TO THE CONTROLLER
+
+    public async load(reloadAll?: boolean) {
+        this.loadShelves(reloadAll)
+    }
+
+    public unload() {
+        this.removeOldShelves()
+    }
+
+    public updateShelves(spreadsheetUrls?: string) {
+        let ids = this.getSpreadsheetIdsFromUrls(spreadsheetUrls)
+        this.addNewShelves(ids)
+        this.removeOldShelves(ids)
+        this.loadShelves()
     }
 
     private getSpreadsheetIdsFromUrls(urls: string | undefined): string[] {
         let ids: string[] = []
         if (urls) {
-            let matches = Array.from(urls.matchAll(spreadsheetIdPattern))
-            matches.forEach(match => ids.push(match[1]))
+            Array.from(urls.matchAll(spreadsheetIdPattern)).forEach(m => ids.push(m[1]))
         }
         return ids
     }
 
-}
-
-class LibraryModel {
-
-    public shelfIds: string[]
-    public shelves: ShelfModel[] = []
-    private shelfFactory = new ShelfFactory()
-
-    constructor(spreadsheetIds: string[]) {
-        this.shelfIds = spreadsheetIds
+    private async loadShelves(reloadAll?: boolean) {
+        let ids = Array.from(this.shelves.keys())
+        let shelvesToLoad = (reloadAll) ? ids : ids.filter(id => !this.shelves.get(id))
+        await Promise.all(shelvesToLoad.map(id => syncerController.getSpreadsheet(id)))
+            .then(tasks => tasks.forEach(task => {
+                let shelf = this.shelfFactory.createShelf(task.spreadsheet)
+                if (shelf !== undefined) this.shelves.set(shelf.id, shelf)
+            }))
     }
 
-    public async load() {
-        let spreadsheets = await this.getSpreadsheets(this.shelfIds)
-        this.shelves = this.getShelves(spreadsheets)
+    private async addNewShelves(idsToAdd: string[]) {
+        idsToAdd.filter(id => !this.shelves.has(id))
+            .forEach(id => this.shelves.set(id, undefined))
     }
 
-    public unload() {
-        this.shelves = []
+    private async removeOldShelves(idsToKeep?: string[]) {
+        if (idsToKeep === undefined) idsToKeep = []
+        Array.from(this.shelves.keys()).filter(shelfId => !idsToKeep!.includes(shelfId))
+            .forEach(shelfId => this.shelves.delete(shelfId))
     }
-
-
-    private getShelves(spreadsheets: gapi.client.sheets.Spreadsheet[]) {
-        let shelves: ShelfModel[] = []
-        spreadsheets.forEach(spreadsheet => {
-            let shelf = this.shelfFactory.createShelf(spreadsheet)
-            if (shelf === undefined) return
-            shelves.push(shelf)
-        })
-        return shelves
-    }
-
-    private async getSpreadsheets(spreadsheetIds: string[]) {
-        let spreadsheets: gapi.client.sheets.Spreadsheet[] = []
-        await Promise.all(spreadsheetIds.map(spreadsheetId => {
-            return syncerController.getSpreadsheet(spreadsheetId)
-        })).then(tasks => tasks.forEach(task => {
-            if (task.spreadsheet !== undefined) {
-                spreadsheets.push(task.spreadsheet)
-            }
-        }))
-        return spreadsheets
-    }
-
-    // TODO: add/remove shelves
 
 }
-
