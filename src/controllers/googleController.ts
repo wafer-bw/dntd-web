@@ -34,9 +34,8 @@ function initGapi() {
 }
 
 async function isSignedIn(signedIn: boolean) {
-    console.log(`${signedIn} = ${googleModel.isSignedIn}`)
     googleModel.isSignedIn = signedIn
-    if (signedIn) {
+    if (googleModel.isSignedIn) {
         googleModel.user = googleModel.gapi_!.auth2.getAuthInstance().currentUser.get()
         let token = googleModel.getToken()
         if (token !== undefined) {
@@ -44,7 +43,7 @@ async function isSignedIn(signedIn: boolean) {
         }
         await libraryModel.load()
     } else {
-        // TODO await libraryModel.unload()
+        libraryModel.unload()
     }
     m.redraw()
 

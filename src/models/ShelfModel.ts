@@ -4,8 +4,14 @@ export class ShelfFactory {
 
     private journalFactory = new JournalFactory()
 
-    public createShelf(spreadsheet: gapi.client.sheets.Spreadsheet) {
-        if (spreadsheet.spreadsheetId && spreadsheet.properties && spreadsheet.properties.title && spreadsheet.sheets) {
+    public createShelf(spreadsheet: gapi.client.sheets.Spreadsheet | undefined) {
+        if (
+            spreadsheet &&
+            spreadsheet.spreadsheetId &&
+            spreadsheet.properties &&
+            spreadsheet.properties.title &&
+            spreadsheet.sheets
+        ) {
             let journals = this.getJournals(spreadsheet.spreadsheetId, spreadsheet.sheets)
             return new ShelfModel(spreadsheet.spreadsheetId, spreadsheet.properties.title, journals)
         }

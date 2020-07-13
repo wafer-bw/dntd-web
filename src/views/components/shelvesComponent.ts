@@ -15,7 +15,7 @@ export function shelvesComponent() {
             return m("#shelves", [
                 (addingShelves) ? spreadsheetsTextbox() : null,
                 addShelfButton(),
-                libraryModel.shelfIds.map(shelfId => {
+                libraryModel.shelves.map(shelfId => {
                     return m("li", m("a", { href: `#/library/${shelfId}` }, shelfId))
                 })
             ])
@@ -26,11 +26,11 @@ export function shelvesComponent() {
         return m("button", {
             id: "addShelf",
             onclick: async () => {
+                spreadsheetUrls = spreadsheetUrlsBuffer
                 if (addingShelves) {
-                    setStoredSpreadsheetUrls(spreadsheetUrlsBuffer)
-                    // TODO: libraryModel.updateShelves()
+                    setStoredSpreadsheetUrls(spreadsheetUrls)
+                    libraryModel.updateShelves(spreadsheetUrls)
                 }
-                spreadsheetUrls = getStoredSpreadsheetUrls()
                 addingShelves = !addingShelves
             }
         }, (addingShelves) ? " ✓ " : "+/-")
