@@ -5,9 +5,9 @@ import { ServiceWorkerModel, SyncerModel, LibraryFactory } from "./models"
 
 const root = document.getElementById("root")
 
+export const serviceWorkerModel = new ServiceWorkerModel()
 export const syncerModel = new SyncerModel()
 export const syncerController = new SyncerController(syncerModel)
-export const serviceWorkerModel = new ServiceWorkerModel()
 export const libraryModel = new LibraryFactory().createLibrary()
 
 if (root !== null) {

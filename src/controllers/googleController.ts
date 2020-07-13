@@ -30,32 +30,23 @@ function initGapi() {
             isSignedIn((googleModel.gapi_!.auth2.getAuthInstance().isSignedIn.get()))
         })
     })
-    
+
 }
 
 async function isSignedIn(signedIn: boolean) {
+    console.log(`${signedIn} = ${googleModel.isSignedIn}`)
     googleModel.isSignedIn = signedIn
-    googleModel.user = googleModel.gapi_!.auth2.getAuthInstance().currentUser.get()
-    let token = googleModel.getToken()
-    if (token !== undefined) {
-        syncerController.updateAuth(token)
+    if (signedIn) {
+        googleModel.user = googleModel.gapi_!.auth2.getAuthInstance().currentUser.get()
+        let token = googleModel.getToken()
+        if (token !== undefined) {
+            syncerController.updateAuth(token)
+        }
+        await libraryModel.load()
+    } else {
+        // TODO await libraryModel.unload()
     }
-    await libraryModel.load()
     m.redraw()
-
-    // journal.isSignedIn = signedIn
-    // m.redraw()
-    // if (journal.isSignedIn) {
-
-    //     await initJournal()
-    // } else {
-    //     journal.unload()
-    // }
-
-    // async function initJournal() {
-    //     let spreadsheetUrls = getStoredSpreadsheetUrls()
-    //     await journal.load(spreadsheetUrls)
-    // }
 
     // if (getTestMode() === TestMode.DEMO) {
     //     journal.isSignedIn = true

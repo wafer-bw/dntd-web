@@ -36,6 +36,10 @@ class LibraryModel {
         this.shelves = this.getShelves(spreadsheets)
     }
 
+    public unload() {
+        this.shelves = []
+    }
+
 
     private getShelves(spreadsheets: gapi.client.sheets.Spreadsheet[]) {
         let shelves: ShelfModel[] = []
