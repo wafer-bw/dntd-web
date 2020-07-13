@@ -5,8 +5,10 @@ export function getStoredSpreadsheetId(): string | undefined {
     return localStorage.getItem("spreadsheetId") || undefined
 }
 
-export function setStoredSpreadsheetUrls(urls: string) {
-    localStorage.setItem("spreadsheetUrls", urls)
+export function setStoredSpreadsheetUrls(urls?: string) {
+    if (urls !== undefined) {
+        localStorage.setItem("spreadsheetUrls", urls)
+    }
 }
 export function getStoredSpreadsheetUrls(): string | undefined {
     return localStorage.getItem("spreadsheetUrls") || undefined

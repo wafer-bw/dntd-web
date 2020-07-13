@@ -1,40 +1,49 @@
 import m from "mithril"
 import { libraryModel } from "../.."
-// import { getStoredSpreadsheetUrls, setStoredSpreadsheetUrls } from "../../helpers"
+import { getStoredSpreadsheetUrls, setStoredSpreadsheetUrls } from "../../helpers"
 
 export function shelvesComponent() {
 
-    // let addingShelves = false
-    // let spreadsheetUrls = getStoredSpreadsheetUrls()
+    let addingShelves = false
+    let spreadsheetUrls = getStoredSpreadsheetUrls()
+    let spreadsheetUrlsBuffer = spreadsheetUrls
 
     function view() {
         if (libraryModel === undefined) {
             return m("#shelves", "Library Loading")
         } else {
-            return m("#shelves", libraryModel.shelves.map(shelf => {
-                return m("li", m("a", { href: `#/library/${shelf.id}` }, shelf.id))
-            }))
+            return m("#shelves", [
+                (addingShelves) ? spreadsheetsTextbox() : null,
+                addShelfButton(),
+                libraryModel.shelfIds.map(shelfId => {
+                    return m("li", m("a", { href: `#/library/${shelfId}` }, shelfId))
+                })
+            ])
         }
     }
 
-    // function addShelfButton() {
-    //     return m("button", {
-    //         id: "addShelf",
-    //         onclick: async () => {
-    //             spreadsheetUrls = getStoredSpreadsheetUrls()
-    //             addingShelves = true
-    //         }
-    //     }, (addingShelves) ? " ✓ " : "+/-")
-    // }
+    function addShelfButton() {
+        return m("button", {
+            id: "addShelf",
+            onclick: async () => {
+                if (addingShelves) {
+                    setStoredSpreadsheetUrls(spreadsheetUrlsBuffer)
+                    // TODO: libraryModel.updateShelves()
+                }
+                spreadsheetUrls = getStoredSpreadsheetUrls()
+                addingShelves = !addingShelves
+            }
+        }, (addingShelves) ? " ✓ " : "+/-")
+    }
 
-    // function spreadsheetsTextbox() {
-    //     return m("textarea", {
-    //         id: "spreadsheetURLs",
-    //         placeholder: "Enter list of Google Sheets Spreadsheet URLs here",
-    //         value: getStoredSpreadsheetUrls(),
-    //         oninput: (event: any) => setStoredSpreadsheetUrls(event.target.value),
-    //     })
-    // }
+    function spreadsheetsTextbox() {
+        return m("textarea", {
+            id: "spreadsheetURLs",
+            placeholder: "Enter list of Google Sheets Spreadsheet URLs here",
+            value: spreadsheetUrls,
+            oninput: (event: any) => spreadsheetUrlsBuffer = event.target.value
+        })
+    }
 
     return {
         view: view,
