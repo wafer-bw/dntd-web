@@ -1,5 +1,5 @@
 import m from "mithril"
-import { libraryModel } from "../.."
+import { libraryModel, libraryController } from "../.."
 import { getStoredSpreadsheetUrls, setStoredSpreadsheetUrls } from "../../helpers"
 
 export function shelvesComponent() {
@@ -15,8 +15,12 @@ export function shelvesComponent() {
             return m("#shelves", [
                 (addingShelves) ? spreadsheetsTextbox() : null,
                 addShelfButton(),
-                libraryModel.shelves.map(shelfId => {
-                    return m("li", m("a", { href: `#/library/${shelfId}` }, shelfId))
+                Array.from(libraryModel.shelves.entries()).map(([id, shelf]) => {
+                    if (shelf === undefined) {
+                        return m("li", m("a", { href: `#/library/${id}` }, id))
+                    } else {
+                        return m("li", m("a", { href: `#/library/${id}` }, shelf.title))
+                    }
                 })
             ])
         }
@@ -28,8 +32,9 @@ export function shelvesComponent() {
             onclick: async () => {
                 spreadsheetUrls = spreadsheetUrlsBuffer
                 if (addingShelves) {
+                    // TODO UPDATE FLOW HERE
                     setStoredSpreadsheetUrls(spreadsheetUrls)
-                    libraryModel.updateShelves(spreadsheetUrls)
+                    libraryController.load(spreadsheetUrls)
                 }
                 addingShelves = !addingShelves
             }
