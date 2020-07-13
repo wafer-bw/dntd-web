@@ -3,7 +3,7 @@ import { MockGapi } from "../mocks"
 import { TestMode } from "../types"
 import { googleModel } from "../models"
 import { getTestMode } from "../helpers"
-import { syncerController, libraryModel } from ".."
+import { syncerController, libraryController } from ".."
 
 export const googleController = {
     signIn: signIn,
@@ -41,9 +41,9 @@ async function isSignedIn(signedIn: boolean) {
         if (token !== undefined) {
             syncerController.updateAuth(token)
         }
-        await libraryModel.load()
+        await libraryController.load()
     } else {
-        libraryModel.unload()
+        libraryController.unload()
     }
     m.redraw()
 

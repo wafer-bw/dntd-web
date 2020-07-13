@@ -1,5 +1,5 @@
 import m from "mithril"
-import { SyncerController } from "./controllers"
+import { SyncerController, LibraryController } from "./controllers"
 import { signinView, libraryView, shelfView, journalView } from "./views"
 import { ServiceWorkerModel, SyncerModel, LibraryFactory } from "./models"
 
@@ -9,6 +9,7 @@ export const serviceWorkerModel = new ServiceWorkerModel()
 export const syncerModel = new SyncerModel()
 export const syncerController = new SyncerController(syncerModel)
 export const libraryModel = new LibraryFactory().createLibrary()
+export const libraryController = new LibraryController()
 
 if (root !== null) {
     m.route(root, "/", {
