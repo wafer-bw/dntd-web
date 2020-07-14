@@ -1,40 +1,32 @@
 import m from "mithril"
-import { libraryModel, libraryController } from "../.."
-import { getStoredSpreadsheetUrls, setStoredSpreadsheetUrls } from "../../helpers"
+import { libraryModel } from "../.."
+import { libraryController } from "../../controllers"
 
 export function shelvesComponent() {
 
     let addingShelves = false
-    let spreadsheetUrls = getStoredSpreadsheetUrls()
-    let spreadsheetUrlsBuffer = spreadsheetUrls
+    let spreadsheetUrlsBuffer: string | undefined = undefined
 
     function view() {
-        if (libraryModel === undefined) {
-            return m("#shelves", "Library Loading")
-        } else {
-            return m("#shelves", [
-                (addingShelves) ? spreadsheetsTextbox() : null,
-                addShelfButton(),
-                Array.from(libraryModel.shelves.entries()).map(([id, shelf]) => {
-                    if (shelf === undefined) {
-                        return m("li", m("a", { href: `#/library/${id}` }, id))
-                    } else {
-                        return m("li", m("a", { href: `#/library/${id}` }, shelf.title))
-                    }
-                })
-            ])
-        }
+        return m("#shelves", [
+            addShelfButton(),
+            spreadsheetsTextbox(),
+            Array.from(libraryModel.shelves.entries()).map(([id, shelf]) => {
+                if (shelf === undefined) {
+                    return m("li", m("a", { href: `#/library/${id}` }, id))
+                } else {
+                    return m("li", m("a", { href: `#/library/${id}` }, shelf.title))
+                }
+            })
+        ])
     }
 
     function addShelfButton() {
         return m("button", {
             id: "addShelf",
             onclick: async () => {
-                spreadsheetUrls = spreadsheetUrlsBuffer
                 if (addingShelves) {
-                    // TODO UPDATE FLOW HERE
-                    setStoredSpreadsheetUrls(spreadsheetUrls)
-                    libraryController.load(spreadsheetUrls)
+                    libraryController.load(spreadsheetUrlsBuffer)
                 }
                 addingShelves = !addingShelves
             }
@@ -42,10 +34,11 @@ export function shelvesComponent() {
     }
 
     function spreadsheetsTextbox() {
+        if (!addingShelves) return null
         return m("textarea", {
             id: "spreadsheetURLs",
             placeholder: "Enter list of Google Sheets Spreadsheet URLs here",
-            value: spreadsheetUrls,
+            value: libraryModel.spreadsheetUrls,
             oninput: (event: any) => spreadsheetUrlsBuffer = event.target.value
         })
     }

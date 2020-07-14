@@ -1,10 +1,9 @@
 import { ShelfModel } from "."
-import { libraryController } from ".."
-import { getStoredSpreadsheetUrls } from "../helpers"
+import { libraryController } from "../controllers"
 
 export class LibraryFactory {
     public createLibrary() {
-        return new LibraryModel(getStoredSpreadsheetUrls())
+        return new LibraryModel()
     }
 }
 
@@ -12,9 +11,16 @@ class LibraryModel {
 
     public shelves: Map<string, ShelfModel | undefined>
 
-    constructor(spreadsheetUrls?: string) {
+    constructor() {
         this.shelves = new Map()
-        this.addNewShelves(libraryController.getSpreadsheetIdsFromUrls(spreadsheetUrls))
+        this.addNewShelves(libraryController.getSpreadsheetIdsFromUrls(this.spreadsheetUrls))
+    }
+
+    set spreadsheetUrls(urls: string | undefined) {
+        if (urls !== undefined) localStorage.setItem("spreadsheetUrls", urls)
+    }
+    get spreadsheetUrls(): string | undefined {
+        return localStorage.getItem("spreadsheetUrls") || undefined
     }
 
     public async addNewShelves(idsToAdd: string[]) {
