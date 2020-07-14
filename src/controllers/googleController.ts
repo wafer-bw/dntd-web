@@ -1,9 +1,10 @@
 import m from "mithril"
 import { MockGapi } from "../mocks"
 import { TestMode } from "../types"
+import { libraryController } from "."
+import { syncerController } from ".."
 import { googleModel } from "../models"
 import { getTestMode } from "../helpers"
-import { syncerController, libraryController } from ".."
 
 export const googleController = {
     signIn: signIn,

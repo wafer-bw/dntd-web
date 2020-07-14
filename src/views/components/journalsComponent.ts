@@ -1,13 +1,19 @@
 import m from "mithril"
-
+import { libraryModel } from "../.."
 
 export function journalsComponent() {
 
     function view() {
-        let shelfId: string = m.route.param("shelfId")
-        return m("#journals", ["0", "123", "456"]
-            .map(journalId => m("li", m("a", { href: `#/library/${shelfId}/${journalId}` }, journalId)))
-        )
+        return m("#journals", journalList())
+    }
+
+    function journalList() {
+        let shelf = libraryModel.shelves.get(m.route.param("shelfId"))
+        if (shelf === undefined) return null
+        return shelf.journals.map(journal => {
+            let link = `#/library/${journal.shelfId}/${journal.id}`
+            return m("li", m("a", { href: link }, journal.title))
+        })
     }
 
     return {
