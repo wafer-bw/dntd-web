@@ -1,9 +1,7 @@
-import { SyncerState, SyncerTaskPayload, TestMode, SyncerPayloadType } from "../../types"
-import {
-    postQueueState, postError,
-    postReAuthRequest, instanceOfSyncerError, SyncerError
-} from "."
 import { TaskFactory, BaseTask } from "./tasks"
+import { instanceOfSyncerError, SyncerError } from "."
+import { SyncerState, SyncerPayload, TestMode, SyncerPayloadType } from "../../types"
+import { postTokenRequestMessage, postSyncStateMessage, postErrorMessage } from "./messages"
 
 const syncRate = 250 // ms
 let paused: boolean = false
@@ -11,88 +9,98 @@ let testMode: TestMode = TestMode.OFF
 const taskFactory = new TaskFactory()
 let token: string | undefined = undefined
 let state: SyncerState = SyncerState.SYNCED
-const parallelQueue: Map<string, BaseTask<SyncerTaskPayload>> = new Map()
-const seriesQueue: { id: string, task: BaseTask<SyncerTaskPayload> }[] = []
+const parallelDownloadQueue: Map<string, BaseTask<SyncerPayload>> = new Map()
+const seriesUploadQueue: { id: string, task: BaseTask<SyncerPayload> }[] = []
 
 sync()
 onmessage = (msg) => prequeue(msg)
 
 function prequeue(msg: MessageEvent) {
-    const { id, payload }: { id: string, payload: SyncerTaskPayload } = msg.data
+    const { id, payload }: { id: string, payload: SyncerPayload } = msg.data
 
-    if (payload.type === SyncerPayloadType.TEST_MODE_UPDATE) {
-        testMode = payload.testMode
-        if (testMode !== TestMode.OFF) {
-            token = "mock"
-        }
-        return
-    } else if (payload.type === SyncerPayloadType.AUTH_UPDATE) {
-        token = payload.token
-        return
-    } else if (payload.type === SyncerPayloadType.UNPAUSE) {
-        paused = false
-        return
+    switch (payload.type) {
+        case SyncerPayloadType.TEST_MODE_UPDATE:
+            testMode = payload.testMode
+            if (testMode !== TestMode.OFF) token = "mock"
+            return
+        case SyncerPayloadType.AUTH_UPDATE:
+            token = payload.token
+            return
+        case SyncerPayloadType.UNPAUSE:
+            paused = false
+            return
     }
 
     let task = taskFactory.createTask(payload, testMode)
-    if (task === undefined) {
-        return
-    }
-
+    if (task === undefined) return
 
     if (task.async) {
-        parallelQueue.set(id, task)
+        parallelDownloadQueue.set(id, task)
     } else {
-        seriesQueue.push({ id, task })
+        seriesUploadQueue.push({ id, task })
     }
 }
 
 async function sync() {
     while (true) {
         await sleep(syncRate)
-        if (!paused && state !== SyncerState.SYNCED && seriesQueue.length === 0 && parallelQueue.size === 0) {
-            state = SyncerState.SYNCED
-            postQueueState(seriesQueue.length, state)
-        }
+
         try {
             workParallelQueueTasks()
             await workSeriesQueueTasks()
-        } catch (e) {
-            if (instanceOfSyncerError(e) && e.needsReAuth) {
-                postReAuthRequest()
-                token = undefined
-            } else {
-                paused = true
-                state = SyncerState.PAUSED
-                postQueueState(seriesQueue.length, state)
-                postError((instanceOfSyncerError(e))
-                    ? e
-                    : new SyncerError(e.message, "Unknown Error", false))
-            }
+        } catch (error) {
+            handleSyncError(error)
         }
+    }
+}
+
+// #!#
+// TODO: MAKE SURE SYNC STATE MESSAGES ARE SENT IN ALL CORRECT PLACES
+// #!#
+
+function updateSyncState(state_?: SyncerState) {
+    if (state_ !== undefined) state = state_
+    if (!paused && state !== SyncerState.SYNCED && seriesUploadQueue.length + parallelDownloadQueue.size === 0) {
+        state = SyncerState.SYNCED
+    }
+    postSyncStateMessage(seriesUploadQueue.length, state)
+}
+
+function handleSyncError(error: Error | SyncerError) {
+    if (instanceOfSyncerError(error) && error.needsReAuth) {
+        postTokenRequestMessage()
+        token = undefined
+    } else {
+        paused = true
+        state = SyncerState.PAUSED
+        updateSyncState()
+        postErrorMessage((instanceOfSyncerError(error))
+            ? error
+            : new SyncerError(error.message, "Unknown Error", false))
     }
 }
 
 async function workSeriesQueueTasks() {
-    while (seriesQueue.length !== 0 && token && !paused) {
-        let { id, task } = seriesQueue[0]
+    while (seriesUploadQueue.length !== 0 && token && !paused) {
+        let { id, task } = seriesUploadQueue[0]
         let payload = await task.work(token)
         postMessage({ id, payload })
-        seriesQueue.shift()
+        seriesUploadQueue.shift()
     }
 }
 
 function workParallelQueueTasks() {
-    if (parallelQueue.size === 0 || !token || paused) {
+    if (parallelDownloadQueue.size === 0 || !token || paused) {
         return
     }
-    for (let [id, task] of parallelQueue.entries()) {
+    
+    for (let [id, task] of parallelDownloadQueue.entries()) {
         console.log(`About to work task ${id}`)
-        parallelQueue.delete(id)
-        task.work(token).then((payload: SyncerTaskPayload) => {
+        parallelDownloadQueue.delete(id)
+        task.work(token).then((payload: SyncerPayload) => {
             postMessage({ id, payload })
         }).catch((error: Error) => {
-            parallelQueue.set(id, task)
+            parallelDownloadQueue.set(id, task)
             throw error
         })
     }

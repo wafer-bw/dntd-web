@@ -2,3 +2,4 @@
 export * from "./googleComponent"
 export * from "./shelvesComponent"
 export * from "./journalsComponent"
+export * from "./syncStateComponent"

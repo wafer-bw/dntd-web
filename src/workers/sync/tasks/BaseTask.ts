@@ -1,11 +1,11 @@
-import { SyncerTaskPayload, TestMode, SyncerPayloadType } from "../../../types"
+import { SyncerPayload, TestMode, SyncerPayloadType } from "../../../types"
 import {
     createGetRowsTask, createGetSpreadsheetTask, createGetSheetsTask,
     createDeleteRowTask, createUpdateRowTask
 } from "."
 
 export class TaskFactory {
-    public createTask(payload: SyncerTaskPayload, testMode: TestMode): BaseTask<SyncerTaskPayload> | undefined {
+    public createTask(payload: SyncerPayload, testMode: TestMode): BaseTask<SyncerPayload> | undefined {
         switch(payload.type) {
             case SyncerPayloadType.GET_ROWS:
                 return createGetRowsTask(payload, testMode)
@@ -29,7 +29,7 @@ export class TaskFactory {
 
 }
 
-export abstract class BaseTask<P extends SyncerTaskPayload> {
+export abstract class BaseTask<P extends SyncerPayload> {
     public payload: P
     public async: boolean | undefined
     public testMode: TestMode = TestMode.OFF

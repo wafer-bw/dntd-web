@@ -38,12 +38,13 @@ export class ShelfModel {
 
     public id: string
     public title: string
-    public journals: JournalModel[]
+    public journals: Map<number, JournalModel>
 
     constructor(id: string, title: string, journals: JournalModel[]) {
         this.id = id
         this.title = title
-        this.journals = journals
+        this.journals = new Map()
+        journals.forEach(journal => this.journals.set(journal.id, journal))
     }
 
     // TODO: add/remove journals

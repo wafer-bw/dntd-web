@@ -1,9 +1,9 @@
 import m from "mithril"
-import { syncerModel } from "../.."
+import { syncerModel } from "../../"
 import { SyncerState } from "../../types"
 import { syncerController } from "../.."
 
-export function syncStateIndicator() {
+export function syncStateComponent() {
 
     function view() {
         return m("#status", m("span", syncState()))
