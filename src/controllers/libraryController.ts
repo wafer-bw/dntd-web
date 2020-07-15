@@ -36,7 +36,6 @@ async function loadShelves(reloadAll?: boolean) {
     let shelvesToLoad = (reloadAll) ? ids : ids.filter(id => !libraryModel.shelves.get(id))
     await Promise.all(shelvesToLoad.map(id => syncerController.getSpreadsheet(id)))
         .then(tasks => tasks.forEach(task => {
-            console.log(task.spreadsheet)
             let shelf = shelfFactory.createShelf(task.spreadsheet)
             if (shelf !== undefined) libraryModel.shelves.set(shelf.id, shelf)
             m.redraw()

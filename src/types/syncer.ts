@@ -1,9 +1,10 @@
 import { TestMode } from "./testing"
+import { SyncerError } from "../workers/sync"
 
-export type SyncerTaskPayload = (
+export type SyncerPayload = (
     GetRowsPayload | GetSheetsPayload | GetSpreadsheetPayload | UpdateRowPayload |
     ExtendSheetPayload | DeleteRowPayload | TestModeUpdatePayload | AuthUpdatePayload |
-    UnpausePayload
+    UnpausePayload | SyncStatePayload | ErrorPayload | TokenRequestPayload
 )
 
 export enum SyncerPayloadType {
@@ -18,6 +19,22 @@ export enum SyncerPayloadType {
     EXTEND_SHEET,
     CREATE_ROW,
     MOVE_ROW,
+    ERROR,
+    TOKEN_REQUEST,
+    SYNC_STATE,
+}
+
+export enum SyncerResponseType {
+    SYNCER_STATE,
+    ERROR,
+    REAUTH,
+}
+
+export enum SyncerState {
+    PAUSED = "cloud_off",
+    UPLOADING = "cloud_upload",
+    DOWNLOADING = "cloud_download",
+    SYNCED = "cloud_done",
 }
 
 export interface TestModeUpdatePayload {
@@ -74,4 +91,20 @@ export interface GetSheetsPayload {
     type: SyncerPayloadType.GET_SHEETS
     spreadsheetId: string
     sheets: gapi.client.sheets.Sheet[]
+}
+
+export interface SyncStatePayload {
+    type: SyncerPayloadType.SYNC_STATE
+    length: number
+    state: SyncerState
+}
+
+export interface ErrorPayload {
+    type: SyncerPayloadType.ERROR
+    error: SyncerError | Error
+    friendlyMsg: string
+}
+
+export interface TokenRequestPayload {
+    type: SyncerPayloadType.TOKEN_REQUEST
 }

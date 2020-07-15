@@ -1,5 +1,5 @@
 import { MockGoogleUser } from "../mocks"
-import { SyncerState, SyncerTaskPayload } from "../types"
+import { SyncerState, SyncerPayload } from "../types"
 
 export class SyncerModel {
     public worker: Worker
@@ -13,7 +13,7 @@ export class SyncerModel {
         this.worker.onmessage = (msg: MessageEvent) => this.onMessage(msg)
     }
 
-    public pushSyncerTask<P extends SyncerTaskPayload>(payload: P): Promise<P> {
+    public pushSyncerTask<P extends SyncerPayload>(payload: P): Promise<P> {
         let id = `payload-${this.requestsCounter++}`
         return new Promise((resolve, reject) => {
             this.requests.set(id, ({ payload, error }: { payload: P, error: Error }) => {
@@ -23,7 +23,8 @@ export class SyncerModel {
         })
     }
 
-    private onMessage<P extends SyncerTaskPayload>(msg: MessageEvent) {
+    private onMessage<P extends SyncerPayload>(msg: MessageEvent) {
+        console.log(msg.data)
         let { id, payload, error }: { id: string | null, payload: P, error: Error } = msg.data
         if (id !== null && this.requests.has(id)) {
             this.requests.get(id)!({ payload, error })
