@@ -4,18 +4,18 @@ export class ShelfFactory {
 
     private journalFactory = new JournalFactory()
 
-    public createShelf(spreadsheet: gapi.client.sheets.Spreadsheet | undefined) {
+    public createShelf(spreadsheetId: string, spreadsheet?: gapi.client.sheets.Spreadsheet, error?: string) {
         if (
-            spreadsheet &&
-            spreadsheet.spreadsheetId &&
-            spreadsheet.properties &&
-            spreadsheet.properties.title &&
-            spreadsheet.sheets
+            spreadsheet !== undefined &&
+            spreadsheet.spreadsheetId !== undefined &&
+            spreadsheet.properties !== undefined &&
+            spreadsheet.properties.title !== undefined &&
+            spreadsheet.sheets !== undefined
         ) {
             let journals = this.getJournals(spreadsheet.spreadsheetId, spreadsheet.sheets)
             return new ShelfModel(spreadsheet.spreadsheetId, spreadsheet.properties.title, journals)
         }
-        return
+        return new ShelfModel(spreadsheetId, undefined, undefined, error)
     }
 
     private getJournals(spreadsheetId: string, sheets: gapi.client.sheets.Sheet[]) {
@@ -36,14 +36,19 @@ export class ShelfFactory {
 
 export class ShelfModel {
     public id: string
-    public title: string
-    public journals: Map<number, JournalModel>
+    public error: string | undefined
+    public title: string | undefined
+    public journals: Map<number, JournalModel> = new Map()
 
-    constructor(id: string, title: string, journals: JournalModel[]) {
+    constructor(id: string, title?: string, journals?: JournalModel[], error?: string) {
         this.id = id
+        this.error = error
         this.title = title
-        this.journals = new Map()
-        journals.forEach(journal => this.journals.set(journal.id, journal))
+        if (journals !== undefined) this.addJournals(journals)
     }
 
+    public addJournals(journals: JournalModel[]) {
+        journals.filter(journal => !this.journals.has(journal.id))
+            .forEach(journal => this.journals.set(journal.id, journal))
+    }
 }

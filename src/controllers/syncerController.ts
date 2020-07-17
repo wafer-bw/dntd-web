@@ -1,4 +1,4 @@
-import { SyncerModel } from "../models"
+import { SyncerModel } from "../models" // TODO: TRY TO IMPORT FROM ".." (index.ts)
 import { SyncerPayloadType, TestMode, GetSpreadsheetPayload, GetSheetsPayload, GetRowsPayload } from "../types"
 
 export class SyncerController {
