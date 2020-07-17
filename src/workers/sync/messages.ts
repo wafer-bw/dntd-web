@@ -1,4 +1,3 @@
-import { SyncerError } from "."
 import { SyncerPayload, SyncerPayloadType, SyncerState } from "../../types"
 
 export function postSyncStateMessage(length: number, state: SyncerState) {
@@ -6,14 +5,6 @@ export function postSyncStateMessage(length: number, state: SyncerState) {
         length: length,
         state: state,
         type: SyncerPayloadType.SYNC_STATE
-    })
-}
-
-export function postErrorMessage(error: SyncerError) {
-    postResponse({
-        friendlyMsg: error.friendlyMsg,
-        error: error,
-        type: SyncerPayloadType.ERROR
     })
 }
 

@@ -1,5 +1,4 @@
 import { TestMode } from "./testing"
-import { SyncerError } from "../workers/sync"
 
 export type SyncerPayload = (
     GetRowsPayload | GetSheetsPayload | GetSpreadsheetPayload | UpdateRowPayload |
@@ -101,7 +100,7 @@ export interface SyncStatePayload {
 
 export interface ErrorPayload {
     type: SyncerPayloadType.ERROR
-    error: SyncerError | Error
+    error: Error
     friendlyMsg: string
 }
 

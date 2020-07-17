@@ -1,6 +1,5 @@
-import { SyncerError } from ".."
 import { BaseTask } from "./BaseTask"
-import { GapiErrorResponse, GetSpreadsheetPayload, TestMode } from "../../../types"
+import { SyncerError, GapiErrorResponse, GetSpreadsheetPayload, TestMode } from "../../../types"
 
 export function createGetSpreadsheetTask<P extends GetSpreadsheetPayload>(payload: P, testMode: TestMode): BaseTask<P> | undefined {
     return (testMode === TestMode.OFF)
@@ -23,7 +22,7 @@ export class GetSpreadsheetTask<P extends GetSpreadsheetPayload> extends BaseTas
             let error: GapiErrorResponse = await response.json()
             throw new SyncerError(
                 JSON.stringify(error),
-                `Failed to get spreadsheet details for spreadsheet: ${this.payload.spreadsheetId}`,
+                `Error: Could not download spreadsheet.`,
                 response.status === 401
             )
         } else {

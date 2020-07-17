@@ -1,7 +1,8 @@
+import { instanceOfSyncerError } from "."
+import { SyncerError } from "../../types"
 import { TaskFactory, BaseTask } from "./tasks"
-import { instanceOfSyncerError, SyncerError } from "."
+import { postTokenRequestMessage, postSyncStateMessage } from "./messages"
 import { SyncerState, SyncerPayload, TestMode, SyncerPayloadType } from "../../types"
-import { postTokenRequestMessage, postSyncStateMessage, postErrorMessage } from "./messages"
 
 const syncRate = 250 // ms
 let paused: boolean = false
@@ -72,16 +73,18 @@ function updateSyncState(newState?: SyncerState) {
     }
 }
 
-function handleSyncError(error: Error | SyncerError) {
+function handleSyncError(error: Error | SyncerError, id?: string) {
     if (instanceOfSyncerError(error) && error.needsReAuth) {
         postTokenRequestMessage()
         token = undefined
+        return
     } else {
         paused = true
         updateSyncState(SyncerState.PAUSED)
-        postErrorMessage((instanceOfSyncerError(error))
+        let syncerError: SyncerError = (instanceOfSyncerError(error)
             ? error
             : new SyncerError(error.message, "Unknown Error", false))
+        postMessage({ id, error: syncerError.payload })
     }
 }
 
@@ -102,13 +105,13 @@ function workParallelQueueTasks() {
         parallelDownloadQueue.delete(id)
         task.work(token).then((payload: SyncerPayload) => {
             postMessage({ id, payload })
-        }).catch((error: Error) => {
+        }).catch((error: SyncerError) => {
             parallelDownloadQueue.set(id, task)
-            throw error
+            handleSyncError(error, id)
         })
     }
 }
 
 function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms))
 }
