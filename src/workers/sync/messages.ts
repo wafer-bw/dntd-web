@@ -22,7 +22,5 @@ export function postTokenRequestMessage() {
 }
 
 function postResponse(payload: SyncerPayload) {
-    console.log("posting payload:")
-    console.log(payload)
     postMessage({payload})
 }
