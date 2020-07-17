@@ -18,7 +18,6 @@ export class JournalModel {
         this.title = title
         this.tags = new Map()
         this.shelfId = shelfId
-        // this.entries = rows.map(row => new EntryModel(row))
     }
 
     private buildTags(): TagsMap {

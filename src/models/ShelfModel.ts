@@ -35,7 +35,6 @@ export class ShelfFactory {
 }
 
 export class ShelfModel {
-
     public id: string
     public title: string
     public journals: Map<number, JournalModel>
@@ -46,7 +45,5 @@ export class ShelfModel {
         this.journals = new Map()
         journals.forEach(journal => this.journals.set(journal.id, journal))
     }
-
-    // TODO: add/remove journals
 
 }

@@ -16,7 +16,8 @@ export class SyncerController {
         })
     }
 
-    public updateAuth(token: string) {
+    public updateAuth(token: string | undefined) {
+        if (token === undefined) return
         return this.syncerModel.pushSyncerTask({
             type: SyncerPayloadType.AUTH_UPDATE,
             token: token,
