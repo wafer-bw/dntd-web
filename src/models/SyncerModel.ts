@@ -1,5 +1,8 @@
 import { MockGoogleUser } from "../mocks"
-import { SyncerState, SyncerPayload } from "../types"
+import { FriendlyError } from "../helpers"
+import { SyncerState, SyncerPayload, SyncerPayloadType } from "../types"
+import { googleModel } from "./GoogleModel"
+import { syncerController } from ".."
 
 export class SyncerModel {
     public worker: Worker
@@ -23,15 +26,22 @@ export class SyncerModel {
         })
     }
 
-    private onMessage<P extends SyncerPayload>(msg: MessageEvent) {
-        console.log(msg.data)
-        let { id, payload, error }: { id: string | null, payload: P, error: Error } = msg.data
+    private onMessage(msg: MessageEvent) {
+        let { id, payload, error }: { id: string | null, payload: SyncerPayload , error: Error } = msg.data
         if (id !== null && this.requests.has(id)) {
             this.requests.get(id)!({ payload, error })
             this.requests.delete(id)
         } else {
-            // Handle tasks sent from the sync worker that were not
-            // invoked from this here and therefore have no id.
+            switch (payload.type) {
+                case SyncerPayloadType.SYNC_STATE:
+                    this.state = payload.state
+                    break
+                case SyncerPayloadType.ERROR:
+                    throw new FriendlyError(payload.error.message, payload.friendlyMsg)
+                case SyncerPayloadType.TOKEN_REQUEST:
+                    syncerController.updateAuth(googleModel.token)
+                    break
+            }
         }
     }
 

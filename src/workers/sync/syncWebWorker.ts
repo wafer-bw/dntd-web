@@ -44,7 +44,7 @@ function prequeue(msg: MessageEvent) {
 async function sync() {
     while (true) {
         await sleep(syncRate)
-
+        if (isSynced()) updateSyncState(SyncerState.SYNCED)
         try {
             workParallelQueueTasks()
             await workSeriesQueueTasks()
@@ -54,16 +54,22 @@ async function sync() {
     }
 }
 
-// #!#
-// TODO: MAKE SURE SYNC STATE MESSAGES ARE SENT IN ALL CORRECT PLACES
-// #!#
-
-function updateSyncState(state_?: SyncerState) {
-    if (state_ !== undefined) state = state_
-    if (!paused && state !== SyncerState.SYNCED && seriesUploadQueue.length + parallelDownloadQueue.size === 0) {
-        state = SyncerState.SYNCED
+function isSynced() {
+    if (
+        !paused &&
+        state !== SyncerState.SYNCED &&
+        seriesUploadQueue.length + parallelDownloadQueue.size === 0
+    ) {
+        return true
     }
-    postSyncStateMessage(seriesUploadQueue.length, state)
+    return false
+}
+
+function updateSyncState(newState?: SyncerState) {
+    if (newState !== undefined && state !== newState) {
+        state = newState
+        postSyncStateMessage(seriesUploadQueue.length, state)
+    }
 }
 
 function handleSyncError(error: Error | SyncerError) {
@@ -72,8 +78,7 @@ function handleSyncError(error: Error | SyncerError) {
         token = undefined
     } else {
         paused = true
-        state = SyncerState.PAUSED
-        updateSyncState()
+        updateSyncState(SyncerState.PAUSED)
         postErrorMessage((instanceOfSyncerError(error))
             ? error
             : new SyncerError(error.message, "Unknown Error", false))
@@ -82,6 +87,7 @@ function handleSyncError(error: Error | SyncerError) {
 
 async function workSeriesQueueTasks() {
     while (seriesUploadQueue.length !== 0 && token && !paused) {
+        updateSyncState(SyncerState.UPLOADING)
         let { id, task } = seriesUploadQueue[0]
         let payload = await task.work(token)
         postMessage({ id, payload })
@@ -90,12 +96,9 @@ async function workSeriesQueueTasks() {
 }
 
 function workParallelQueueTasks() {
-    if (parallelDownloadQueue.size === 0 || !token || paused) {
-        return
-    }
-    
+    if (parallelDownloadQueue.size === 0 || !token || paused) return
+    updateSyncState(SyncerState.DOWNLOADING)
     for (let [id, task] of parallelDownloadQueue.entries()) {
-        console.log(`About to work task ${id}`)
         parallelDownloadQueue.delete(id)
         task.work(token).then((payload: SyncerPayload) => {
             postMessage({ id, payload })

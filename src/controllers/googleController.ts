@@ -38,7 +38,7 @@ async function isSignedIn(signedIn: boolean) {
     googleModel.isSignedIn = signedIn
     if (googleModel.isSignedIn) {
         googleModel.user = googleModel.gapi_!.auth2.getAuthInstance().currentUser.get()
-        let token = googleModel.getToken()
+        let token = googleModel.token
         if (token !== undefined) {
             syncerController.updateAuth(token)
         }

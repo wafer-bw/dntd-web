@@ -8,7 +8,6 @@ export class LibraryFactory {
 }
 
 class LibraryModel {
-
     public shelves: Map<string, ShelfModel | undefined>
 
     constructor() {
