@@ -1,5 +1,7 @@
 import m from "mithril"
-import { googleComponent, shelvesComponent, syncStateComponent } from "./components"
+import { 
+    googleComponent, shelvesComponent, syncStateComponent, addShelvesComponent
+} from "./components"
 
 export function libraryView() {
 
@@ -7,6 +9,7 @@ export function libraryView() {
         return m("#library", [
             m(googleComponent),
             m(syncStateComponent),
+            m(addShelvesComponent),
             m(shelvesComponent),
         ])
     }

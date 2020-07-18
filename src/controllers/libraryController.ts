@@ -8,40 +8,35 @@ const shelfFactory = new ShelfFactory()
 const spreadsheetIdPattern = /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/g
 
 export const libraryController = {
-    init: init,
-    load: load,
-    unload: unload,
+    addShelvesByUrls: addShelvesByUrls,
+    addShelves: addShelves,
+    removeShelves: removeShelves,
+    loadShelves: loadShelves,
     getSpreadsheetIdsFromUrls: getSpreadsheetIdsFromUrls,
 }
 
-export function init() {
-    libraryModel.addNewShelves(getSpreadsheetIdsFromUrls(libraryModel.spreadsheetUrls))
-    m.redraw()
+function addShelvesByUrls(urls: string) {
+    let ids = getSpreadsheetIdsFromUrls(urls)
+    addShelves(ids)
 }
 
-async function load(spreadsheetUrls?: string) {
-    if (spreadsheetUrls !== undefined) libraryModel.spreadsheetUrls = spreadsheetUrls
-    let ids = getSpreadsheetIdsFromUrls(libraryModel.spreadsheetUrls)
-    libraryModel.addNewShelves(ids)
-    libraryModel.removeOldShelves(ids)
-    await loadShelves()
+function addShelves(ids: string[]) {
+    ids.filter(id => !libraryModel.shelves.has(id))
+        .forEach(id => libraryModel.shelves.set(id, undefined))
+    libraryModel.shelfIds = Array.from(libraryModel.shelves.keys())
+    loadShelves(false)
 }
 
-function unload() {
-    libraryModel.removeOldShelves()
+function removeShelves(ids?: string[]) {
+    if (ids === undefined) ids = Array.from(libraryModel.shelves.keys())
+    ids.filter(id => libraryModel.shelves.has(id))
+        .forEach(id => libraryModel.shelves.delete(id))
+    libraryModel.shelfIds = Array.from(libraryModel.shelves.keys())
 }
 
-function getSpreadsheetIdsFromUrls(urls: string | undefined): string[] {
-    let ids: string[] = []
-    if (urls) {
-        Array.from(urls.matchAll(spreadsheetIdPattern)).forEach(m => ids.push(m[1]))
-    }
-    return ids
-}
-
-async function loadShelves(reloadAll?: boolean) {
-    let ids = Array.from(libraryModel.shelves.keys())
-    let shelvesToLoad = (reloadAll) ? ids : ids.filter(id => !libraryModel.shelves.get(id))
+async function loadShelves(reloadLoaded?: boolean, ids?: string[]) {
+    if (ids === undefined) ids = Array.from(libraryModel.shelves.keys())
+    let shelvesToLoad = (reloadLoaded) ? ids : ids.filter(id => !libraryModel.shelves.get(id))
     shelvesToLoad.forEach(id => syncerController.getSpreadsheet(id)
         .then(payload => {
             let shelf = shelfFactory.createShelf(id, payload.spreadsheet)
@@ -57,4 +52,12 @@ async function loadShelves(reloadAll?: boolean) {
             m.redraw()
         })
     )
+}
+
+function getSpreadsheetIdsFromUrls(urls: string | undefined): string[] {
+    let ids: string[] = []
+    if (urls) {
+        Array.from(urls.matchAll(spreadsheetIdPattern)).forEach(m => ids.push(m[1]))
+    }
+    return ids
 }

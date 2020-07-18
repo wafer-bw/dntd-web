@@ -42,9 +42,9 @@ async function isSignedIn(signedIn: boolean) {
         if (token !== undefined) {
             syncerController.updateAuth(token)
         }
-        await libraryController.load()
+        await libraryController.loadShelves()
     } else {
-        libraryController.unload()
+        libraryController.removeShelves()
     }
     m.redraw()
 
