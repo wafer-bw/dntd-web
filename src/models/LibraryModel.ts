@@ -5,24 +5,16 @@ export class LibraryModel {
 
     constructor() {
         this.shelves = new Map()
+        this.shelfIds.forEach(id => this.shelves.set(id, undefined))
     }
 
-    set spreadsheetUrls(urls: string | undefined) {
-        if (urls !== undefined) localStorage.setItem("spreadsheetUrls", urls)
+    set shelfIds(ids: string[]) {
+        localStorage.setItem("spreadsheetIds", ids.join(","))
     }
-    get spreadsheetUrls(): string | undefined {
-        return localStorage.getItem("spreadsheetUrls") || undefined
-    }
-
-    public addNewShelves(idsToAdd: string[]) {
-        idsToAdd.filter(id => !this.shelves.has(id))
-            .forEach(id => this.shelves.set(id, undefined))
-    }
-
-    public removeOldShelves(idsToKeep?: string[]) {
-        if (idsToKeep === undefined) idsToKeep = []
-        Array.from(this.shelves.keys()).filter(shelfId => !idsToKeep!.includes(shelfId))
-            .forEach(shelfId => this.shelves.delete(shelfId))
+    get shelfIds(): string[] {
+        let ids = localStorage.getItem("spreadsheetIds") || undefined
+        if (ids === undefined) return []
+        return ids.split(",")
     }
 
 }

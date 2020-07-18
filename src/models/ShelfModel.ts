@@ -21,7 +21,11 @@ export class ShelfFactory {
     private getJournals(spreadsheetId: string, sheets: gapi.client.sheets.Sheet[]) {
         let journals: JournalModel[] = []
         sheets.forEach(sheet => {
-            if (sheet.properties && sheet.properties.title && sheet.properties.sheetId) {
+            if (
+                sheet.properties !== undefined &&
+                sheet.properties.title !== undefined &&
+                sheet.properties.sheetId !== undefined
+            ) {
                 let journal = this.journalFactory.createJournal(
                     sheet.properties.sheetId, spreadsheetId, sheet.properties.title
                 )

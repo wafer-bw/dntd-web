@@ -1,56 +1,43 @@
 import m from "mithril"
 import { libraryModel } from "../.."
+import { ShelfModel } from "../../models"
 import { libraryController } from "../../controllers"
 
 export function shelvesComponent() {
 
-    let addingShelves = false
-    let spreadsheetUrlsBuffer: string | undefined = undefined
-
-    function oninit() {
-        libraryController.init()
-        spreadsheetUrlsBuffer = libraryModel.spreadsheetUrls
-    }
-
     function view() {
-        return m("#shelves", [
-            addShelfButton(),
-            spreadsheetsTextbox(),
-            Array.from(libraryModel.shelves.entries()).map(([id, shelf]) => {
-                if (shelf === undefined) {
-                    return m("li", m("span", id))
-                } else if (shelf.title === undefined) {
-                    return m("li", m("span", `${id} ${shelf.error}`))
-                } else {
-                    return m("li", m("a", { href: `#/library/${id}` }, shelf.title))
-                }
-            })
-        ])
+        let shelves = Array.from(libraryModel.shelves.entries())
+        return m("#shelvesList", shelves.map(([id, shelf]) => shelfNode(id, shelf)))
     }
 
-    function addShelfButton() {
+    function delShelfButton(id: string) {
         return m("button", {
-            id: "addShelf",
-            onclick: async () => {
-                if (addingShelves) libraryController.load(spreadsheetUrlsBuffer)
-                addingShelves = !addingShelves
-            }
-        }, (addingShelves) ? " ✓ " : "+/-")
+            class: "del",
+            onclick: () => libraryController.removeShelves([id])
+        }, "del")
     }
 
-    function spreadsheetsTextbox() {
-        if (!addingShelves) return null
-        return m("textarea", {
-            id: "spreadsheetURLs",
-            placeholder: "Enter list of Google Sheets Spreadsheet URLs here",
-            value: spreadsheetUrlsBuffer,
-            oninput: (event: any) => spreadsheetUrlsBuffer = event.target.value
-        })
+    function shelfNode(id: string, shelf: ShelfModel | undefined) {
+        if (shelf === undefined) {
+            return m("li", [
+                delShelfButton(id),
+                m("span", id)
+            ])
+        } else if (shelf.title === undefined) {
+            return m("li", [
+                delShelfButton(id),
+                m("span", `${id} ${shelf.error}`)
+            ])
+        } else {
+            return m("li", [
+                delShelfButton(id),
+                m("a", { href: `#/library/${id}` }, shelf.title)
+            ])
+        }
     }
 
     return {
         view: view,
-        oninit: oninit,
     }
 
 }
