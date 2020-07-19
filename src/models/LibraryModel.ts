@@ -3,6 +3,8 @@ import { ShelfModel } from "."
 export class LibraryModel {
     public shelves: Map<string, ShelfModel | undefined>
 
+    public x = { id: "h", shelf: undefined }
+
     constructor() {
         this.shelves = new Map()
         this.shelfIds.forEach(id => this.shelves.set(id, undefined))
@@ -12,9 +14,8 @@ export class LibraryModel {
         localStorage.setItem("spreadsheetIds", ids.join(","))
     }
     get shelfIds(): string[] {
-        let ids = localStorage.getItem("spreadsheetIds") || undefined
-        if (ids === undefined) return []
-        return ids.split(",")
+        let ids = localStorage.getItem("spreadsheetIds")
+        return (ids === null) ? [] : ids.split(",")
     }
 
 }

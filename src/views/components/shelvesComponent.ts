@@ -17,16 +17,23 @@ export function shelvesComponent() {
         }, "del")
     }
 
+    function retryShelfLoadButton(id: string) {
+        return m("button", {
+            onclick: () => libraryController.loadShelves(true, [id])
+        }, "retry")
+    }
+
     function shelfNode(id: string, shelf: ShelfModel | undefined) {
         if (shelf === undefined) {
             return m("li", [
                 delShelfButton(id),
                 m("span", id)
             ])
-        } else if (shelf.title === undefined) {
+        } else if (shelf.error !== undefined) {
             return m("li", [
                 delShelfButton(id),
-                m("span", `${id} ${shelf.error}`)
+                m("span", `${id} ${shelf.error}`),
+                retryShelfLoadButton(id)
             ])
         } else {
             return m("li", [

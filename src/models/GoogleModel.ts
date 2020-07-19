@@ -1,6 +1,6 @@
 import { MockGapi, MockGoogleUser } from "../mocks"
 
-class GoogleModel {
+export class GoogleModel {
     public src: string
     public scope: string
     public clientId: string
@@ -23,5 +23,3 @@ class GoogleModel {
         return auth.access_token
     }
 }
-
-export const googleModel = new GoogleModel()

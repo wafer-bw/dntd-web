@@ -1,14 +1,13 @@
 import m from "mithril"
-import { SyncerController } from "./controllers"
 import { signinView, libraryView, shelfView, journalView } from "./views"
-import { ServiceWorkerModel, SyncerModel, LibraryModel } from "./models"
-
-const root = document.getElementById("root")
+import { ServiceWorkerModel, SyncerModel, LibraryModel, GoogleModel } from "./models"
 
 export const serviceWorkerModel = new ServiceWorkerModel()
+export const googleModel = new GoogleModel()
 export const syncerModel = new SyncerModel()
-export const syncerController = new SyncerController(syncerModel)
 export const libraryModel = new LibraryModel()
+
+const root = document.getElementById("root")
 
 if (root !== null) {
     m.route(root, "/", {

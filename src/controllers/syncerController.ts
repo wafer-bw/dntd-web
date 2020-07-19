@@ -1,81 +1,107 @@
-import { SyncerModel } from "../models" // TODO: TRY TO IMPORT FROM ".." (index.ts)
-import { SyncerPayloadType, TestMode, GetSpreadsheetPayload, GetSheetsPayload, GetRowsPayload } from "../types"
+import m from "mithril"
+import { FriendlyError } from "../helpers"
+import { googleModel, syncerModel } from ".."
+import { SyncerPayloadType, TestMode, SyncerPayload, ErrorPayload } from "../types"
 
-export class SyncerController {
+const worker = new Worker("./js/syncWebWorker.js")
+worker.onmessage = (msg: MessageEvent) => onMessage(msg)
 
-    private syncerModel: SyncerModel
+export const syncerController = {
+    unpause: unpause,
+    getRows: getRows,
+    deleteRow: deleteRow,
+    updateRow: updateRow,
+    getSheets: getSheets,
+    updateAuth: updateAuth,
+    updateTestMode: updateTestMode,
+    getSpreadsheet: getSpreadsheet,
+}
 
-    constructor(syncerModel: SyncerModel) {
-        this.syncerModel = syncerModel
-    }
+async function updateTestMode(testMode: TestMode) {
+    return await syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.TEST_MODE_UPDATE,
+        testMode: testMode,
+    }, worker)
+}
 
-    public async updateTestMode(testMode: TestMode) {
-        return await this.syncerModel.pushSyncerTask({
-            type: SyncerPayloadType.TEST_MODE_UPDATE,
-            testMode: testMode,
-        })
-    }
+function updateAuth(token: string | undefined) {
+    if (token === undefined) return
+    return syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.AUTH_UPDATE,
+        token: token,
+    }, worker)
+}
 
-    public updateAuth(token: string | undefined) {
-        if (token === undefined) return
-        return this.syncerModel.pushSyncerTask({
-            type: SyncerPayloadType.AUTH_UPDATE,
-            token: token,
-        })
-    }
+function getSpreadsheet(spreadsheetId: string) {
+    return syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.GET_SPREADSHEET,
+        spreadsheetId: spreadsheetId,
+        spreadsheet: undefined
+    }, worker)
+}
 
-    public getSpreadsheet(spreadsheetId: string) {
-        let task: GetSpreadsheetPayload = {
-            type: SyncerPayloadType.GET_SPREADSHEET,
-            spreadsheetId: spreadsheetId,
-            spreadsheet: undefined
+function getSheets(spreadsheetId: string) {
+    return syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.GET_SHEETS,
+        spreadsheetId: spreadsheetId,
+        sheets: []
+    }, worker)
+}
+
+function getRows(spreadsheetId: string, sheetId: number, sheetTitle: string) {
+    return syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.GET_ROWS,
+        spreadsheetId: spreadsheetId,
+        sheetTitle: sheetTitle,
+        sheetId: sheetId,
+        rows: []
+    }, worker)
+}
+
+async function deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
+    return await syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.DELETE_ROW,
+        spreadsheetId: spreadsheetId,
+        sheetId: sheetId,
+        idx: idx,
+    }, worker)
+}
+
+async function updateRow(idx: number, spreadsheetId: string, sheetId: number, sheetTitle: string, content: string) {
+    return await syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.UPDATE_ROW,
+        spreadsheetId: spreadsheetId,
+        sheetTitle: sheetTitle,
+        sheetId: sheetId,
+        content: content,
+        idx: idx,
+    }, worker)
+}
+
+async function unpause() {
+    return await syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.UNPAUSE
+    }, worker)
+}
+
+function onMessage(msg: MessageEvent) {
+    let { id, payload, error }: { id: string | null, payload: SyncerPayload, error: ErrorPayload } = msg.data
+    if (id !== null && syncerModel.requests.has(id)) {
+        syncerModel.requests.get(id)!({ payload, error })
+        syncerModel.requests.delete(id)
+    } else {
+        switch (payload.type) {
+            case SyncerPayloadType.SYNC_STATE:
+                syncerModel.state = payload.state
+                m.redraw()
+                break
+            case SyncerPayloadType.ERROR:
+                new FriendlyError(payload.error.message, payload.friendlyMsg)
+                break
+            case SyncerPayloadType.TOKEN_REQUEST:
+                updateAuth(googleModel.token)
+                break
         }
-        return this.syncerModel.pushSyncerTask(task)
-    }
-
-    public async getSheets(spreadsheetId: string) {
-        let task: GetSheetsPayload = {
-            type: SyncerPayloadType.GET_SHEETS,
-            spreadsheetId: spreadsheetId,
-            sheets: []
-        }
-        let result = await this.syncerModel.pushSyncerTask(task)
-        return result
-    }
-
-    public async getRows(spreadsheetId: string, sheetId: number, sheetTitle: string) {
-        let task: GetRowsPayload = {
-            type: SyncerPayloadType.GET_ROWS,
-            spreadsheetId: spreadsheetId,
-            sheetTitle: sheetTitle,
-            sheetId: sheetId,
-            rows: []
-        }
-        let result = await this.syncerModel.pushSyncerTask(task)
-        return result
-    }
-
-    public async deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
-        return await this.syncerModel.pushSyncerTask({
-            type: SyncerPayloadType.DELETE_ROW,
-            spreadsheetId: spreadsheetId,
-            sheetId: sheetId,
-            idx: idx,
-        })
-    }
-
-    public async updateRow(idx: number, spreadsheetId: string, sheetId: number, sheetTitle: string, content: string) {
-        return await this.syncerModel.pushSyncerTask({
-            type: SyncerPayloadType.UPDATE_ROW,
-            spreadsheetId: spreadsheetId,
-            sheetTitle: sheetTitle,
-            sheetId: sheetId,
-            content: content,
-            idx: idx,
-        })
-    }
-
-    public async unpause() {
-        return await this.syncerModel.pushSyncerTask({ type: SyncerPayloadType.UNPAUSE })
     }
 }
+

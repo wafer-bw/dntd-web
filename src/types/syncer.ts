@@ -101,6 +101,7 @@ export interface SyncStatePayload {
 export interface ErrorPayload {
     type: SyncerPayloadType.ERROR
     error: Error
+    pause: boolean
     friendlyMsg: string
 }
 
