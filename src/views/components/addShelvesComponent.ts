@@ -3,13 +3,13 @@ import { libraryController } from "../../controllers"
 
 export function addShelvesComponent() {
 
+    let newShelfUrls = ""
     let addingShelves = false
-    let newShelfUrls: string = ""
 
     function view() {
         return m("#addShelves", [
             addShelvesButton(),
-            spreadsheetsTextbox(),
+            addShelvesTextbox(),
         ])
     }
 
@@ -17,14 +17,14 @@ export function addShelvesComponent() {
         return m("button", {
             id: "addShelvesButton",
             onclick: async () => {
-                if (addingShelves) libraryController.addShelvesByUrls(newShelfUrls)
+                if (addingShelves) libraryController.addShelves(newShelfUrls)
                 newShelfUrls = ""
                 addingShelves = !addingShelves
             }
         }, (addingShelves) ? " ✓ " : "+/-")
     }
 
-    function spreadsheetsTextbox() {
+    function addShelvesTextbox() {
         if (!addingShelves) return null
         return m("textarea", {
             id: "addShelvesText",

@@ -1,10 +1,9 @@
 import m from "mithril"
+import { googleModel } from ".."
 import { MockGapi } from "../mocks"
 import { TestMode } from "../types"
-import { libraryController } from "."
-import { syncerController } from ".."
-import { googleModel } from "../models"
 import { getTestMode } from "../helpers"
+import { syncerController, libraryController } from "../controllers"
 
 export const googleController = {
     signIn: signIn,
@@ -38,11 +37,8 @@ async function isSignedIn(signedIn: boolean) {
     googleModel.isSignedIn = signedIn
     if (googleModel.isSignedIn) {
         googleModel.user = googleModel.gapi_!.auth2.getAuthInstance().currentUser.get()
-        let token = googleModel.token
-        if (token !== undefined) {
-            syncerController.updateAuth(token)
-        }
-        await libraryController.loadShelves()
+        syncerController.updateAuth(googleModel.token)
+        libraryController.loadShelves()
     } else {
         libraryController.removeShelves()
     }

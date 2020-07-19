@@ -1,5 +1,5 @@
 import m from "mithril"
-import { googleModel } from "../../models"
+import { googleModel } from "../.."
 import { googleController } from "../../controllers"
 
 export function googleComponent() {

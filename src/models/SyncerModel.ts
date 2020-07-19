@@ -1,49 +1,24 @@
-import { MockGoogleUser } from "../mocks"
-import { FriendlyError } from "../helpers"
-import { SyncerState, SyncerPayload, SyncerPayloadType, ErrorPayload } from "../types"
-import { googleModel } from "./GoogleModel"
-import { syncerController } from ".."
+import { SyncerState, SyncerPayload, ErrorPayload } from "../types"
 
 export class SyncerModel {
-    public worker: Worker
-    private requestsCounter = 0
-    private requests: Map<string, Function> = new Map()
-    public state: SyncerState = SyncerState.DOWNLOADING
-    public user: gapi.auth2.GoogleUser | MockGoogleUser | null = null
+    public requestsCounter: number
+    public requests: Map<string, Function>
+    public state: SyncerState
 
     constructor() {
-        this.worker = new Worker("./js/syncWebWorker.js")
-        this.worker.onmessage = (msg: MessageEvent) => this.onMessage(msg)
+        this.requestsCounter = 0
+        this.requests = new Map()
+        this.state = SyncerState.SYNCED
     }
 
-    public pushSyncerTask<P extends SyncerPayload>(payload: P): Promise<P> {
+    public pushSyncerTask<P extends SyncerPayload>(payload: P, worker: Worker): Promise<P> {
         let id = `payload-${this.requestsCounter++}`
         return new Promise((resolve, reject) => {
             this.requests.set(id, ({ payload, error }: { payload: P, error: ErrorPayload }) => {
                 (error) ? reject(error) : resolve(payload)
             })
-            this.worker.postMessage({ id, payload })
+            worker.postMessage({ id, payload })
         })
-    }
-
-    private onMessage(msg: MessageEvent) {
-        let { id, payload, error }: { id: string | null, payload: SyncerPayload , error: ErrorPayload } = msg.data
-        if (id !== null && this.requests.has(id)) {
-            this.requests.get(id)!({ payload, error })
-            this.requests.delete(id)
-        } else {
-            switch (payload.type) {
-                case SyncerPayloadType.SYNC_STATE:
-                    this.state = payload.state
-                    break
-                case SyncerPayloadType.ERROR:
-                    new FriendlyError(payload.error.message, payload.friendlyMsg)
-                    break
-                case SyncerPayloadType.TOKEN_REQUEST:
-                    syncerController.updateAuth(googleModel.token)
-                    break
-            }
-        }
     }
 
 }

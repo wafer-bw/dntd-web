@@ -23,7 +23,8 @@ export class GetSpreadsheetTask<P extends GetSpreadsheetPayload> extends BaseTas
             throw new SyncerError(
                 JSON.stringify(error),
                 `Error: Could not download spreadsheet.`,
-                response.status === 401
+                response.status === 401,
+                false
             )
         } else {
             this.payload.spreadsheet = await response.json()
