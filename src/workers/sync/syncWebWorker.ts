@@ -4,6 +4,7 @@ import { TaskFactory, BaseTask } from "./tasks"
 import { postTokenRequestMessage, postSyncStateMessage } from "./messages"
 import { SyncerState, SyncerPayload, TestMode, SyncerPayloadType } from "../../types"
 
+let pendingDownloads = 0
 const syncRate = 250 // ms
 let testMode: TestMode = TestMode.OFF
 const taskFactory = new TaskFactory()
@@ -58,7 +59,7 @@ function isSynced() {
     if (
         state !== SyncerState.PAUSED &&
         state !== SyncerState.SYNCED &&
-        uploadQueue.length + downloadQueue.size === 0
+        uploadQueue.length + downloadQueue.size + pendingDownloads === 0
     ) {
         return true
     }
@@ -100,10 +101,12 @@ function workDownloadQueueTasks() {
     if (downloadQueue.size === 0 || !token || state === SyncerState.PAUSED) return
     updateSyncState(SyncerState.DOWNLOADING)
     for (let [id, task] of downloadQueue.entries()) {
+        pendingDownloads += 1
+        downloadQueue.delete(id)
         task.work(token)
             .then((payload: SyncerPayload) => postMessage({ id, payload }))
             .catch((error: SyncerError) => handleSyncError(error, id))
-            .finally(() => downloadQueue.delete(id))
+            .finally(() => pendingDownloads -= 1)
     }
 }
 

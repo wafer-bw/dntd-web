@@ -10,8 +10,8 @@ const spreadsheetIdPattern = /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/g
 
 export const libraryController = {
     addShelves: addShelves,
-    removeShelves: removeShelves,
     loadShelves: loadShelves,
+    removeShelves: removeShelves,
     getSpreadsheetIdsFromUrls: getSpreadsheetIdsFromUrls,
 }
 
@@ -31,6 +31,7 @@ function removeShelves(ids?: string[]) {
 }
 
 function loadShelves(reloadLoaded?: boolean, ids?: string[]) {
+    console.log("LOAD")
     if (ids === undefined) ids = Array.from(libraryModel.shelves.keys())
     if (reloadLoaded) {
         ids.forEach(id => libraryModel.shelves.set(id, undefined))

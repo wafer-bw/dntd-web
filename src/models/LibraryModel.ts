@@ -3,8 +3,6 @@ import { ShelfModel } from "."
 export class LibraryModel {
     public shelves: Map<string, ShelfModel | undefined>
 
-    public x = { id: "h", shelf: undefined }
-
     constructor() {
         this.shelves = new Map()
         this.shelfIds.forEach(id => this.shelves.set(id, undefined))
