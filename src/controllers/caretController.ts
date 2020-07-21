@@ -1,3 +1,8 @@
+export const caretController = {
+    getCaretPosition: getCaretPosition,
+    setCaretPosition: setCaretPosition,
+}
+
 function node_walk(node: any, func: any): void {
     var result = func(node)
     for (node = node.firstChild; result !== false && node; node = node.nextSibling)
@@ -5,7 +10,7 @@ function node_walk(node: any, func: any): void {
     return
 }
 
-export function getCaretPosition(elem: any) {
+function getCaretPosition(elem: any) {
     var sel: any = window.getSelection()
     var cum_length = [0, 0]
 
@@ -45,7 +50,7 @@ export function getCaretPosition(elem: any) {
     return [cum_length[1], cum_length[0]]
 }
 
-export function setCaretPosition(el: any, pos: any): any {
+function setCaretPosition(el: any, pos: any): any {
     if (el !== null && pos !== null) {
         for (var node of el.childNodes) {
             if (node.nodeType == 3) {

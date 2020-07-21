@@ -1,5 +1,5 @@
 import m from "mithril"
-import { libraryController } from "../../controllers"
+import { libraryController } from "../controllers"
 
 export function addShelvesComponent() {
 

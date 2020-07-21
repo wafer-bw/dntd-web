@@ -2,7 +2,7 @@ import m from "mithril"
 import { libraryModel } from ".."
 import { ErrorPayload } from "../types"
 import { ShelfFactory } from "../models"
-import { FriendlyError } from "../helpers"
+import { FriendlyError } from "../errors"
 import { syncerController } from "../controllers"
 
 const shelfFactory = new ShelfFactory()

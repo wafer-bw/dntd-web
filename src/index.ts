@@ -1,11 +1,12 @@
 import m from "mithril"
 import { signinView, libraryView, shelfView, journalView } from "./views"
-import { ServiceWorkerModel, SyncerModel, LibraryModel, GoogleModel } from "./models"
+import { ServiceWorkerModel, SyncerModel, LibraryModel, GoogleModel, UrlModel } from "./models"
 
 export const serviceWorkerModel = new ServiceWorkerModel()
 export const googleModel = new GoogleModel()
 export const syncerModel = new SyncerModel()
 export const libraryModel = new LibraryModel()
+export const urlModel = new UrlModel()
 
 const root = document.getElementById("root")
 

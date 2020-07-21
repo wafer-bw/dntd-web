@@ -1,4 +1,4 @@
-import { FriendlyError } from "../helpers"
+import { FriendlyError } from "../errors"
 
 export class ServiceWorkerModel {
     constructor() {

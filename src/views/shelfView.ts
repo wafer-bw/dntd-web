@@ -1,5 +1,5 @@
 import m from "mithril"
-import { googleComponent, journalsComponent, syncStateComponent, breadcrumbComponent } from "./components"
+import { googleComponent, journalsComponent, syncStateComponent, breadcrumbComponent } from "../components"
 
 export function shelfView() {
 

@@ -1,8 +1,7 @@
 import m from "mithril"
-import { googleModel } from ".."
 import { MockGapi } from "../mocks"
 import { TestMode } from "../types"
-import { getTestMode } from "../helpers"
+import { googleModel, urlModel } from ".."
 import { syncerController, libraryController } from "../controllers"
 
 export const googleController = {
@@ -20,7 +19,7 @@ function signIn() {
 }
 
 function initGapi() {
-    let gapi_ = (getTestMode() === TestMode.OFF) ? gapi : new MockGapi()
+    let gapi_ = (urlModel.testMode === TestMode.OFF) ? gapi : new MockGapi()
     googleModel.gapi_ = gapi_
     googleModel.gapi_.load('auth2', () => {
         googleModel.gapi_!.auth2.init({

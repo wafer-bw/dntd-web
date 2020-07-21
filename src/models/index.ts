@@ -1,3 +1,4 @@
+export * from "./UrlModel"
 export * from "./TagModel"
 export * from "./EntryModel"
 export * from "./ShelfModel"

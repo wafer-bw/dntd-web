@@ -1,4 +1,4 @@
-import { escapeHtml } from "../helpers"
+import { textController } from "../controllers" // TODO: Might not want to use this like this
 
 export class TagModel {
     public frq: number
@@ -59,7 +59,7 @@ export class TagModel {
     }
 
     private cleanTagString(str: string) {
-        str = escapeHtml(str)
+        str = textController.escapeHtml(str)
         str = (str.endsWith("'s")) ? str.substring(0, str.length - 2) : str
         str = str.toLowerCase()
         return str
