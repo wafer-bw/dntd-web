@@ -1,4 +1,3 @@
 export * from "./googleController"
-export * from "./SyncerController"
+export * from "./syncerController"
 export * from "./libraryController"
-export * from "./storageController"

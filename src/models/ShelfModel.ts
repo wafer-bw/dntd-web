@@ -55,4 +55,5 @@ export class ShelfModel {
         journals.filter(journal => !this.journals.has(journal.id))
             .forEach(journal => this.journals.set(journal.id, journal))
     }
+
 }
