@@ -1,5 +1,5 @@
 import m from "mithril"
-import { libraryModel } from "../.."
+import { libraryModel } from ".."
 
 export function journalsComponent() {
 

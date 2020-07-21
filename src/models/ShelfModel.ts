@@ -1,8 +1,6 @@
-import { JournalFactory, JournalModel } from "."
+import { JournalModel } from "."
 
 export class ShelfFactory {
-
-    private journalFactory = new JournalFactory()
 
     public createShelf(spreadsheetId: string, spreadsheet?: gapi.client.sheets.Spreadsheet, error?: string) {
         if (
@@ -26,7 +24,7 @@ export class ShelfFactory {
                 sheet.properties.title !== undefined &&
                 sheet.properties.sheetId !== undefined
             ) {
-                let journal = this.journalFactory.createJournal(
+                let journal = new JournalModel(
                     sheet.properties.sheetId, spreadsheetId, sheet.properties.title
                 )
                 if (journal === undefined) return

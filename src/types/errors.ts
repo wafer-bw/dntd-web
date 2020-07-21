@@ -10,7 +10,7 @@ export interface GapiErrorResponse {
     error: GapiErrorResponseBody
 }
 
-export class SyncerError extends Error {
+export class SyncerError extends Error { // TODO: see if this can be moved to src/errors/
     public payload: ErrorPayload
 
     constructor(errorMsg: string, public friendlyMsg: string, public needsReAuth: boolean, pause?: boolean) {

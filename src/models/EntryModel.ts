@@ -1,5 +1,7 @@
 import { TagModel } from "."
-import { tagPattern, escapeHtml } from "../helpers"
+import { textController } from "../controllers"  // TODO: Might not want to use this like this
+
+const tagPattern = /(\@)([\w-']+)+(:)?([\w-'\*]+)?/g
 
 export type TagsMap = Map<string, TagModel>
 
@@ -46,7 +48,7 @@ export class EntryModel {
     public set raw(raw: string) {
         this.rawText = raw
         this.clean = this.raw.toLowerCase()
-        let safe = escapeHtml(this.rawText)
+        let safe = textController.escapeHtml(this.rawText)
         this.tokens = this.getTokens(this.clean)
         this.tagMatches = this.getTagMatches(safe)
         this.rendered = this.render(safe, this.tagMatches)

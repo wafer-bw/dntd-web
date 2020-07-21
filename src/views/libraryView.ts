@@ -1,7 +1,7 @@
 import m from "mithril"
 import { 
     googleComponent, shelvesComponent, syncStateComponent, addShelvesComponent
-} from "./components"
+} from "../components"
 
 export function libraryView() {
 

@@ -1,7 +1,7 @@
 import m from "mithril"
-import { libraryModel } from "../.."
-import { ShelfModel } from "../../models"
-import { libraryController } from "../../controllers"
+import { libraryModel } from ".."
+import { ShelfModel } from "../models"
+import { libraryController } from "../controllers"
 
 export function shelvesComponent() {
 

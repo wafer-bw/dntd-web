@@ -1,6 +1,6 @@
 import m from "mithril"
-import { googleModel } from "../.."
-import { googleController } from "../../controllers"
+import { googleModel } from ".."
+import { googleController } from "../controllers"
 
 export function googleComponent() {
 

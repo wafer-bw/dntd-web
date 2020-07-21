@@ -1,5 +1,5 @@
 import m from "mithril"
-import { FriendlyError } from "../helpers"
+import { FriendlyError } from "../errors"
 import { googleModel, syncerModel } from ".."
 import { SyncerPayloadType, TestMode, SyncerPayload, ErrorPayload } from "../types"
 

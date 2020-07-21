@@ -1,11 +1,5 @@
 import { EntryModel, TagsMap, TagModel } from "."
 
-export class JournalFactory {
-    public createJournal(id: number, shelfId: string, title: string) {
-        return new JournalModel(id, shelfId, title)
-    }
-}
-
 export class JournalModel {
     public id: number
     public tags: TagsMap

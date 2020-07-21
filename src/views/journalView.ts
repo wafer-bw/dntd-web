@@ -1,6 +1,6 @@
 import m from "mithril"
 import { libraryModel } from ".."
-import { googleComponent, breadcrumbComponent } from "./components"
+import { googleComponent, breadcrumbComponent } from "../components"
 
 export function journalView() {
 
