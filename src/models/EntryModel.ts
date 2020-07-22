@@ -52,13 +52,12 @@ export class EntryModel {
         this.tokens = this.getTokens(this.clean)
         this.tagMatches = this.getTagMatches(safe)
         this.rendered = this.render(safe, this.tagMatches)
-        this.readableRendered = this.render(safe, this.tagMatches, true)
     }
 
-    private render(text: string, tagMatches: TagMatch[], hideKeys?: boolean): string {
+    private render(text: string, tagMatches: TagMatch[]): string {
         for (let { tag, match } of tagMatches) {
             let chars = text.split("")
-            chars.splice(match.index!, match[0].length, tag.render(hideKeys))
+            chars.splice(match.index!, match[0].length, tag.rendered)
             text = chars.join("")
         }
         return text

@@ -1,5 +1,6 @@
 import m from "mithril"
 import { libraryModel } from ".."
+import { urlController } from "../controllers"
 
 export function journalsComponent() {
 
@@ -9,7 +10,10 @@ export function journalsComponent() {
 
     function journalList() {
         let shelf = libraryModel.shelves.get(m.route.param("shelfId"))
-        if (shelf === undefined) return
+        if (shelf === undefined) {
+            urlController.redirect("/library")
+            return
+        }
         return Array.from(shelf.journals.values()).map(journal => {
             let link = `#/library/${journal.shelfId}/${journal.id}`
             return m("li", m("a", { href: link }, journal.title))
