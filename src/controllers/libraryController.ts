@@ -1,11 +1,10 @@
 import m from "mithril"
 import { libraryModel } from ".."
 import { ErrorPayload } from "../types"
-import { ShelfFactory } from "../models"
 import { FriendlyError } from "../errors"
+import { shelfFactory } from "../factories"
 import { syncerController } from "../controllers"
 
-const shelfFactory = new ShelfFactory()
 const spreadsheetIdPattern = /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/g
 
 export const libraryController = {
@@ -31,7 +30,6 @@ function removeShelves(ids?: string[]) {
 }
 
 function loadShelves(reloadLoaded?: boolean, ids?: string[]) {
-    console.log("LOAD")
     if (ids === undefined) ids = Array.from(libraryModel.shelves.keys())
     if (reloadLoaded) {
         ids.forEach(id => libraryModel.shelves.set(id, undefined))

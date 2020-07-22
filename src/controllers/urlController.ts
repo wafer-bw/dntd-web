@@ -2,10 +2,16 @@ import m from "mithril"
 import { libraryModel, urlModel } from ".."
 
 export const urlController = {
-    getBreadcrumbTrail: getBreadcrumbTrail
+    redirect: redirect,
+    getBreadcrumbTrail: getBreadcrumbTrail,
+}
+
+function redirect(hash: string) {
+    window.location.hash = `#${hash}`
 }
 
 function getBreadcrumbTrail() {
+    // TODO: add dropdowns on each shelf and journal crumb
     let breadcrumb: m.Vnode[] = []
     let hash = urlModel.hash.split("/").filter(crumb => crumb !== "#" && crumb !== "")
     let shelfId: string | undefined = undefined
