@@ -42,7 +42,7 @@ function createTag(raw: string, flag: string, key: string, separator?: string | 
 }
 
 function cleanTagString(str: string) {
-    str = textController.escapeHtml(str)
+    str = textController.escape(str)
     str = (str.endsWith("'s")) ? str.substring(0, str.length - 2) : str
     str = str.toLowerCase()
     return str

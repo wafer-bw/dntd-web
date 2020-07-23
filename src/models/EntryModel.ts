@@ -1,5 +1,6 @@
 import { TagModel } from "."
 import { textController } from "../controllers"  // TODO: Might not want to use this like this
+import { tagFactory } from "../factories/tagFactory"
 
 const tagPattern = /(\@)([\w-']+)+(:)?([\w-'\*]+)?/g
 
@@ -48,7 +49,7 @@ export class EntryModel {
     public set raw(raw: string) {
         this.rawText = raw
         this.clean = this.raw.toLowerCase()
-        let safe = textController.escapeHtml(this.rawText)
+        let safe = textController.escape(this.rawText)
         this.tokens = this.getTokens(this.clean)
         this.tagMatches = this.getTagMatches(safe)
         this.rendered = this.render(safe, this.tagMatches)
@@ -79,7 +80,7 @@ export class EntryModel {
         let tagMatches = []
         let matchesIter = text.matchAll(tagPattern)
         for (let match of matchesIter) {
-            let tag = new TagModel(match[0], match[1], match[2], match[3], match[4])
+            let tag = tagFactory.createTag(match[0], match[1], match[2], match[3], match[4])
             tagMatches.push({ tag: tag, match: match })
         }
         tagMatches.sort((a, b) => (a.match.index! > b.match.index!) ? -1 : 1)

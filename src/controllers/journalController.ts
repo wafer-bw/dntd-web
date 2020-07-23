@@ -1,4 +1,5 @@
 import { JournalModel, TagModel } from "../models"
+import { tagFactory } from "../factories/tagFactory"
 
 export const journalController = {
     addEntry: addEntry,
@@ -37,7 +38,7 @@ function buildTags(journalModel: JournalModel): Map<string, TagModel> {
             if (tags.has(key)) {
                 tags.get(key)!.frq += tag.frq
             } else {
-                tags.set(key, new TagModel(tag.raw, tag.flag, tag.key, tag.separator, tag.val))
+                tags.set(key, tagFactory.createTag(tag.raw, tag.flag, tag.key, tag.separator, tag.val))
             }
         }
     }
