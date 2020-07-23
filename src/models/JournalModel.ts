@@ -4,7 +4,7 @@ export class JournalModel {
     public id: number
     public title: string
     public shelfId: string
-    public entryCounter: number = 0
+    public entryCounter: number
     public tags: Map<string, TagModel>
     public entries: { id: number, entry: EntryModel }[]
 
@@ -13,6 +13,7 @@ export class JournalModel {
         this.entries = []
         this.title = title
         this.tags = new Map()
+        this.entryCounter = 0
         this.shelfId = shelfId
     }
 

@@ -5,6 +5,7 @@ export class LibraryModel {
 
     constructor() {
         this.shelves = new Map()
+        this.shelfIds.forEach(id => this.shelves.set(id, undefined))
     }
 
     set shelfIds(ids: string[]) {
