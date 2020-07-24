@@ -1,12 +1,12 @@
 import m from "mithril"
-import { libraryModel } from ".."
+import { urlController } from "../controllers"
 import { googleComponent, breadcrumbComponent } from "../components"
 
 export function journalView() {
 
     function view() {
-        let shelf = libraryModel.shelves.get(m.route.param("shelfId"))
-        let journal = shelf?.journals.get(parseInt(m.route.param("journalId")))
+        let shelf = urlController.getActiveShelf()
+        let journal = urlController.getActiveJournal()
 
         return m("#shelf", [
             m(breadcrumbComponent),

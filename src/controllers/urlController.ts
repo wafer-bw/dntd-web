@@ -1,13 +1,29 @@
 import m from "mithril"
 import { libraryModel, urlModel } from ".."
+import { ShelfModel, JournalModel } from "../models"
 
 export const urlController = {
     redirect: redirect,
+    getActiveShelf: getActiveShelf,
+    getActiveJournal: getActiveJournal,
     getBreadcrumbTrail: getBreadcrumbTrail,
 }
 
 function redirect(hash: string) {
-    window.location.hash = `#${hash}`
+    urlModel.hash = hash
+}
+
+function getActiveShelf(): ShelfModel | undefined {
+    let id = urlModel.shelfId
+    if (id === undefined) return undefined
+    return libraryModel.shelves.get(id)
+}
+
+function getActiveJournal(): JournalModel | undefined {
+    let id = urlModel.journalId
+    let shelf =  getActiveShelf()
+    if (id === undefined || shelf === undefined) return undefined
+    return shelf.journals.get(id)
 }
 
 function getBreadcrumbTrail() {
