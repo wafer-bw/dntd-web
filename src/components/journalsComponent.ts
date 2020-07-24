@@ -1,5 +1,4 @@
 import m from "mithril"
-import { libraryModel } from ".."
 import { urlController } from "../controllers"
 
 export function journalsComponent() {
@@ -9,7 +8,7 @@ export function journalsComponent() {
     }
 
     function journalList() {
-        let shelf = libraryModel.shelves.get(m.route.param("shelfId"))
+        let shelf = urlController.getActiveShelf()
         if (shelf === undefined) {
             urlController.redirect("/library")
             return

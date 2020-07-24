@@ -22,7 +22,7 @@ function update(entryModel: EntryModel, content: string) {
     entryModel.safe = textController.escape(entryModel.raw)
     entryModel.tokens = tokenize(entryModel.clean)
     entryModel.tagMatches = getTagMatches(entryModel.safe)
-    entryModel.rendered = render(safe, entryModel.tagMatches)
+    entryModel.rendered = render(entryModel.safe, entryModel.tagMatches)
 }
 
 function render(text: string, tagMatches: { tag: TagModel, match: RegExpMatchArray }[]): string {
