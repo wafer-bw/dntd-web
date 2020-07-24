@@ -22,29 +22,25 @@ export function entries() {
         // TODO: Re-add
         // let searchEntries = search.entries()
         // if (searchEntries !== null) return searchEntries.map(({idx, entry}) => entryVnode(idx, entry))
-        return journal.entries.map(({id, entry}) => entryVnode(id, entry))
+        return journal.entries.map(({id, entry}) => entryVnode(journal, id, entry))
     }
 
-    function entryVnode(id: number, entry: EntryModel): m.Vnode {
+    function entryVnode(journal: JournalModel, id: number, entry: EntryModel): m.Vnode {
         return m(".entryWrap", { id: `entry-${id}` }, [
             entryContent(entry, id),
-            deleteEntryButton(id),
+            deleteEntryButton(journal, id),
         ])
     }
 
-    function deleteEntryButton(idx: number) {
+    function deleteEntryButton(journal: JournalModel, id: number) {
         return m("button", {
             class: "del",
-            onclick: async () => await journal.deleteEntry(idx)
+            onclick: async () => journal.deleteEntry(id)
         }, "del")
     }
 
-    function entryContent(entry: Entry, idx: number) {
-        return m("div", entryContentSettings(entry, idx), m.trust(
-            (!entry.hovered && !entry.focused && journal.hideEntriesKeys)
-                ? entry.readableRendered
-                : entry.rendered
-        ))
+    function entryContent(entry: EntryModel, id: number) {
+        return m("div", entryContentSettings(entry, id), m.trust(entry.rendered))
     }
 
     function onEntryKeydown(event: any) {
@@ -55,24 +51,24 @@ export function entries() {
         }
     }
 
-    function onEntryInput(event: any, entry: Entry) {
-        let pos = getCaretPosition(event.target)
+    function onEntryInput(event: any, entry: EntryModel) {
+        let pos = caretController.getCaretPosition(event.target)
         caret = { pos: (pos) ? pos[1] : null, el: event.target }
         entry.raw = event.target.innerText
     }
 
     function onEntryUpdate(event: any) {
         event.redraw = false
-        setCaretPosition(caret.el, caret.pos)
+        caretController.setCaretPosition(caret.el, caret.pos)
         caret = { pos: null, el: null }
     }
 
-    function onEntryFocus(event: any, entry: Entry) {
+    function onEntryFocus(event: any, entry: EntryModel) {
         event.redraw = false
         entry.focused = true
     }
 
-    async function onEntryBlur(event: any, entry: Entry, idx: number) {
+    async function onEntryBlur(event: any, journal: JournalModel, entry: EntryModel, idx: number) {
         event.redraw = false
         entry.focused = false
         await journal.saveEntry(idx)
