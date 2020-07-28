@@ -12,7 +12,7 @@ export class GoogleModel {
         this.isSignedIn = isSignedIn
         this.src = "https://apis.google.com/js/api.js"
         this.scope = [
-            "https://www.googleapis.com/auth/spreadsheets"
+            "https://www.googleapis.com/auth/spreadsheets",
         ].join(" ")
         this.clientId = "893904323330-moo1k9s19qp40kr747pftdo29ejdef0o.apps.googleusercontent.com"
     }

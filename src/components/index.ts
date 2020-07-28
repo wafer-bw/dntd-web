@@ -1,4 +1,5 @@
 export * from "./googleComponent"
+export * from "./entriesComponent"
 export * from "./shelvesComponent"
 export * from "./journalsComponent"
 export * from "./syncStateComponent"

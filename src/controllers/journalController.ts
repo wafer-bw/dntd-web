@@ -8,31 +8,31 @@ export const journalController = {
     moveEntry: moveEntry,
 }
 
-function addEntry(journalModel: JournalModel, idx: number, content: string) {
-    journalModel.addEntry(idx, content)
-    journalModel.tags = buildTags(journalModel)
+function addEntry(journal: JournalModel, idx: number, content: string) {
+    journal.addEntry(idx, content)
+    journal.tags = buildTags(journal)
 }
 
-function updateEntry(journalModel: JournalModel, idx: number, content: string) {
-    if (journalModel.entries[idx].entry.saved === content) return
-    journalModel.updateEntry(idx, content)
-    journalModel.tags = buildTags(journalModel)
+function updateEntry(journal: JournalModel, idx: number, content: string) {
+    if (journal.entries[idx].entry.saved === content) return
+    journal.updateEntry(idx, content)
+    journal.tags = buildTags(journal)
 }
 
-function deleteEntry(journalModel: JournalModel, idx: number) {
-    journalModel.deleteEntry(idx)
-    journalModel.tags = buildTags(journalModel)
+function deleteEntry(journal: JournalModel, idx: number) {
+    journal.deleteEntry(idx)
+    journal.tags = buildTags(journal)
 }
 
-function moveEntry(journalModel: JournalModel, fromIdx: number, toIdx: number) {
+function moveEntry(journal: JournalModel, fromIdx: number, toIdx: number) {
     if (fromIdx === toIdx) return
-    journalModel.moveEntry(fromIdx, toIdx)
-    journalModel.tags = buildTags(journalModel)
+    journal.moveEntry(fromIdx, toIdx)
+    journal.tags = buildTags(journal)
 }
 
-function buildTags(journalModel: JournalModel): Map<string, TagModel> {
+function buildTags(journal: JournalModel): Map<string, TagModel> {
     let tags: Map<string, TagModel> = new Map()
-    let entries = Array.from(journalModel.entries.values())
+    let entries = Array.from(journal.entries.values())
     for (let { entry } of entries.reverse()) {
         for (let [key, tag] of entry.tags) {
             if (tags.has(key)) {

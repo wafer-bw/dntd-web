@@ -1,6 +1,6 @@
-import { textController } from "."
-import { EntryModel, TagModel } from "../models"
 import { tagFactory } from "../factories"
+import { EntryModel, TagModel } from "../models"
+import { textController, syncerController } from "."
 
 const tagPattern = /(\@)([\w-']+)+(:)?([\w-'\*]+)?/g
 
@@ -10,19 +10,22 @@ export const entryController = {
 
 }
 
-function save(entryModel: EntryModel, content: string) {
-    entryModel.saved = content
-    entryModel.savedClean = textController.clean(content)
-    entryModel.tags = getTags(entryModel.tagMatches)
+function save(entry: EntryModel, entryIdx: number, content: string, force?: boolean) {
+    if (entry.raw !== content || force) {
+        entry.saved = content
+        entry.savedClean = textController.clean(entry.savedClean)
+        entry.tags = getTags(entry.tagMatches)
+        syncerController.updateRow(entry.shelf.id, entry.journal.id, entry.journal.title, entryIdx, content)
+    }
 }
 
-function update(entryModel: EntryModel, content: string) {
-    entryModel.raw = content
-    entryModel.clean = textController.clean(content)
-    entryModel.safe = textController.escape(entryModel.raw)
-    entryModel.tokens = tokenize(entryModel.clean)
-    entryModel.tagMatches = getTagMatches(entryModel.safe)
-    entryModel.rendered = render(entryModel.safe, entryModel.tagMatches)
+function update(entry: EntryModel, content: string) {
+    entry.raw = content
+    entry.clean = textController.clean(content)
+    entry.safe = textController.escape(entry.raw)
+    entry.tokens = tokenize(entry.clean)
+    entry.tagMatches = getTagMatches(entry.safe)
+    entry.rendered = render(entry.safe, entry.tagMatches)
 }
 
 function render(text: string, tagMatches: { tag: TagModel, match: RegExpMatchArray }[]): string {

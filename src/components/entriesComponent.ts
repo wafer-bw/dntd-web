@@ -1,16 +1,15 @@
 import m from "mithril"
 import { Caret } from "../types"
-import { EntryModel } from "../classes"
-import { JournalModel } from "../models"
-import { journalModel, /*searchModel*/ } from ".."
-import { caretController, urlController } from "../controllers"
+import { JournalModel, EntryModel } from "../models"
+import { caretController, urlController, entryController, journalController } from "../controllers"
 
-export function entries() {
+export function entriesComponent() {
     var caret: Caret = { pos: null, el: null }
 
     function view() {
+        let shelf = urlController.getActiveShelf()
         let journal = urlController.getActiveJournal()
-        if (journal === undefined) return null // TODO: return something else or redirect
+        if (!shelf || !journal) return null // TODO: redirect
 
         return m("#entries", [
             m(".tempguidancePre", "Entries"),
@@ -19,28 +18,25 @@ export function entries() {
     }
 
     function entriesList(journal: JournalModel) {
-        // TODO: Re-add
-        // let searchEntries = search.entries()
-        // if (searchEntries !== null) return searchEntries.map(({idx, entry}) => entryVnode(idx, entry))
-        return journal.entries.map(({id, entry}) => entryVnode(journal, id, entry))
+        return journal.entries.map(({ entry }, entryIdx) => entryVnode(entry, entryIdx))
     }
 
-    function entryVnode(journal: JournalModel, id: number, entry: EntryModel): m.Vnode {
-        return m(".entryWrap", { id: `entry-${id}` }, [
-            entryContent(entry, id),
-            deleteEntryButton(journal, id),
+    function entryVnode(entry: EntryModel, entryIdx: number): m.Vnode {
+        return m(".entryWrap", { id: `entry-${entry.id}` }, [
+            entryContent(entry, entryIdx),
+            deleteEntryButton(entry, entryIdx),
         ])
     }
 
-    function deleteEntryButton(journal: JournalModel, id: number) {
+    function deleteEntryButton(entry: EntryModel, entryIdx: number) {
         return m("button", {
             class: "del",
-            onclick: async () => journal.deleteEntry(id)
+            onclick: async () => journalController.deleteEntry(entry.journal, entryIdx)
         }, "del")
     }
 
-    function entryContent(entry: EntryModel, id: number) {
-        return m("div", entryContentSettings(entry, id), m.trust(entry.rendered))
+    function entryContent(entry: EntryModel, entryIdx: number) {
+        return m("div", entryContentSettings(entry, entryIdx), m.trust(entry.rendered))
     }
 
     function onEntryKeydown(event: any) {
@@ -54,7 +50,7 @@ export function entries() {
     function onEntryInput(event: any, entry: EntryModel) {
         let pos = caretController.getCaretPosition(event.target)
         caret = { pos: (pos) ? pos[1] : null, el: event.target }
-        entry.raw = event.target.innerText
+        entryController.update(entry, event.target.innerText)
     }
 
     function onEntryUpdate(event: any) {
@@ -63,43 +59,20 @@ export function entries() {
         caret = { pos: null, el: null }
     }
 
-    function onEntryFocus(event: any, entry: EntryModel) {
+    async function onEntryBlur(event: any, entry: EntryModel, entryIdx: number) {
         event.redraw = false
-        entry.focused = true
+        entryController.save(entry, entryIdx, event.target.innerText)
     }
 
-    async function onEntryBlur(event: any, journal: JournalModel, entry: EntryModel, idx: number) {
-        event.redraw = false
-        entry.focused = false
-        await journal.saveEntry(idx)
-    }
-
-    function onEntryMouseover(event: any, entry: Entry) {
-        if (!journal.hideEntriesKeys) {
-            event.redraw = false
-        }
-        entry.hovered = true
-    }
-
-    function onEntryMouseout(event: any, entry: Entry) {
-        if (!journal.hideEntriesKeys) {
-            event.redraw = false
-        }
-        entry.hovered = false
-    }
-
-    function entryContentSettings(entry: Entry, idx: number) {
+    function entryContentSettings(entry: EntryModel, entryIdx: number) {
         return {
-            id: `entry-${idx}-content`,
+            id: `entry-${entryIdx}-content`,
             contenteditable: "true",
             class: "entry breakwrap column",
             onkeydown: (event: any) => onEntryKeydown(event),
             oninput: (event: any) => onEntryInput(event, entry),
             onupdate: (event: any) => onEntryUpdate(event),
-            onblur: (event: any) => onEntryBlur(event, entry, idx),
-            onmouseover: (event: any) => onEntryMouseover(event, entry),
-            onmouseout: (event: any) => onEntryMouseout(event, entry),
-            onfocus: (event: any) => onEntryFocus(event, entry),
+            onblur: (event: any) => onEntryBlur(event, entry, entryIdx),
         }
     }
 

@@ -12,13 +12,14 @@ function createShelf(spreadsheetId: string, spreadsheet?: gapi.client.sheets.Spr
         spreadsheet.properties.title !== undefined &&
         spreadsheet.sheets !== undefined
     ) {
-        let journals = getJournals(spreadsheet.spreadsheetId, spreadsheet.sheets)
-        return new ShelfModel(spreadsheet.spreadsheetId, spreadsheet.properties.title, journals)
+        let shelf = new ShelfModel(spreadsheet.spreadsheetId, spreadsheet.properties.title)
+        let journals = getJournals(shelf, spreadsheet.sheets)
+        journals.forEach(journal => shelf.journals.set(journal.id, journal))
     }
-    return new ShelfModel(spreadsheetId, undefined, undefined, error)
+    return new ShelfModel(spreadsheetId, undefined, error)
 }
 
-function getJournals(spreadsheetId: string, sheets: gapi.client.sheets.Sheet[]) {
+function getJournals(shelf: ShelfModel, sheets: gapi.client.sheets.Sheet[]) {
     let journals: JournalModel[] = []
     sheets.forEach(sheet => {
         if (
@@ -27,7 +28,7 @@ function getJournals(spreadsheetId: string, sheets: gapi.client.sheets.Sheet[]) 
             sheet.properties.sheetId !== undefined
         ) {
             let journal = new JournalModel(
-                sheet.properties.sheetId, spreadsheetId, sheet.properties.title
+                shelf, sheet.properties.sheetId, sheet.properties.title
             )
             if (journal === undefined) return
             journals.push(journal)
