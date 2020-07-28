@@ -58,8 +58,6 @@ function getRows(spreadsheetId: string, sheetId: number, sheetTitle: string) {
     }, worker)
 }
 
-// TODO: addRow
-
 async function deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
     return await syncerModel.pushSyncerTask({
         type: SyncerPayloadType.DELETE_ROW,
@@ -69,12 +67,12 @@ async function deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
     }, worker)
 }
 
-async function updateRow(idx: number, spreadsheetId: string, sheetId: number, sheetTitle: string, content: string) {
+async function updateRow(shelfId: string, journalId: number, journalTitle: string, idx: number, content: string) {
     return await syncerModel.pushSyncerTask({
         type: SyncerPayloadType.UPDATE_ROW,
-        spreadsheetId: spreadsheetId,
-        sheetTitle: sheetTitle,
-        sheetId: sheetId,
+        spreadsheetId: shelfId,
+        sheetTitle: journalTitle,
+        sheetId: journalId,
         content: content,
         idx: idx,
     }, worker)
