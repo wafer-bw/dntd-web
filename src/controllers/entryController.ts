@@ -7,15 +7,16 @@ const tagPattern = /(\@)([\w-']+)+(:)?([\w-'\*]+)?/g
 export const entryController = {
     save: save,
     update: update,
-
 }
 
-function save(entry: EntryModel, entryIdx: number, content: string, force?: boolean) {
-    if (entry.raw !== content || force) {
+function save(entry: EntryModel, entryIdx: number, content: string, sync?: boolean, force?: boolean) {
+    if (entry.saved !== content || force) {
         entry.saved = content
         entry.savedClean = textController.clean(entry.savedClean)
         entry.tags = getTags(entry.tagMatches)
-        syncerController.updateRow(entry.shelf.id, entry.journal.id, entry.journal.title, entryIdx, content)
+        if (sync) {
+            syncerController.updateRow(entry.shelf.id, entry.journal.id, entry.journal.title, entryIdx, content)
+        }
     }
 }
 

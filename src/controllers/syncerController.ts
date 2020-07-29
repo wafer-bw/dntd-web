@@ -33,28 +33,31 @@ function updateAuth(token: string | undefined) {
 }
 
 function getSpreadsheet(spreadsheetId: string) {
+    let spreadsheet: gapi.client.sheets.Spreadsheet | undefined = undefined
     return syncerModel.pushSyncerTask({
         type: SyncerPayloadType.GET_SPREADSHEET,
         spreadsheetId: spreadsheetId,
-        spreadsheet: undefined
+        spreadsheet: spreadsheet
     }, worker)
 }
 
 function getSheets(spreadsheetId: string) {
+    let sheets: gapi.client.sheets.Sheet[] = []
     return syncerModel.pushSyncerTask({
         type: SyncerPayloadType.GET_SHEETS,
         spreadsheetId: spreadsheetId,
-        sheets: []
+        sheets: sheets
     }, worker)
 }
 
-function getRows(spreadsheetId: string, sheetId: number, sheetTitle: string) {
+function getRows(shelfId: string, journalId: number, journalTitle: string) {
+    let rows: string[] = []
     return syncerModel.pushSyncerTask({
         type: SyncerPayloadType.GET_ROWS,
-        spreadsheetId: spreadsheetId,
-        sheetTitle: sheetTitle,
-        sheetId: sheetId,
-        rows: []
+        spreadsheetId: shelfId,
+        sheetTitle: journalTitle,
+        sheetId: journalId,
+        rows: rows
     }, worker)
 }
 

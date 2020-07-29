@@ -8,6 +8,6 @@ export const entryFactory = {
 function createEntry(shelf: ShelfModel, journal: JournalModel, entryId: number, entryIdx: number, content: string) {
     let entry = new EntryModel(shelf, journal, entryId)
     entryController.update(entry, content)
-    entryController.save(entry, entryIdx, content, true)
+    entryController.save(entry, entryIdx, content, false, true)
     return entry
 }

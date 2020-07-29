@@ -4,6 +4,8 @@ import { ErrorPayload } from "../types"
 import { FriendlyError } from "../errors"
 import { shelfFactory } from "../factories"
 import { syncerController } from "../controllers"
+import { urlController } from "./urlController"
+import { journalController } from "./journalController"
 
 const spreadsheetIdPattern = /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/g
 
@@ -40,6 +42,10 @@ function loadShelves(reloadLoaded?: boolean, ids?: string[]) {
         .then(payload => {
             let shelf = shelfFactory.createShelf(id, payload.spreadsheet)
             libraryModel.shelves.set(shelf.id, shelf)
+            let journal = urlController.getActiveJournal()
+            if (journal && journal.shelf === shelf) {
+                journalController.loadEntries(journal)
+            }
         })
         .catch((error: ErrorPayload) => {
             new FriendlyError(error.error.message, error.friendlyMsg)
