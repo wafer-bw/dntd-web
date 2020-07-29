@@ -1,8 +1,14 @@
 import m from "mithril"
-import { urlController } from "../controllers"
+import { urlController, journalController } from "../controllers"
 import { googleComponent, breadcrumbComponent, entriesComponent } from "../components"
 
 export function journalView() {
+
+    function oninit() {
+        let journal = urlController.getActiveJournal()
+        if (!journal) return
+        journalController.loadEntries(journal)
+    }
 
     function view() {
         let shelf = urlController.getActiveShelf()
@@ -17,7 +23,8 @@ export function journalView() {
     }
 
     return {
-        view: view
+        view: view,
+        oninit: oninit,
     }
 
 }

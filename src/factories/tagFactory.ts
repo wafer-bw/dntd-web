@@ -25,7 +25,7 @@ function createTag(raw: string, flag: string, key: string, separator?: string | 
 
     let renderedVal = ""
 
-    if (separator !== undefined) {
+    if (separator !== undefined && separator !== null) {
         renderedVal = "<span onclick=\"tagOnClick(event, '"
             + flag
             + cleanKey

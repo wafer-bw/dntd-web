@@ -4,12 +4,12 @@ import { JournalModel, EntryModel } from "../models"
 import { caretController, urlController, entryController, journalController } from "../controllers"
 
 export function entriesComponent() {
-    var caret: Caret = { pos: null, el: null }
+    const caret: Caret = { pos: null, el: null }
 
     function view() {
         let shelf = urlController.getActiveShelf()
         let journal = urlController.getActiveJournal()
-        if (!shelf || !journal) return null // TODO: redirect
+        if (!shelf || !journal) return null
 
         return m("#entries", [
             m(".tempguidancePre", "Entries"),
@@ -49,19 +49,22 @@ export function entriesComponent() {
 
     function onEntryInput(event: any, entry: EntryModel) {
         let pos = caretController.getCaretPosition(event.target)
-        caret = { pos: (pos) ? pos[1] : null, el: event.target }
+        caret.pos = (pos) ? pos[1] : null
+        caret.el = event.target
         entryController.update(entry, event.target.innerText)
     }
 
     function onEntryUpdate(event: any) {
         event.redraw = false
         caretController.setCaretPosition(caret.el, caret.pos)
-        caret = { pos: null, el: null }
+        caret.pos = null
+        caret.el = null
     }
 
     async function onEntryBlur(event: any, entry: EntryModel, entryIdx: number) {
         event.redraw = false
-        entryController.save(entry, entryIdx, event.target.innerText)
+        entryController.save(entry, entryIdx, event.target.innerText, true)
+            
     }
 
     function entryContentSettings(entry: EntryModel, entryIdx: number) {

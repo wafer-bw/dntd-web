@@ -29,7 +29,6 @@ function initGapi() {
             isSignedIn((googleModel.gapi_!.auth2.getAuthInstance().isSignedIn.get()))
         })
     })
-
 }
 
 async function isSignedIn(signedIn: boolean) {

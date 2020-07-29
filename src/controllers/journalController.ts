@@ -1,11 +1,29 @@
+import m from "mithril"
+import { ErrorPayload } from "../types"
+import { tagFactory } from "../factories"
+import { FriendlyError } from "../errors"
 import { JournalModel, TagModel } from "../models"
-import { tagFactory } from "../factories/tagFactory"
+import { syncerController } from "./syncerController"
 
 export const journalController = {
     addEntry: addEntry,
+    moveEntry: moveEntry,
     updateEntry: updateEntry,
     deleteEntry: deleteEntry,
-    moveEntry: moveEntry,
+    loadEntries: loadEntries,
+}
+
+function loadEntries(journal: JournalModel) {
+    syncerController.getRows(journal.shelf.id, journal.id, journal.title)
+        .then(payload => {
+           payload.rows.forEach((content, idx) => journal.addEntry(idx, content))
+        })
+        .catch((error: ErrorPayload) => {
+            new FriendlyError(error.error.message, error.friendlyMsg)
+        })
+        .finally(() => {
+            m.redraw()
+        })
 }
 
 function addEntry(journal: JournalModel, idx: number, content: string) {
