@@ -5,9 +5,9 @@ export function shelfView() {
 
     function view() {
         return m("#shelf", [
-            m(breadcrumbComponent),
             m(googleComponent),
             m(syncStateComponent),
+            m(breadcrumbComponent),
             m(journalsComponent),
         ])
     }
