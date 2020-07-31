@@ -1,14 +1,15 @@
-import { EntryModel, TagModel } from "."
+import { JournalEntryModel, TagModel } from "."
 import { entryFactory } from "../factories"
 import { ShelfModel } from "./ShelfModel"
 
 export class JournalModel {
-    public id: number
-    public title: string
-    public shelf: ShelfModel
+    readonly id: number
+    readonly title: string
+    readonly shelf: ShelfModel
+
     public entryCounter: number
     public tags: Map<string, TagModel>
-    public entries: { id: number, entry: EntryModel }[]
+    public entries: { id: number, entry: JournalEntryModel }[]
 
     constructor(shelf: ShelfModel, journalId: number, journalTitle: string) {
         this.id = journalId
@@ -21,7 +22,7 @@ export class JournalModel {
 
     public addEntry(idx: number, content: string) {
         let id = this.entryCounter += 1
-        let entry = entryFactory.createEntry(this.shelf, this, id, idx, content)
+        let entry = entryFactory.createJournalEntry(this.shelf, this, id, idx, content)
         this.entries.splice(idx, 0, { id, entry })
     }
 

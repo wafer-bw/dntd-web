@@ -1,12 +1,19 @@
 import { entryController } from "../controllers"
-import { EntryModel, ShelfModel, JournalModel } from "../models"
+import { JournalEntryModel, ShelfModel, JournalModel, BaseEntryModel } from "../models"
 
 export const entryFactory = {
-    createEntry: createEntry
+    createBaseEntry: createBaseEntry,
+    createJournalEntry: createJournalEntry
 }
 
-function createEntry(shelf: ShelfModel, journal: JournalModel, entryId: number, entryIdx: number, content: string) {
-    let entry = new EntryModel(shelf, journal, entryId)
+function createBaseEntry(content: string) {
+    let entry = new BaseEntryModel()
+    entryController.update(entry, content)
+    return entry
+}
+
+function createJournalEntry(shelf: ShelfModel, journal: JournalModel, entryId: number, entryIdx: number, content: string) {
+    let entry = new JournalEntryModel(shelf, journal, entryId)
     entryController.update(entry, content)
     entryController.save(entry, entryIdx, content, false, true)
     return entry

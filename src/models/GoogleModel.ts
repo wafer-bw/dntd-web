@@ -1,9 +1,10 @@
 import { MockGapi, MockGoogleUser } from "../mocks"
 
 export class GoogleModel {
-    public src: string
-    public scope: string
-    public clientId: string
+    readonly src: string
+    readonly scope: string
+    readonly clientId: string
+
     public isSignedIn: boolean | undefined
     public gapi_: MockGapi | typeof gapi | undefined
     public user: gapi.auth2.GoogleUser | MockGoogleUser | undefined
