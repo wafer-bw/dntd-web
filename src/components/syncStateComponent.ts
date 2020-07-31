@@ -29,11 +29,13 @@ export function syncStateComponent() {
                 txt = "Warning! - Syncing is paused."
                 break
             case SyncerState.SYNCED:
-                txt = "All changes saved."
+                txt = "Cloud synced."
                 break
             case SyncerState.UPLOADING:
                 txt = "Uploading changes to drive..."
                 break
+            case SyncerState.INITIALIZING:
+                txt = "Initializing..."
         }
         return m("span", { id: "syncStateText", class: class_ }, txt)
     }

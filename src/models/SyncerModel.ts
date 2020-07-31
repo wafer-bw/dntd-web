@@ -8,7 +8,7 @@ export class SyncerModel {
     constructor() {
         this.requestsCounter = 0
         this.requests = new Map()
-        this.state = SyncerState.SYNCED
+        this.state = SyncerState.INITIALIZING
     }
 
     public pushSyncerTask<P extends SyncerPayload>(payload: P, worker: Worker): Promise<P> {

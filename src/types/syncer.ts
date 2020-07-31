@@ -34,6 +34,7 @@ export enum SyncerState {
     UPLOADING = "cloud_upload",
     DOWNLOADING = "cloud_download",
     SYNCED = "cloud_done",
+    INITIALIZING = "cloud_queue",
 }
 
 export interface TestModeUpdatePayload {
