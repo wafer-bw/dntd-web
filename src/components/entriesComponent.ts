@@ -1,6 +1,6 @@
 import m from "mithril"
 import { Caret } from "../types"
-import { JournalModel, EntryModel } from "../models"
+import { JournalModel, JournalEntryModel } from "../models"
 import { caretController, urlController, entryController, journalController } from "../controllers"
 
 export function entriesComponent() {
@@ -21,21 +21,21 @@ export function entriesComponent() {
         return journal.entries.map(({ entry }, entryIdx) => entryVnode(entry, entryIdx))
     }
 
-    function entryVnode(entry: EntryModel, entryIdx: number): m.Vnode {
+    function entryVnode(entry: JournalEntryModel, entryIdx: number): m.Vnode {
         return m(".entryWrap", { id: `entry-${entry.id}` }, [
             entryContent(entry, entryIdx),
             deleteEntryButton(entry, entryIdx),
         ])
     }
 
-    function deleteEntryButton(entry: EntryModel, entryIdx: number) {
+    function deleteEntryButton(entry: JournalEntryModel, entryIdx: number) {
         return m("button", {
             class: "del",
             onclick: async () => journalController.deleteEntry(entry.journal, entryIdx)
         }, "del")
     }
 
-    function entryContent(entry: EntryModel, entryIdx: number) {
+    function entryContent(entry: JournalEntryModel, entryIdx: number) {
         return m("div", entryContentSettings(entry, entryIdx), m.trust(entry.rendered))
     }
 
@@ -47,7 +47,7 @@ export function entriesComponent() {
         }
     }
 
-    function onEntryInput(event: any, entry: EntryModel) {
+    function onEntryInput(event: any, entry: JournalEntryModel) {
         let pos = caretController.getCaretPosition(event.target)
         caret.pos = (pos) ? pos[1] : null
         caret.el = event.target
@@ -61,13 +61,13 @@ export function entriesComponent() {
         caret.el = null
     }
 
-    async function onEntryBlur(event: any, entry: EntryModel, entryIdx: number) {
+    async function onEntryBlur(event: any, entry: JournalEntryModel, entryIdx: number) {
         event.redraw = false
         entryController.save(entry, entryIdx, event.target.innerText, true)
             
     }
 
-    function entryContentSettings(entry: EntryModel, entryIdx: number) {
+    function entryContentSettings(entry: JournalEntryModel, entryIdx: number) {
         return {
             id: `entry-${entryIdx}-content`,
             contenteditable: "true",
