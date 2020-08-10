@@ -1,28 +1,25 @@
-import { TagModel } from "../models"
-
-import { journal } from ".."
-import { Entry, Tag } from "."
 import { SearchType } from "../types"
-import { IndexedEntry } from "../classes/Entry"
+import { entryFactory } from "../factories"
+import { TagModel, BaseEntryModel, IndexedEntry } from "."
 
 interface RefinesQuery {
     keys: Set<string>,
-    vals: Map<string, Tag>,
-    simpleKeys: Map<string, Tag>
+    vals: Map<string, TagModel>,
+    simpleKeys: Map<string, TagModel>
 }
 
 export class SearchModel {
-    public barQuery: Entry = new Entry("")
     public searchType: SearchType = SearchType.NONE
     public simpleRefines: Map<string, TagModel> = new Map()
     public complexRefines: Map<string, TagModel[]> = new Map()
+    public barQuery: BaseEntryModel = entryFactory.createBaseEntry()
     public refinesQuery: RefinesQuery = { keys: new Set(), vals: new Map(), simpleKeys: new Map() }
 
 
     constructor() { }
 
-    get query(): Entry {
-        return new Entry([
+    get query(): BaseEntryModel {
+        return entryFactory.createBaseEntry([
             this.barQuery.raw,
             ...Array.from(this.refinesQuery.keys.values()),
             ...Array.from(this.refinesQuery.vals.keys()),
@@ -68,7 +65,7 @@ export class SearchModel {
         return entries
     }
 
-    private match(token: string, entry: Entry) {
+    private match(token: string, entry: BaseEntryModel) {
         if (token.startsWith("-@") && !token.endsWith(":")) {
             return entry.tags.get(token.substring(1)) === undefined
         } else if (token.startsWith("-")) {
