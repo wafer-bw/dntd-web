@@ -6,9 +6,9 @@ export const entryFactory = {
     createJournalEntry: createJournalEntry
 }
 
-function createBaseEntry(content: string) {
+function createBaseEntry(content?: string) {
     let entry = new BaseEntryModel()
-    entryController.update(entry, content)
+    entryController.update(entry, content || "")
     return entry
 }
 
