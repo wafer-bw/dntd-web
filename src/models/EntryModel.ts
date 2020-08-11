@@ -1,11 +1,6 @@
 import { TagModel } from "."
 import { ShelfModel, JournalModel } from "../models"
 
-export interface IndexedEntry { // TODO see if this can be deleted
-    idx: number,
-    entry: JournalEntryModel,
-}
-
 export class BaseEntryModel {
     public raw: string = ""
     public safe: string = ""

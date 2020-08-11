@@ -1,6 +1,9 @@
 import m from "mithril"
 import { urlController, journalController } from "../controllers"
-import { googleComponent, breadcrumbComponent, entriesComponent, syncStateComponent } from "../components"
+import {
+    googleComponent, breadcrumbComponent, entriesComponent, syncStateComponent,
+    searchbarComponent
+} from "../components"
 
 export function journalView() {
 
@@ -13,7 +16,8 @@ export function journalView() {
             m(googleComponent),
             m(syncStateComponent),
             m(breadcrumbComponent),
-            m(entriesComponent)
+            m(searchbarComponent),
+            m(entriesComponent),
         ])
     }
 

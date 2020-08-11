@@ -1,13 +1,23 @@
 import { searchModel } from ".."
-import { TagModel, JournalModel } from "../models"
+import { SearchType } from "../types"
+import { entryFactory } from "../factories"
+import { entryController } from "./entryController"
+import { TagModel, JournalModel, JournalEntryModel } from "../models"
 
 export const searchController = {
+    reset: reset,
     buildRefines: buildRefines,
+    filteredEntries: filteredEntries,
+    updateSearchbar: updateSearchbar,
+}
+
+function updateSearchbar(content: string) {
+    entryController.update(searchModel.barQuery, content)
 }
 
 function reset() {
-    searchModel.barQuery = new Entry("") // TODO: use the factory
     searchModel.searchType = SearchType.NONE
+    searchModel.barQuery = entryFactory.createBaseEntry()
     searchModel.refinesQuery = { keys: new Set(), vals: new Map(), simpleKeys: new Map() }
 }
 
@@ -37,22 +47,72 @@ function buildRefines(journal: JournalModel) {
 function cleanRefines() {
     // Clean stale simple tag key (refine val) selections
     for (let [key,] of searchModel.refinesQuery.simpleKeys) {
-        if (!this.simpleRefines.has(key)) {
+        if (!searchModel.simpleRefines.has(key)) {
             searchModel.refinesQuery.simpleKeys.delete(key)
         }
     }
 
     // Clean stale complex tag key selections
     for (let key of searchModel.refinesQuery.keys) {
-        if (!this.complexRefines.has(key)) {
+        if (!searchModel.complexRefines.has(key)) {
             searchModel.refinesQuery.keys.delete(key)
         }
     }
 
     // Clean stale complex tag val
     for (let [key,] of searchModel.refinesQuery.vals) {
-        if (!Array.from(this.complexRefines.values()).some(tags => tags.some(tag => tag.clean === key))) {
+        if (!Array.from(searchModel.complexRefines.values()).some(tags => tags.some(tag => tag.clean === key))) {
             searchModel.refinesQuery.vals.delete(key)
         }
+    }
+}
+
+function filteredEntries(entries: { id: number, entry: JournalEntryModel }[]): JournalEntryModel[] {
+    let filteredEntries: JournalEntryModel[] = []
+    if (searchModel.query.tokens.length === 0) {
+        searchModel.searchType = SearchType.NONE
+        filteredEntries = entries.map(({ entry }) => entry)
+    } else {
+        searchModel.searchType = SearchType.AND
+        filteredEntries = search(entries)
+        if (filteredEntries.length === 0) {
+            searchModel.searchType = SearchType.OR
+            filteredEntries = search(entries)
+        }
+    }
+    return filteredEntries
+}
+
+function search(entries: { id: number, entry: JournalEntryModel }[]): JournalEntryModel[] {
+    let query = searchModel.query
+    let sourceEntries = entries
+    let filteredEntries: JournalEntryModel[] = []
+    for (let { entry } of sourceEntries) {
+        switch (searchModel.searchType) {
+            case SearchType.AND:
+                if (query.tokens.every(token => match(token, entry))) {
+                    filteredEntries.push(entry)
+                }
+                break
+            case SearchType.OR:
+                if (query.tokens.some(token => match(token, entry))) {
+                    filteredEntries.push(entry)
+                }
+                break
+        }
+    }
+    return filteredEntries
+}
+
+function match(token: string, entry: JournalEntryModel) {
+    
+    if (token.startsWith("-@") && !token.endsWith(":")) {
+        return entry.tags.get(token.substring(1)) === undefined
+    } else if (token.startsWith("-")) {
+        return !entry.savedClean.includes(token.substring(1))
+    } else if (token.startsWith("@") && !token.endsWith(":")) {
+        return entry.tags.get(token) !== undefined
+    } else {
+        return entry.savedClean.includes(token)
     }
 }
