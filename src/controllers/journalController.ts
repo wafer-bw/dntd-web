@@ -13,7 +13,8 @@ export const journalController = {
     loadEntries: loadEntries,
 }
 
-function loadEntries(journal: JournalModel) {
+function loadEntries(journal: JournalModel | undefined) {
+    if (journal === undefined) return
     syncerController.getRows(journal.shelf.id, journal.id, journal.title)
         .then(payload => {
            payload.rows.forEach((content, idx) => journal.addEntry(idx, content))
