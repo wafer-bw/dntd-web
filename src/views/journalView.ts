@@ -9,9 +9,8 @@ export function journalView() {
 
     function oninit() {
         let journal = urlController.getActiveJournal()
-        if (journal !== undefined && !journal.loaded) {
-            journalController.loadEntries(journal)
-        }
+        if (journal === undefined || journal.loaded) return
+        journalController.loadEntries(journal)
     }
 
     function view() {
