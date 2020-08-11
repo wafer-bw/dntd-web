@@ -38,8 +38,8 @@ function buildRefines(journal: JournalModel) {
         }
     }
 
-    simpleRefines = new Map([...simpleRefines.entries()])
-    complexRefines = new Map([...complexRefines.entries()].sort())
+    searchModel.simpleRefines = new Map([...simpleRefines.entries()])
+    searchModel.complexRefines = new Map([...complexRefines.entries()].sort())
 
     cleanRefines()
 }
