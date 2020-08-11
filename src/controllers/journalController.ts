@@ -4,6 +4,7 @@ import { tagFactory } from "../factories"
 import { FriendlyError } from "../errors"
 import { JournalModel, TagModel } from "../models"
 import { syncerController } from "./syncerController"
+import { libraryModel } from ".."
 
 export const journalController = {
     addEntry: addEntry,
@@ -11,10 +12,19 @@ export const journalController = {
     updateEntry: updateEntry,
     deleteEntry: deleteEntry,
     loadEntries: loadEntries,
-    unloadEntries: unloadEntries,
 }
 
-// TODO: Unload entries when navigating away from journal
+function unloadOtherJournals(keepJournal: JournalModel) {
+    libraryModel.shelves.forEach(shelf => {
+        if (shelf === undefined) return
+        shelf.journals.forEach(journal => {
+            if (keepJournal.shelf.id !== journal.shelf.id || keepJournal.id !== journal.id) {
+                unloadEntries(journal)
+            }
+        })
+    })
+}
+
 function unloadEntries(journal: JournalModel | undefined) {
     if (journal === undefined) return
     journal.entries = []
@@ -23,10 +33,11 @@ function unloadEntries(journal: JournalModel | undefined) {
 
 function loadEntries(journal: JournalModel | undefined) {
     if (journal === undefined) return
+    unloadOtherJournals(journal)
     syncerController.getRows(journal.shelf.id, journal.id, journal.title)
         .then(payload => {
-           payload.rows.forEach((content, idx) => journal.addEntry(idx, content))
-           journal.loaded = true
+            payload.rows.forEach((content, idx) => journal.addEntry(idx, content))
+            journal.loaded = true
         })
         .catch((error: ErrorPayload) => {
             new FriendlyError(error.error.message, error.friendlyMsg)
