@@ -5,20 +5,14 @@ import { googleComponent, breadcrumbComponent, entriesComponent, syncStateCompon
 export function journalView() {
 
     function oninit() {
-        let journal = urlController.getActiveJournal()
-        if (!journal) return
-        journalController.loadEntries(journal)
+        journalController.loadEntries(urlController.getActiveJournal())
     }
 
     function view() {
-        let shelf = urlController.getActiveShelf()
-        let journal = urlController.getActiveJournal()
-
         return m("#shelf", [
             m(googleComponent),
             m(syncStateComponent),
             m(breadcrumbComponent),
-            m("span", `Shelf: ${shelf?.title}, Journal: ${journal?.title}`),
             m(entriesComponent)
         ])
     }
