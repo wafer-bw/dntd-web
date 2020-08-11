@@ -20,7 +20,6 @@ export function entriesComponent() {
     }
 
     function entriesList(journal: JournalModel) {
-        // TODO: NEED TO MAKE SURE SEARCH WORKS AS EXPECTED
         return searchController.filteredEntries(journal.entries)
             .map((entry, entryIdx) => entryVnode(entry, entryIdx))
     }

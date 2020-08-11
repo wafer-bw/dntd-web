@@ -1,13 +1,15 @@
 import m from "mithril"
 import { searchModel } from ".."
 import { Caret } from "../types"
-import { caretController, textController, searchController } from "../controllers"
+import { caretController, textController, searchController, urlController } from "../controllers"
 
 
 export function searchbarComponent() {
     const caret: Caret = { pos: null, el: null }
 
     function view() {
+        let journal = urlController.getActiveJournal()
+        if (journal === undefined || journal.loaded === false) return
         return m("#search", [
             m("#searchQuery", searchNodeSettings(), m.trust(searchModel.barQuery.rendered)),
             m("button", clearSearchNodeSettings(), "x")

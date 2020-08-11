@@ -7,17 +7,19 @@ export class JournalModel {
     readonly title: string
     readonly shelf: ShelfModel
 
+    public loaded: boolean
     public entryCounter: number
     public tags: Map<string, TagModel>
     public entries: { id: number, entry: JournalEntryModel }[]
 
     constructor(shelf: ShelfModel, journalId: number, journalTitle: string) {
-        this.id = journalId
         this.entries = []
-        this.title = journalTitle
+        this.shelf = shelf
+        this.loaded = false
+        this.id = journalId
         this.tags = new Map()
         this.entryCounter = 0
-        this.shelf = shelf
+        this.title = journalTitle
     }
 
     public addEntry(idx: number, content: string) {

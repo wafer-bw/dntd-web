@@ -11,6 +11,14 @@ export const journalController = {
     updateEntry: updateEntry,
     deleteEntry: deleteEntry,
     loadEntries: loadEntries,
+    unloadEntries: unloadEntries,
+}
+
+// TODO: Unload entries when navigating away from journal
+function unloadEntries(journal: JournalModel | undefined) {
+    if (journal === undefined) return
+    journal.entries = []
+    journal.loaded = false
 }
 
 function loadEntries(journal: JournalModel | undefined) {
@@ -18,6 +26,7 @@ function loadEntries(journal: JournalModel | undefined) {
     syncerController.getRows(journal.shelf.id, journal.id, journal.title)
         .then(payload => {
            payload.rows.forEach((content, idx) => journal.addEntry(idx, content))
+           journal.loaded = true
         })
         .catch((error: ErrorPayload) => {
             new FriendlyError(error.error.message, error.friendlyMsg)
