@@ -1,10 +1,10 @@
 import m from "mithril"
+import { libraryModel } from ".."
 import { ErrorPayload } from "../types"
 import { tagFactory } from "../factories"
 import { FriendlyError } from "../errors"
 import { JournalModel, TagModel } from "../models"
-import { syncerController } from "./syncerController"
-import { libraryModel } from ".."
+import { syncerController, searchController } from "."
 
 export const journalController = {
     addEntry: addEntry,
@@ -37,6 +37,7 @@ function loadEntries(journal: JournalModel | undefined) {
     syncerController.getRows(journal.shelf.id, journal.id, journal.title)
         .then(payload => {
             payload.rows.forEach((content, idx) => journal.addEntry(idx, content))
+            buildTags(journal)
             journal.loaded = true
         })
         .catch((error: ErrorPayload) => {
@@ -49,27 +50,27 @@ function loadEntries(journal: JournalModel | undefined) {
 
 function addEntry(journal: JournalModel, idx: number, content: string) {
     journal.addEntry(idx, content)
-    journal.tags = buildTags(journal)
+    buildTags(journal)
 }
 
 function updateEntry(journal: JournalModel, idx: number, content: string) {
     if (journal.entries[idx].entry.saved === content) return
     journal.updateEntry(idx, content)
-    journal.tags = buildTags(journal)
+    buildTags(journal)
 }
 
 function deleteEntry(journal: JournalModel, idx: number) {
     journal.deleteEntry(idx)
-    journal.tags = buildTags(journal)
+    buildTags(journal)
 }
 
 function moveEntry(journal: JournalModel, fromIdx: number, toIdx: number) {
     if (fromIdx === toIdx) return
     journal.moveEntry(fromIdx, toIdx)
-    journal.tags = buildTags(journal)
+    buildTags(journal)
 }
 
-function buildTags(journal: JournalModel): Map<string, TagModel> {
+function buildTags(journal: JournalModel) {
     let tags: Map<string, TagModel> = new Map()
     let entries = Array.from(journal.entries.values())
     for (let { entry } of entries.reverse()) {
@@ -81,5 +82,6 @@ function buildTags(journal: JournalModel): Map<string, TagModel> {
             }
         }
     }
-    return tags
+    journal.tags = tags
+    searchController.buildRefines(journal)
 }

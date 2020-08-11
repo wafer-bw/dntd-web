@@ -1,6 +1,7 @@
 export * from "./googleComponent"
 export * from "./entriesComponent"
 export * from "./shelvesComponent"
+export * from "./refinesComponent"
 export * from "./journalsComponent"
 export * from "./syncStateComponent"
 export * from "./searchbarComponent"

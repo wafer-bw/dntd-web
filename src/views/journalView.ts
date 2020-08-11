@@ -2,7 +2,7 @@ import m from "mithril"
 import { urlController, journalController } from "../controllers"
 import {
     googleComponent, breadcrumbComponent, entriesComponent, syncStateComponent,
-    searchbarComponent
+    searchbarComponent, refinesComponent
 } from "../components"
 
 export function journalView() {
@@ -19,6 +19,7 @@ export function journalView() {
             m(syncStateComponent),
             m(breadcrumbComponent),
             m(searchbarComponent),
+            m(refinesComponent),
             m(entriesComponent),
         ])
     }

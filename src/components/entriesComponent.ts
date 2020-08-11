@@ -13,10 +13,10 @@ export function entriesComponent() {
         let journal = urlController.getActiveJournal()
         if (!shelf || !journal) return null
 
-        return m("#entries", [
+        return m("#entriesWrap", m("#entries", [
             m(".tempguidancePre", "Entries"),
             entriesList(journal),
-        ])
+        ]))
     }
 
     function entriesList(journal: JournalModel) {
