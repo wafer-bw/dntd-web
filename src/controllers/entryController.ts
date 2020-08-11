@@ -12,7 +12,7 @@ export const entryController = {
 function save(entry: JournalEntryModel, entryIdx: number, content: string, sync?: boolean, force?: boolean) {
     if (entry.saved !== content || force) {
         entry.saved = content
-        entry.savedClean = textController.clean(entry.savedClean)
+        entry.savedClean = textController.clean(entry.saved)
         entry.tags = getTags(entry.tagMatches)
         if (sync) {
             syncerController.updateRow(entry.shelf.id, entry.journal.id, entry.journal.title, entryIdx, content)

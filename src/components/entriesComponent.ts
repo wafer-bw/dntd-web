@@ -1,7 +1,9 @@
 import m from "mithril"
 import { Caret } from "../types"
 import { JournalModel, JournalEntryModel } from "../models"
-import { caretController, urlController, entryController, journalController } from "../controllers"
+import {
+    caretController, urlController, entryController, journalController, searchController
+} from "../controllers"
 
 export function entriesComponent() {
     const caret: Caret = { pos: null, el: null }
@@ -18,7 +20,9 @@ export function entriesComponent() {
     }
 
     function entriesList(journal: JournalModel) {
-        return journal.entries.map(({ entry }, entryIdx) => entryVnode(entry, entryIdx))
+        // TODO: NEED TO MAKE SURE SEARCH WORKS AS EXPECTED
+        return searchController.filteredEntries(journal.entries)
+            .map((entry, entryIdx) => entryVnode(entry, entryIdx))
     }
 
     function entryVnode(entry: JournalEntryModel, entryIdx: number): m.Vnode {
@@ -64,7 +68,7 @@ export function entriesComponent() {
     async function onEntryBlur(event: any, entry: JournalEntryModel, entryIdx: number) {
         event.redraw = false
         entryController.save(entry, entryIdx, event.target.innerText, true)
-            
+
     }
 
     function entryContentSettings(entry: JournalEntryModel, entryIdx: number) {
