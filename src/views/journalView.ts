@@ -8,7 +8,10 @@ import {
 export function journalView() {
 
     function oninit() {
-        journalController.loadEntries(urlController.getActiveJournal())
+        let journal = urlController.getActiveJournal()
+        if (journal !== undefined && !journal.loaded) {
+            journalController.loadEntries(journal)
+        }
     }
 
     function view() {
