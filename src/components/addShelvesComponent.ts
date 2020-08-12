@@ -1,5 +1,6 @@
 import m from "mithril"
 import { libraryController } from "../controllers"
+import { libraryModel } from ".."
 
 export function addShelvesComponent() {
 
@@ -8,9 +9,15 @@ export function addShelvesComponent() {
 
     function view() {
         return m("#addShelves", [
+            addShelvesMessage(),
             addShelvesButton(),
             addShelvesTextbox(),
         ])
+    }
+
+    function addShelvesMessage() {
+        if (libraryModel.shelves.size !== 0) return
+        return m("span", "Add Google Spreadsheet URLs here to get started. ")
     }
 
     function addShelvesButton() {
