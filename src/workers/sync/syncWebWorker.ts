@@ -80,8 +80,8 @@ function handleSyncError(error: Error | SyncerError, id?: string) {
         return
     } else {
         let syncerError: SyncerError = (instanceOfSyncerError(error)
-        ? error
-        : new SyncerError(error.message, "Unknown Error", false))
+            ? error
+            : new SyncerError(error.message, "Unknown Error", false))
         if (syncerError.payload.pause) updateSyncState(SyncerState.PAUSED)
         postMessage({ id, error: syncerError.payload })
     }
