@@ -8,7 +8,7 @@ export function searchbarComponent() {
     const caret: Caret = { pos: null, el: null }
 
     function view() {
-        let journal = urlController.getActiveJournal()
+        const journal = urlController.getActiveJournal()
         if (journal === undefined || journal.loaded === false) return
         return m("#search", [
             m("#searchQuery", searchNodeSettings(), m.trust(searchModel.barQuery.rendered)),

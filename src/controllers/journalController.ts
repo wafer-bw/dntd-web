@@ -1,15 +1,15 @@
 import m from "mithril"
 import { libraryModel } from ".."
 import { ErrorPayload } from "../types"
-import { tagFactory } from "../factories"
 import { FriendlyError } from "../errors"
 import { JournalModel, TagModel } from "../models"
-import { syncerController, searchController } from "."
+import { tagFactory, entryFactory } from "../factories"
+import { syncerController, searchController, entryController } from "."
 
 export const journalController = {
     addEntry: addEntry,
     moveEntry: moveEntry,
-    updateEntry: updateEntry,
+    buildTags: buildTags,
     deleteEntry: deleteEntry,
     loadEntries: loadEntries,
 }
@@ -36,8 +36,7 @@ function loadEntries(journal: JournalModel | undefined) {
     unloadOtherJournals(journal)
     syncerController.getRows(journal.shelf.id, journal.id, journal.title)
         .then(payload => {
-            payload.rows.forEach((content, idx) => journal.addEntry(idx, content))
-            buildTags(journal)
+            payload.rows.forEach((content, idx) => addEntry(journal, idx, content, false))
             journal.loaded = true
         })
         .catch((error: ErrorPayload) => {
@@ -48,14 +47,10 @@ function loadEntries(journal: JournalModel | undefined) {
         })
 }
 
-function addEntry(journal: JournalModel, idx: number, content: string) {
-    journal.addEntry(idx, content)
-    buildTags(journal)
-}
-
-function updateEntry(journal: JournalModel, idx: number, content: string) {
-    if (journal.entries[idx].entry.saved === content) return
-    journal.updateEntry(idx, content)
+function addEntry(journal: JournalModel, idx: number, content: string, sync?: boolean) {
+    let entry = entryFactory.createJournalEntry(journal.shelf, journal, content)
+    entryController.save(entry, idx, content, sync)
+    journal.addEntry(idx, entry)
     buildTags(journal)
 }
 

@@ -67,11 +67,11 @@ function cleanRefines() {
     }
 }
 
-function filteredEntries(entries: { id: number, entry: JournalEntryModel }[]): JournalEntryModel[] {
-    let filteredEntries: JournalEntryModel[] = []
+function filteredEntries(entries: { id: number, entry: JournalEntryModel }[]): { idx: number, entry: JournalEntryModel }[] {
+    let filteredEntries: { idx: number, entry: JournalEntryModel }[] = []
     if (searchModel.query.tokens.length === 0) {
         searchModel.searchType = SearchType.NONE
-        filteredEntries = entries.map(({ entry }) => entry)
+        filteredEntries = entries.map(({ entry }, idx) => { return { idx, entry } })
     } else {
         searchModel.searchType = SearchType.AND
         filteredEntries = search(entries)
@@ -83,20 +83,20 @@ function filteredEntries(entries: { id: number, entry: JournalEntryModel }[]): J
     return filteredEntries
 }
 
-function search(entries: { id: number, entry: JournalEntryModel }[]): JournalEntryModel[] {
+function search(entries: { id: number, entry: JournalEntryModel }[]): { idx: number, entry: JournalEntryModel }[] {
     let query = searchModel.query
     let sourceEntries = entries
-    let filteredEntries: JournalEntryModel[] = []
-    for (let { entry } of sourceEntries) {
+    let filteredEntries: { idx: number, entry: JournalEntryModel }[] = []
+    for (let [idx, { entry }] of sourceEntries.entries()) {
         switch (searchModel.searchType) {
             case SearchType.AND:
                 if (query.tokens.every(token => match(token, entry))) {
-                    filteredEntries.push(entry)
+                    filteredEntries.push({ idx, entry })
                 }
                 break
             case SearchType.OR:
                 if (query.tokens.some(token => match(token, entry))) {
-                    filteredEntries.push(entry)
+                    filteredEntries.push({ idx, entry })
                 }
                 break
         }
@@ -105,7 +105,7 @@ function search(entries: { id: number, entry: JournalEntryModel }[]): JournalEnt
 }
 
 function match(token: string, entry: JournalEntryModel) {
-    
+
     if (token.startsWith("-@") && !token.endsWith(":")) {
         return entry.tags.get(token.substring(1)) === undefined
     } else if (token.startsWith("-")) {

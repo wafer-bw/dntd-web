@@ -8,7 +8,7 @@ export function refinesComponent() {
     const expanded: Set<string> = new Set()
 
     function view() {
-        let journal = urlController.getActiveJournal()
+        const journal = urlController.getActiveJournal()
         if (journal === undefined || journal.loaded === false) return
         return m("#tagsWrap", m("#tags", [
             m(".tempguidancePre", "Tags"),

@@ -2,13 +2,13 @@ import m from "mithril"
 import { urlController, journalController } from "../controllers"
 import {
     googleComponent, breadcrumbComponent, entriesComponent, syncStateComponent,
-    searchbarComponent, refinesComponent
+    searchbarComponent, refinesComponent, composeComponent
 } from "../components"
 
 export function journalView() {
 
     function oninit() {
-        let journal = urlController.getActiveJournal()
+        const journal = urlController.getActiveJournal()
         if (journal === undefined || journal.loaded) return
         journalController.loadEntries(journal)
     }
@@ -20,7 +20,10 @@ export function journalView() {
             m(breadcrumbComponent),
             m(searchbarComponent),
             m(refinesComponent),
-            m(entriesComponent),
+            m("#entriesWrap", [
+                m(entriesComponent),
+                m(composeComponent),
+            ])
         ])
     }
 
