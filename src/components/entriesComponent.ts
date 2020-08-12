@@ -10,18 +10,18 @@ export function entriesComponent() {
 
     function view() {
         let shelf = urlController.getActiveShelf()
-        let journal = urlController.getActiveJournal()
+        const journal = urlController.getActiveJournal()
         if (!shelf || !journal) return null
 
-        return m("#entriesWrap", m("#entries", [
+        return m("#entries", [
             m(".tempguidancePre", "Entries"),
             entriesList(journal),
-        ]))
+        ])
     }
 
     function entriesList(journal: JournalModel) {
         return searchController.filteredEntries(journal.entries)
-            .map((entry, entryIdx) => entryVnode(entry, entryIdx))
+            .map(({ idx, entry }) => entryVnode(entry, idx))
     }
 
     function entryVnode(entry: JournalEntryModel, entryIdx: number): m.Vnode {
@@ -67,12 +67,12 @@ export function entriesComponent() {
     async function onEntryBlur(event: any, entry: JournalEntryModel, entryIdx: number) {
         event.redraw = false
         entryController.save(entry, entryIdx, event.target.innerText, true)
-
+        journalController.buildTags(entry.journal)
     }
 
     function entryContentSettings(entry: JournalEntryModel, entryIdx: number) {
         return {
-            id: `entry-${entryIdx}-content`,
+            id: `entry-${entry.id}-content`,
             contenteditable: "true",
             class: "entry breakwrap column",
             onkeydown: (event: any) => onEntryKeydown(event),

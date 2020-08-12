@@ -1,4 +1,5 @@
 export * from "./googleComponent"
+export * from "./composeComponent"
 export * from "./entriesComponent"
 export * from "./shelvesComponent"
 export * from "./refinesComponent"
