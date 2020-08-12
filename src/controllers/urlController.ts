@@ -29,7 +29,7 @@ function getActiveJournal(): JournalModel | undefined {
 function getBreadcrumbTrail() {
     // TODO: add dropdowns on each shelf and journal crumb
     let breadcrumb: m.Vnode[] = []
-    let hash = urlModel.hash.split("/").filter(crumb => crumb !== "#" && crumb !== "")
+    let hash = urlModel.hash.split("?")[0].split("/").filter(crumb => crumb !== "#" && crumb !== "")
     let shelfId: string | undefined = undefined
     for (let i = 0; i < hash.length; i++) {
         let crumb = hash[i]
