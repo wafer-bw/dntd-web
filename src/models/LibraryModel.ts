@@ -9,7 +9,11 @@ export class LibraryModel {
     }
 
     set shelfIds(ids: string[]) {
-        localStorage.setItem("spreadsheetIds", ids.join(","))
+        if (ids.length === 0) {
+            localStorage.removeItem("spreadsheetIds")
+        } else {
+            localStorage.setItem("spreadsheetIds", ids.join(","))
+        }
     }
     get shelfIds(): string[] {
         let ids = localStorage.getItem("spreadsheetIds")
