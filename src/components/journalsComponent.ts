@@ -15,7 +15,7 @@ export function journalsComponent() {
         }
         return Array.from(shelf.journals.values()).map(journal => {
             let link = `#/library/${journal.shelf.id}/${journal.id}`
-            return m("li", m("a", { href: link }, journal.title + " " + journal.loaded))
+            return m("li", m("a", { href: link }, journal.title))
         })
     }
 
