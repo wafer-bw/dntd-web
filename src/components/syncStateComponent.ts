@@ -1,11 +1,12 @@
 import m from "mithril"
-import { syncerModel } from ".."
+import { syncerModel, googleModel } from ".."
 import { SyncerState } from "../types"
 import { syncerController } from "../controllers"
 
 export function syncStateComponent() {
 
     function view() {
+        if (!googleModel.isSignedIn) return
         return m("#status", m("span", syncState()))
     }
 
