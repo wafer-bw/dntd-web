@@ -4,16 +4,19 @@ import { TestMode } from "../types"
 export class UrlModel {
 
     get hash(): string {
-        let url = new URL(window.location.href)
-        return url.hash
+        return window.location.hash
     }
     set hash(hash_: string) {
         window.location.hash = hash_
     }
 
+    get url(): URL {
+        return new URL(window.location.href)
+    }
+
     get testMode(): TestMode {
         if (this.hash === "#!demo") return TestMode.DEMO
-        let test = m.route.param("test")
+        let test = this.url.searchParams.get("test")
         return (test !== null && this.instanceOfTestMode(test)) ? test : TestMode.OFF
     }
 
