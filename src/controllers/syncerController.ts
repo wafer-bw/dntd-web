@@ -81,7 +81,7 @@ async function updateRow(shelfId: string, journalId: number, journalTitle: strin
     }, worker)
 }
 
-// TODO: updateRow
+// TODO: moveRow
 
 async function unpause() {
     return await syncerModel.pushSyncerTask({
@@ -109,4 +109,3 @@ function onMessage(msg: MessageEvent) {
         }
     }
 }
-
