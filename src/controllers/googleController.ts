@@ -3,6 +3,7 @@ import { MockGapi } from "../mocks"
 import { TestMode } from "../types"
 import { googleModel, urlModel } from ".."
 import { syncerController, libraryController } from "../controllers"
+import { urlController } from "./urlController"
 
 export const googleController = {
     signIn: signIn,
@@ -39,12 +40,7 @@ async function isSignedIn(signedIn: boolean) {
         libraryController.loadShelves()
     } else {
         libraryController.removeShelves()
+        urlController.redirect("/")
     }
     m.redraw()
-
-    // if (getTestMode() === TestMode.DEMO) {
-    //     journal.isSignedIn = true
-    //     journal.load("https://docs.google.com/spreadsheets/d/demo/edit")
-    //     return []
-    // }
 }
