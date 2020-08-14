@@ -29,7 +29,6 @@ export class GetSpreadsheetTask<P extends GetSpreadsheetPayload> extends BaseTas
         } else {
             this.payload.spreadsheet = await response.json()
         }
-        console.log(JSON.stringify(this.payload))
         return this.payload
     }
 }
@@ -71,7 +70,6 @@ export class MockGetSpreadsheetTask<P extends GetSpreadsheetPayload> extends Bas
                 }
             ]
         }
-        console.log("returning payload")
         return this.payload
     }
 }
