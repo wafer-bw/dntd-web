@@ -2,6 +2,7 @@ import m from "mithril"
 import { libraryModel, urlModel } from ".."
 import { ShelfModel, JournalModel } from "../models"
 import { TestMode } from "../types"
+import { syncerController } from "./syncerController"
 
 export const urlController = {
     redirect: redirect,
@@ -15,7 +16,7 @@ function redirect(hash: string) {
     urlModel.hash = hash
 }
 
-function getTestMode(): TestMode {
+function getTestMode(forceUpdate?: boolean): TestMode {
     let newMode: TestMode | undefined = undefined
 
     if (urlModel.hash.startsWith("#/demo")) {
@@ -27,12 +28,17 @@ function getTestMode(): TestMode {
         newMode = paramMode
     }
 
+    // TODO: FIX THIS FLOW IT DOESN'T WORK PROPERLY AND SPAMS THE WORKER WITH UPDATES
     let currentMode = urlModel.testMode
-    if (newMode !== currentMode) {
+    if (newMode !== currentMode || forceUpdate) {
+        console.log(`current: ${currentMode}`)
+        console.log(`new: ${newMode}`)
         urlModel.testMode = newMode
-        // TODO SEND TEST MODE TO SYNCER WORKER
+        if (newMode !== undefined && urlModel.testMode !== undefined) {
+            syncerController.updateTestMode(urlModel.testMode)
+        }
     }
-    
+
     let mode = urlModel.testMode
     if (mode === undefined) return TestMode.OFF
     return mode
@@ -46,7 +52,7 @@ function getActiveShelf(): ShelfModel | undefined {
 
 function getActiveJournal(): JournalModel | undefined {
     let id = urlModel.journalId
-    let shelf =  getActiveShelf()
+    let shelf = getActiveShelf()
     if (id === undefined || shelf === undefined) return undefined
     return shelf.journals.get(id)
 }

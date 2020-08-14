@@ -20,11 +20,8 @@ export class UrlModel {
         return
     }
     set testMode(mode: TestMode | undefined) {
-        if (mode === undefined) {
-            localStorage.removeItem("testMode")
-        } else {
-            localStorage.setItem("testMode", mode)
-        }
+        if (mode === undefined) return
+        localStorage.setItem("testMode", mode)
     }
 
     public instanceOfTestMode(str: string): str is TestMode {

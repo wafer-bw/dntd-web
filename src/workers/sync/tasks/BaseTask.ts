@@ -6,7 +6,6 @@ import {
 
 export class TaskFactory {
     public createTask(payload: SyncerPayload, testMode: TestMode): BaseTask<SyncerPayload> | undefined {
-        console.log(payload.type)
         switch(payload.type) {
             case SyncerPayloadType.GET_ROWS:
                 return createGetRowsTask(payload, testMode)
