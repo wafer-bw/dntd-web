@@ -14,14 +14,27 @@ export class UrlModel {
         return new URL(window.location.href)
     }
 
-    get testMode(): TestMode {
-        if (this.hash === "#!demo") return TestMode.DEMO
-        let test = this.url.searchParams.get("test")
-        return (test !== null && this.instanceOfTestMode(test)) ? test : TestMode.OFF
+    get testMode(): TestMode | undefined {
+        let mode = localStorage.getItem("testMode")
+        if (mode !== null && this.instanceOfTestMode(mode)) return mode
+        return
+    }
+    set testMode(mode: TestMode | undefined) {
+        if (mode === undefined) {
+            localStorage.removeItem("testMode")
+        } else {
+            localStorage.setItem("testMode", mode)
+        }
     }
 
-    private instanceOfTestMode(str: string): str is TestMode {
+    public instanceOfTestMode(str: string): str is TestMode {
         return ((<any>Object).values(TestMode).includes(str))
+    }
+
+    public getParam(key: string): string | undefined {
+        let val = this.url.searchParams.get(key) || m.route.param(key)
+        if (val === "") return
+        return val
     }
 
     get shelfId(): string | undefined {

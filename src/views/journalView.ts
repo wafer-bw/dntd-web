@@ -2,7 +2,7 @@ import m from "mithril"
 import { urlController, journalController } from "../controllers"
 import {
     googleComponent, breadcrumbComponent, entriesComponent, syncStateComponent,
-    searchbarComponent, refinesComponent, composeComponent
+    searchbarComponent, refinesComponent, composeComponent, testModeComponent,
 } from "../components"
 
 export function journalView() {
@@ -16,6 +16,7 @@ export function journalView() {
     function view() {
         return m("#shelf", [
             m(googleComponent),
+            m(testModeComponent),
             m(syncStateComponent),
             m(breadcrumbComponent),
             m(searchbarComponent),

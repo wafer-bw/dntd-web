@@ -1,5 +1,6 @@
 import m from "mithril"
 import { googleModel } from ".."
+import { urlController } from "../controllers"
 import { googleComponent } from "../components"
 
 export function signinView() {
@@ -12,7 +13,7 @@ export function signinView() {
 
     function onupdate() {
         if (googleModel.isSignedIn) {
-            window.location.hash = "/library" // TODO: redirect to correct place
+            urlController.redirect("/library")
         }
     }
 

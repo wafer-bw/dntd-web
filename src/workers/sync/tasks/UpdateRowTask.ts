@@ -6,7 +6,7 @@ import { ExtendSheetTask } from "./ExtendSheetTask"
 export function createUpdateRowTask<P extends UpdateRowPayload>(payload: P, testMode: TestMode): BaseTask<P> | undefined {
     return (testMode === TestMode.OFF)
         ? new UpdateRowTask(payload)
-        : undefined // new MockUpdateRowTask(payload, testMode) // TODO
+        : new MockUpdateRowTask(payload, testMode)
 }
 
 export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
@@ -39,6 +39,20 @@ export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
                 }
             }
             throw new SyncerError(JSON.stringify(data), `Failed to update row: ${range}`, response.status === 401)
+        }
+        return this.payload
+    }
+}
+
+export class MockUpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
+    constructor(payload: P, testMode: TestMode) {
+        super(payload, testMode)
+        this.async = true
+    }
+
+    public async work(): Promise<P> {
+        if (this.testMode === TestMode.FAIL_UPDATE_RANGE) {
+            throw new Error("mock fail")
         }
         return this.payload
     }

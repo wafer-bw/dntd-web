@@ -15,11 +15,11 @@ const root = document.getElementById("root")
 
 if (root !== null) {
     m.route(root, "/", {
-        "/": signinView,                                   // TODO switch to be about page
+        "/": signinView,        // TODO switch to be about page
+        "/demo" : journalView,  // TODO get working
         "/signin": signinView,
         "/library": libraryView,
         "/library/:shelfId": shelfView,
         "/library/:shelfId/:journalId": journalView,
-        // "/demo" : app,                                   // TODO
     })
 }

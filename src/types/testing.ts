@@ -6,5 +6,5 @@ export enum TestMode {
     FAIL_UPDATE_RANGE = "4",
     FAIL_DELETE_ROW = "5",
     RETURN_ROWS = "6",
-    DEMO = "7"
+    DEMO = "DEMO-MODE"
 }
