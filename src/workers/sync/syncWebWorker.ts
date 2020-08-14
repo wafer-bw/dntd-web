@@ -19,6 +19,8 @@ onmessage = (msg) => prequeue(msg)
 function prequeue(msg: MessageEvent) {
     const { id, payload }: { id: string, payload: SyncerPayload } = msg.data
 
+    console.log(payload)
+
     switch (payload.type) {
         case SyncerPayloadType.TEST_MODE_UPDATE:
             testMode = payload.testMode
