@@ -47,6 +47,8 @@ function loadEntries(journal: JournalModel | undefined) {
         })
 }
 
+// TODO: create entry
+
 function addEntry(journal: JournalModel, idx: number, content: string | undefined, sync?: boolean) {
     content = (content === undefined) ? "" : content
     let entry = entryFactory.createJournalEntry(journal.shelf, journal, content)

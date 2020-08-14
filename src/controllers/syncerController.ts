@@ -71,6 +71,8 @@ async function updateRow(shelfId: string, journalId: number, journalTitle: strin
     }, worker)
 }
 
+// TODO: createRow
+
 // TODO: moveRow
 
 async function unpause() {
