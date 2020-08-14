@@ -43,7 +43,8 @@ export class MockGetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
     public async work(_token: string): Promise<P> {
         if (this.testMode === TestMode.FAIL_GET_RANGE) {
             throw new Error("mock fail")
-        } else if (this.testMode === TestMode.RETURN_ROWS) {
+        }
+        if (this.testMode === TestMode.RETURN_ROWS) {
             this.payload.rows = ["aaa", "bbb", "ccc", "@tag", "@key:value"]
         }
         return this.payload

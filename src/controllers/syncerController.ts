@@ -11,7 +11,6 @@ export const syncerController = {
     getRows: getRows,
     deleteRow: deleteRow,
     updateRow: updateRow,
-    getSheets: getSheets,
     updateAuth: updateAuth,
     updateTestMode: updateTestMode,
     getSpreadsheet: getSpreadsheet,
@@ -38,15 +37,6 @@ function getSpreadsheet(spreadsheetId: string) {
         type: SyncerPayloadType.GET_SPREADSHEET,
         spreadsheetId: spreadsheetId,
         spreadsheet: spreadsheet
-    }, worker)
-}
-
-function getSheets(spreadsheetId: string) {
-    let sheets: gapi.client.sheets.Sheet[] = []
-    return syncerModel.pushSyncerTask({
-        type: SyncerPayloadType.GET_SHEETS,
-        spreadsheetId: spreadsheetId,
-        sheets: sheets
     }, worker)
 }
 
@@ -94,7 +84,7 @@ function onMessage(msg: MessageEvent) {
     if (id !== null && syncerModel.requests.has(id)) {
         syncerModel.requests.get(id)!({ payload, error })
         syncerModel.requests.delete(id)
-    } else {
+    } else if (payload !== undefined) {
         switch (payload.type) {
             case SyncerPayloadType.SYNC_STATE:
                 syncerModel.state = payload.state
@@ -107,5 +97,7 @@ function onMessage(msg: MessageEvent) {
                 updateAuth(googleModel.token)
                 break
         }
+    } else {
+        throw new FriendlyError("undefined payload", "An unexpected error occurred.")
     }
 }

@@ -5,11 +5,14 @@ import { GapiErrorResponse, DeleteRowPayload, TestMode } from "../../../types"
 export function createDeleteRowTask<P extends DeleteRowPayload>(payload: P, testMode: TestMode): BaseTask<P> | undefined {
     return (testMode === TestMode.OFF)
         ? new DeleteRowTask(payload)
-        : undefined // new MockDeleteRowTask(payload, testMode) // TODO
+        : new MockDeleteRowTask(payload, testMode)
 }
 
 export class DeleteRowTask<P extends DeleteRowPayload> extends BaseTask<P> {
-    constructor(payload: P) { super(payload) }
+    constructor(payload: P) {
+        super(payload)
+        this.async = true
+    }
 
     public async work(token: string): Promise<P> {
         let range = { sheetId: this.payload.sheetId, startRowIndex: this.payload.idx, endRowIndex: this.payload.idx + 1, startColumnIndex: 0 }
@@ -21,6 +24,20 @@ export class DeleteRowTask<P extends DeleteRowPayload> extends BaseTask<P> {
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
             throw new SyncerError(JSON.stringify(error), `Failed to delete row: ${this.payload.idx}`, response.status === 401)
+        }
+        return this.payload
+    }
+}
+
+export class MockDeleteRowTask<P extends DeleteRowPayload> extends BaseTask<P> {
+    constructor(payload: P, testMode: TestMode) {
+        super(payload, testMode)
+        this.async = true
+    }
+
+    public async work(_token: string): Promise<P> {
+        if (this.testMode === TestMode.FAIL_DELETE_ROW) {
+            throw new Error("mock fail")
         }
         return this.payload
     }

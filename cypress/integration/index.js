@@ -6,7 +6,6 @@ export const data = {
     "requiredElementIds": [
         "#sheetSelect",
         "#searchQuery",
-        "#spreadsheetSelect",
         "#hideEntriesKeysToggle",
         "#hideTagRefinesToggle",
         "#tags",
@@ -20,11 +19,9 @@ export const data = {
 export function preTest(url) {
     cy.visit(`${url}`)
     cy.contains("dntd")
-    cy.get("#addSpreadsheet").click()
-    for (let spreadsheetUrl of data.spreadsheetUrls) {
-        cy.get("#spreadsheetURLs").type(`${spreadsheetUrl}{enter}`)
-    }
-    cy.get("#addSpreadsheet").click()
+    cy.get("#addShelvesButton").click()
+    cy.get("#spreadsheetURLs").type(data.spreadsheetUrls.join("{enter}"))
+    cy.get("#addShelvesButton").click()
     for (let elementId of data.requiredElementIds) {
         cy.get(elementId).should("exist")
     }

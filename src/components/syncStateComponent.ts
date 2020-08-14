@@ -1,7 +1,7 @@
 import m from "mithril"
-import { syncerModel, googleModel, libraryModel } from ".."
 import { SyncerState } from "../types"
 import { syncerController } from "../controllers"
+import { syncerModel, googleModel, libraryModel } from ".."
 
 export function syncStateComponent() {
 

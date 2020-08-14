@@ -1,7 +1,7 @@
 import { TestMode } from "./testing"
 
 export type SyncerPayload = (
-    GetRowsPayload | GetSheetsPayload | GetSpreadsheetPayload | UpdateRowPayload |
+    GetRowsPayload | GetSpreadsheetPayload | UpdateRowPayload |
     ExtendSheetPayload | DeleteRowPayload | TestModeUpdatePayload | AuthUpdatePayload |
     UnpausePayload | SyncStatePayload | ErrorPayload | TokenRequestPayload
 )
@@ -11,7 +11,6 @@ export enum SyncerPayloadType {
     DELETE_ROW,
     UPDATE_ROW,
     GET_ROWS,
-    GET_SHEETS,
     TEST_MODE_UPDATE,
     UNPAUSE,
     GET_SPREADSHEET,
@@ -85,12 +84,6 @@ export interface GetRowsPayload {
     sheetId: number
     sheetTitle: string
     rows: string[]
-}
-
-export interface GetSheetsPayload {
-    type: SyncerPayloadType.GET_SHEETS
-    spreadsheetId: string
-    sheets: gapi.client.sheets.Sheet[]
 }
 
 export interface SyncStatePayload {

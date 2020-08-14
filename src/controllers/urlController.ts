@@ -1,9 +1,11 @@
 import m from "mithril"
 import { libraryModel, urlModel } from ".."
 import { ShelfModel, JournalModel } from "../models"
+import { TestMode } from "../types"
 
 export const urlController = {
     redirect: redirect,
+    getTestMode: getTestMode,
     getActiveShelf: getActiveShelf,
     getActiveJournal: getActiveJournal,
     getBreadcrumbTrail: getBreadcrumbTrail,
@@ -11,6 +13,29 @@ export const urlController = {
 
 function redirect(hash: string) {
     urlModel.hash = hash
+}
+
+function getTestMode(): TestMode {
+    let newMode: TestMode | undefined = undefined
+
+    if (urlModel.hash.startsWith("#/demo")) {
+        newMode = TestMode.DEMO
+    }
+
+    let paramMode = urlModel.getParam("test")
+    if (paramMode !== undefined && urlModel.instanceOfTestMode(paramMode)) {
+        newMode = paramMode
+    }
+
+    let currentMode = urlModel.testMode
+    if (newMode !== currentMode) {
+        urlModel.testMode = newMode
+        // TODO SEND TEST MODE TO SYNCER WORKER
+    }
+    
+    let mode = urlModel.testMode
+    if (mode === undefined) return TestMode.OFF
+    return mode
 }
 
 function getActiveShelf(): ShelfModel | undefined {
