@@ -1,5 +1,4 @@
 import m from "mithril"
-import { TestMode } from "../types"
 
 export class UrlModel {
 
@@ -12,20 +11,6 @@ export class UrlModel {
 
     get url(): URL {
         return new URL(window.location.href)
-    }
-
-    get testMode(): TestMode | undefined {
-        let mode = localStorage.getItem("testMode")
-        if (mode !== null && this.instanceOfTestMode(mode)) return mode
-        return
-    }
-    set testMode(mode: TestMode | undefined) {
-        if (mode === undefined) return
-        localStorage.setItem("testMode", mode)
-    }
-
-    public instanceOfTestMode(str: string): str is TestMode {
-        return ((<any>Object).values(TestMode).includes(str))
     }
 
     public getParam(key: string): string | undefined {

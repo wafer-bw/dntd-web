@@ -1,12 +1,9 @@
 import m from "mithril"
 import { libraryModel, urlModel } from ".."
 import { ShelfModel, JournalModel } from "../models"
-import { TestMode } from "../types"
-import { syncerController } from "./syncerController"
 
 export const urlController = {
     redirect: redirect,
-    getTestMode: getTestMode,
     getActiveShelf: getActiveShelf,
     getActiveJournal: getActiveJournal,
     getBreadcrumbTrail: getBreadcrumbTrail,
@@ -14,29 +11,6 @@ export const urlController = {
 
 function redirect(hash: string) {
     urlModel.hash = hash
-}
-
-function getTestMode(forceUpdate?: boolean): TestMode {
-    let newMode: TestMode | undefined = undefined
-
-    if (urlModel.hash.startsWith("#/demo")) {
-        newMode = TestMode.DEMO
-    }
-
-    let paramMode = urlModel.getParam("test")
-    if (paramMode !== undefined && urlModel.instanceOfTestMode(paramMode)) {
-        newMode = paramMode
-    }
-
-    let currentMode = urlModel.testMode
-    if ((newMode !== currentMode && newMode !== undefined) || forceUpdate) {
-        urlModel.testMode = newMode
-        if (urlModel.testMode !== undefined) syncerController.updateTestMode(urlModel.testMode)
-    }
-
-    let mode = urlModel.testMode
-    if (mode === undefined) return TestMode.OFF
-    return mode
 }
 
 function getActiveShelf(): ShelfModel | undefined {
@@ -59,10 +33,10 @@ function getBreadcrumbTrail() {
     for (let i = 0; i < hash.length; i++) {
         let crumb = hash[i]
         let trail = "#/" + hash.slice(0, i + 1).join("/")
-        if (i === 1) {
+        if (i === 2) {
             shelfId = crumb
             crumb = libraryModel.shelves.get(crumb)?.title || crumb
-        } else if (i === 2 && shelfId !== undefined) {
+        } else if (i === 3 && shelfId !== undefined) {
             crumb = libraryModel.shelves.get(shelfId)?.journals.get(parseInt(crumb))?.title || crumb
         }
         if (i !== 0) breadcrumb.push(m("span", " / "))
