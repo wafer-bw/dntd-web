@@ -28,15 +28,10 @@ function getTestMode(forceUpdate?: boolean): TestMode {
         newMode = paramMode
     }
 
-    // TODO: FIX THIS FLOW IT DOESN'T WORK PROPERLY AND SPAMS THE WORKER WITH UPDATES
     let currentMode = urlModel.testMode
-    if (newMode !== currentMode || forceUpdate) {
-        console.log(`current: ${currentMode}`)
-        console.log(`new: ${newMode}`)
+    if ((newMode !== currentMode && newMode !== undefined) || forceUpdate) {
         urlModel.testMode = newMode
-        if (newMode !== undefined && urlModel.testMode !== undefined) {
-            syncerController.updateTestMode(urlModel.testMode)
-        }
+        if (urlModel.testMode !== undefined) syncerController.updateTestMode(urlModel.testMode)
     }
 
     let mode = urlModel.testMode

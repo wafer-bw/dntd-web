@@ -21,7 +21,6 @@ function prequeue(msg: MessageEvent) {
 
     switch (payload.type) {
         case SyncerPayloadType.TEST_MODE_UPDATE:
-            console.log(payload)
             testMode = payload.testMode
             if (testMode !== TestMode.OFF) token = "mock"
             return

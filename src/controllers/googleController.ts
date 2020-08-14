@@ -20,7 +20,6 @@ function signIn() {
 }
 
 function initGapi() {
-    console.log("here")
     let gapi_ = (urlController.getTestMode(true) === TestMode.OFF) ? gapi : new MockGapi()
     googleModel.gapi_ = gapi_
     googleModel.gapi_.load('auth2', () => {
