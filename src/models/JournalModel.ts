@@ -19,7 +19,9 @@ export class JournalModel {
         this.title = journalTitle
     }
 
-    public addEntry(idx: number, entry: JournalEntryModel) {
+    // TODO: syncerController.* should go here to interact with the data for the journal
+    //       as if it was a real database model.
+    public createEntry(idx: number, entry: JournalEntryModel) {
         this.entries.splice(idx, 0, { id: entry.id, entry })
     }
 
