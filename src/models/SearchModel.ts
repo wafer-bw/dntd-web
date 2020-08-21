@@ -3,6 +3,8 @@ import { entryFactory } from "../factories"
 import { TagModel, BaseEntryModel } from "."
 
 export class SearchModel {
+    private static instance: SearchModel
+
     public searchType: SearchType = SearchType.NONE
     public simpleRefines: Map<string, TagModel> = new Map()
     public complexRefines: Map<string, TagModel[]> = new Map()
@@ -15,6 +17,10 @@ export class SearchModel {
 
     constructor() { }
 
+    static getInstance(): SearchModel {
+        return (!SearchModel.instance) ? new SearchModel() : SearchModel.instance
+    }
+
     get query(): BaseEntryModel {
         return entryFactory.createBaseEntry([
             this.barQuery.raw,
@@ -23,5 +29,4 @@ export class SearchModel {
             ...Array.from(this.refinesQuery.simpleKeys.keys())
         ].join(" "))
     }
-
 }

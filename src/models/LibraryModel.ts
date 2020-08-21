@@ -1,11 +1,17 @@
 import { ShelfModel } from "."
 
 export class LibraryModel {
+    private static instance: LibraryModel
+    
     public shelves: Map<string, ShelfModel | undefined>
 
-    constructor() {
+    private constructor() {
         this.shelves = new Map()
         this.shelfIds.forEach(id => this.shelves.set(id, undefined))
+    }
+
+    static getInstance() {
+        return (!LibraryModel.instance) ? new LibraryModel() : LibraryModel.instance
     }
 
     set shelfIds(ids: string[]) {
@@ -19,5 +25,4 @@ export class LibraryModel {
         let ids = localStorage.getItem("spreadsheetIds")
         return (ids === null) ? [] : ids.split(",")
     }
-
 }

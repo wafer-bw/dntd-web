@@ -4,12 +4,12 @@ import {
     ServiceWorkerModel, SyncerModel, LibraryModel, GoogleModel, UrlModel, SearchModel, AppStateModel
 } from "./models"
 
-export const appStateModel = new AppStateModel()
-export const serviceWorkerModel = new ServiceWorkerModel()
-export const googleModel = new GoogleModel()
-export const syncerModel = new SyncerModel()
-export const libraryModel = new LibraryModel()
-export const urlModel = new UrlModel()
+export const appStateModel = AppStateModel.getInstance()
+export const serviceWorkerModel = ServiceWorkerModel.getInstance()
+export const googleModel = GoogleModel.getInstance()
+export const syncerModel = SyncerModel.getInstance()
+export const libraryModel = LibraryModel.getInstance()
+export const urlModel = UrlModel.getInstance()
 export const searchModel = new SearchModel()
 
 const root = document.getElementById("root")

@@ -1,6 +1,13 @@
 import m from "mithril"
 
 export class UrlModel {
+    private static instance: UrlModel
+
+    private constructor() { }
+
+    static getInstance(): UrlModel {
+        return (!UrlModel.instance) ? new UrlModel() : UrlModel.instance
+    }
 
     get hash(): string {
         return window.location.hash
