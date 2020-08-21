@@ -10,7 +10,7 @@ export const googleModel = GoogleModel.getInstance()
 export const syncerModel = SyncerModel.getInstance()
 export const libraryModel = LibraryModel.getInstance()
 export const urlModel = UrlModel.getInstance()
-export const searchModel = new SearchModel()
+export const searchModel = SearchModel.getInstance()
 
 const root = document.getElementById("root")
 
