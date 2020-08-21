@@ -15,7 +15,7 @@ export class SearchModel {
         simpleKeys: Map<string, TagModel>
     } = { keys: new Set(), vals: new Map(), simpleKeys: new Map() }
 
-    constructor() { }
+    private constructor() { }
 
     static getInstance(): SearchModel {
         return (!SearchModel.instance) ? new SearchModel() : SearchModel.instance
