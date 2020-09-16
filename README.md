@@ -17,4 +17,4 @@
 * **Plaintext** - Your journals are saved in plaintext.
 
 ## CLI Counterpart
-[wafer-bw/dntd](https://github.com/wafer-bw/dntd-cli)
+[wafer-bw/dntd-cli](https://github.com/wafer-bw/dntd-cli)
