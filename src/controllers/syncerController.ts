@@ -40,6 +40,9 @@ function getSpreadsheet(spreadsheetId: string) {
     }, worker)
 }
 
+
+// TODO: createRow
+
 function getRows(shelfId: string, journalId: number, journalTitle: string) {
     let rows: string[] = []
     return syncerModel.pushSyncerTask({
@@ -48,15 +51,6 @@ function getRows(shelfId: string, journalId: number, journalTitle: string) {
         sheetTitle: journalTitle,
         sheetId: journalId,
         rows: rows
-    }, worker)
-}
-
-async function deleteRow(idx: number, spreadsheetId: string, sheetId: number) {
-    return await syncerModel.pushSyncerTask({
-        type: SyncerPayloadType.DELETE_ROW,
-        spreadsheetId: spreadsheetId,
-        sheetId: sheetId,
-        idx: idx,
     }, worker)
 }
 
@@ -71,7 +65,15 @@ async function updateRow(shelfId: string, journalId: number, journalTitle: strin
     }, worker)
 }
 
-// TODO: createRow
+async function deleteRow(shelfId: string, journalId: number, idx: number) {
+    return await syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.DELETE_ROW,
+        spreadsheetId: shelfId,
+        sheetId: journalId,
+        idx: idx,
+    }, worker)
+}
+
 
 // TODO: moveRow
 
