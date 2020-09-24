@@ -19,14 +19,8 @@ export class JournalModel {
         this.title = journalTitle
     }
 
-    // TODO: syncerController.* should go here to interact with the data for the journal
-    //       as if it was a real database model.
     public createEntry(idx: number, entry: JournalEntryModel) {
         this.entries.splice(idx, 0, { id: entry.id, entry })
-    }
-
-    public updateEntry(idx: number, entry: JournalEntryModel) {
-        this.entries[idx].entry = entry
     }
 
     public deleteEntry(idx: number) {
@@ -34,8 +28,7 @@ export class JournalModel {
     }
 
     public moveEntry(fromIdx: number, toIdx: number) {
-        let entry = this.entries.splice(fromIdx, 1)[0]
-        this.entries.splice(toIdx, 0, entry)
+        this.entries.splice(toIdx, 0, this.entries.splice(fromIdx, 1)[0])
     }
 
 }
