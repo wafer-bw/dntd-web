@@ -30,11 +30,10 @@ export class UrlModel {
         let id = m.route.param("shelfId")
         return (id === "") ? undefined : id
     }
-    // TODO: set?
 
     get journalId(): number | undefined {
         let id = m.route.param("journalId")
         return (id === "") ? undefined : parseInt(id)
     }
-    // TODO: set?
+
 }
