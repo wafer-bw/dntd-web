@@ -10,7 +10,9 @@ export function createUpdateRowTask<P extends UpdateRowPayload>(payload: P, test
 }
 
 export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
-    constructor(payload: P) { super(payload) }
+    constructor(payload: P) {
+        super(payload)
+    }
 
     public async work(token: string): Promise<P> {
         let range = `${this.payload.sheetTitle}!A${this.payload.idx + 1}:A${this.payload.idx + 1}`
@@ -47,7 +49,6 @@ export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
 export class MockUpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
     constructor(payload: P, testMode: TestMode) {
         super(payload, testMode)
-        this.async = true
     }
 
     public async work(): Promise<P> {

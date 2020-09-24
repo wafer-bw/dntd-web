@@ -11,7 +11,6 @@ export function createDeleteRowTask<P extends DeleteRowPayload>(payload: P, test
 export class DeleteRowTask<P extends DeleteRowPayload> extends BaseTask<P> {
     constructor(payload: P) {
         super(payload)
-        this.async = true
     }
 
     public async work(token: string): Promise<P> {
@@ -32,7 +31,6 @@ export class DeleteRowTask<P extends DeleteRowPayload> extends BaseTask<P> {
 export class MockDeleteRowTask<P extends DeleteRowPayload> extends BaseTask<P> {
     constructor(payload: P, testMode: TestMode) {
         super(payload, testMode)
-        this.async = true
     }
 
     public async work(_token: string): Promise<P> {
