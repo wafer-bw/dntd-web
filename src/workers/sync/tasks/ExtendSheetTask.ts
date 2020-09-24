@@ -5,7 +5,6 @@ import { GapiErrorResponse, ExtendSheetPayload } from "../../../types"
 export class ExtendSheetTask<P extends ExtendSheetPayload> extends BaseTask<P> {
     constructor(payload: P) {
         super(payload)
-        this.async = true
     }
 
     public async work(token: string): Promise<P> {
