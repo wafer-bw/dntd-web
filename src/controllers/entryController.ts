@@ -1,6 +1,6 @@
+import { textController } from "."
 import { tagFactory } from "../factories"
 import { JournalEntryModel, TagModel, BaseEntryModel } from "../models"
-import { textController, syncerController } from "."
 
 const tagPattern = /(\@)([\w-']+)+(:)?([\w-'\*]+)?/g
 
@@ -9,15 +9,10 @@ export const entryController = {
     update: update,
 }
 
-function save(entry: JournalEntryModel, entryIdx: number, content: string, sync?: boolean, force?: boolean) {
-    if (entry.saved !== content || force) {
-        entry.saved = content
-        entry.savedClean = textController.clean(entry.saved)
-        entry.tags = getTags(entry.tagMatches)
-        if (sync) {
-            syncerController.updateRow(entry.shelf.id, entry.journal.id, entry.journal.title, entryIdx, content)
-        }
-    }
+function save(entry: JournalEntryModel, content: string) {
+    entry.saved = content
+    entry.savedClean = textController.clean(entry.saved)
+    entry.tags = getTags(entry.tagMatches)
 }
 
 function update(entry: BaseEntryModel | JournalEntryModel, content: string) {

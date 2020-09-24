@@ -2,12 +2,14 @@ import m from "mithril"
 import { libraryModel } from ".."
 import { ErrorPayload } from "../types"
 import { FriendlyError } from "../errors"
-import { JournalModel, TagModel } from "../models"
 import { tagFactory, entryFactory } from "../factories"
+import { JournalEntryModel, JournalModel, TagModel } from "../models"
 import { syncerController, searchController, entryController } from "."
 
 export const journalController = {
     addEntry: addEntry,
+    createEntry: createEntry,
+    updateEntry: updateEntry,
     moveEntry: moveEntry,
     buildTags: buildTags,
     deleteEntry: deleteEntry,
@@ -36,7 +38,7 @@ function loadEntries(journal: JournalModel | undefined) {
     unloadOtherJournals(journal)
     syncerController.getRows(journal.shelf.id, journal.id, journal.title)
         .then(payload => {
-            payload.rows.forEach((content, idx) => addEntry(journal, idx, content, false))
+            payload.rows.forEach((content, idx) => addEntry(journal, idx, content))
             journal.loaded = true
         })
         .catch((error: ErrorPayload) => {
@@ -47,18 +49,33 @@ function loadEntries(journal: JournalModel | undefined) {
         })
 }
 
-// TODO: create entry
-
-function addEntry(journal: JournalModel, idx: number, content: string | undefined, sync?: boolean) {
+function addEntry(journal: JournalModel, idx: number, content: string | undefined) {
     content = (content === undefined) ? "" : content
     let entry = entryFactory.createJournalEntry(journal.shelf, journal, content)
-    entryController.save(entry, idx, content, sync)
     journal.createEntry(idx, entry)
+    entryController.save(entry, content)
+    buildTags(journal)
+}
+
+function createEntry(journal: JournalModel, idx: number, content: string | undefined) {
+    content = (content === undefined) ? "" : content
+    let entry = entryFactory.createJournalEntry(journal.shelf, journal, content)
+    journal.createEntry(idx, entry)
+    entryController.save(entry, content)
+    syncerController.updateRow(journal.shelf.id, journal.id, journal.title, idx, entry.raw)
+    buildTags(journal)
+}
+
+function updateEntry(journal: JournalModel, entry: JournalEntryModel, idx: number, content: string) {
+    if (entry.saved === content) return
+    entryController.save(entry, content)
+    syncerController.updateRow(journal.shelf.id, journal.id, journal.title, idx, entry.raw)
     buildTags(journal)
 }
 
 function deleteEntry(journal: JournalModel, idx: number) {
     journal.deleteEntry(idx)
+    syncerController.deleteRow(journal.shelf.id, journal.id, idx)
     buildTags(journal)
 }
 

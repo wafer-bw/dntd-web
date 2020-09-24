@@ -63,7 +63,7 @@ export function composeComponent() {
             let content = getComposedContent()
             entryController.update(composeContentEntry, "")
             let idx = journal.entries.length
-            journalController.addEntry(journal, idx, content, true)
+            journalController.createEntry(journal, idx, content)
         }
     }
 

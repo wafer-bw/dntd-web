@@ -66,8 +66,7 @@ export function entriesComponent() {
 
     async function onEntryBlur(event: any, entry: JournalEntryModel, entryIdx: number) {
         event.redraw = false
-        entryController.save(entry, entryIdx, event.target.innerText, true)
-        journalController.buildTags(entry.journal)
+        journalController.updateEntry(entry.journal, entry, entryIdx, event.target.innerText)
     }
 
     function entryContentSettings(entry: JournalEntryModel, entryIdx: number) {
