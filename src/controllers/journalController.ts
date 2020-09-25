@@ -57,12 +57,19 @@ function addEntry(journal: JournalModel, idx: number, content: string | undefine
     buildTags(journal)
 }
 
-function createEntry(journal: JournalModel, idx: number, content: string | undefined) {
+function createEntry(journal: JournalModel, idx: number, content?: string) {
     content = (content === undefined) ? "" : content
     let entry = entryFactory.createJournalEntry(journal.shelf, journal, content)
     journal.createEntry(idx, entry)
     entryController.save(entry, content)
+    syncerController.createRow(journal.shelf.id, journal.id, idx)
+        .catch((error: ErrorPayload) => {
+            new FriendlyError(error.error.message, error.friendlyMsg)
+        })
     syncerController.updateRow(journal.shelf.id, journal.id, journal.title, idx, entry.raw)
+        .catch((error: ErrorPayload) => {
+            new FriendlyError(error.error.message, error.friendlyMsg)
+        })
     buildTags(journal)
 }
 
@@ -70,12 +77,18 @@ function updateEntry(journal: JournalModel, entry: JournalEntryModel, idx: numbe
     if (entry.saved === content) return
     entryController.save(entry, content)
     syncerController.updateRow(journal.shelf.id, journal.id, journal.title, idx, entry.raw)
+        .catch((error: ErrorPayload) => {
+            new FriendlyError(error.error.message, error.friendlyMsg)
+        })
     buildTags(journal)
 }
 
 function deleteEntry(journal: JournalModel, idx: number) {
     journal.deleteEntry(idx)
     syncerController.deleteRow(journal.shelf.id, journal.id, idx)
+        .catch((error: ErrorPayload) => {
+            new FriendlyError(error.error.message, error.friendlyMsg)
+        })
     buildTags(journal)
 }
 

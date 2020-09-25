@@ -9,6 +9,7 @@ worker.onmessage = (msg: MessageEvent) => onMessage(msg)
 export const syncerController = {
     unpause: unpause,
     getRows: getRows,
+    createRow: createRow,
     deleteRow: deleteRow,
     updateRow: updateRow,
     updateAuth: updateAuth,
@@ -40,8 +41,14 @@ function getSpreadsheet(spreadsheetId: string) {
     }, worker)
 }
 
-
-// TODO: createRow
+async function createRow(shelfId: string, journalId: number, idx: number) {
+    return await syncerModel.pushSyncerTask({
+        type: SyncerPayloadType.CREATE_ROW,
+        spreadsheetId: shelfId,
+        sheetId: journalId,
+        idx: idx,
+    }, worker)
+}
 
 function getRows(shelfId: string, journalId: number, journalTitle: string) {
     let rows: string[] = []
@@ -74,8 +81,8 @@ async function deleteRow(shelfId: string, journalId: number, idx: number) {
     }, worker)
 }
 
-
-// TODO: moveRow
+// TODO - NICE TO HAVE
+// async function moveRow() {}
 
 async function unpause() {
     return await syncerModel.pushSyncerTask({

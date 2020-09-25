@@ -1,6 +1,5 @@
-import { SyncerError } from ".."
 import { BaseTask } from "./BaseTask"
-import { GapiErrorResponse, GetRowsPayload, TestMode } from "../../../types"
+import { SyncerError, GapiErrorResponse, GetRowsPayload, TestMode } from "../../../types"
 
 export function createGetRowsTask<P extends GetRowsPayload>(payload: P, testMode: TestMode): BaseTask<P> {
     return (testMode === TestMode.OFF)
