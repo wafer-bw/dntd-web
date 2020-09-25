@@ -1,8 +1,7 @@
 import { instanceOfSyncerError } from "."
-import { SyncerError } from "../../types"
 import { TaskFactory, BaseTask } from "./tasks"
 import { postTokenRequestMessage, postSyncStateMessage } from "./messages"
-import { SyncerState, SyncerPayload, TestMode, SyncerPayloadType } from "../../types"
+import { SyncerError, SyncerState, SyncerPayload, TestMode, SyncerPayloadType } from "../../types"
 
 let pendingDownloads = 0
 const syncRate = 250 // ms
@@ -18,8 +17,6 @@ onmessage = (msg) => prequeue(msg)
 
 function prequeue(msg: MessageEvent) {
     const { id, payload }: { id: string, payload: SyncerPayload } = msg.data
-
-    console.log(payload)
 
     switch (payload.type) {
         case SyncerPayloadType.TEST_MODE_UPDATE:
@@ -48,12 +45,8 @@ async function sync() {
     while (true) {
         await sleep(syncRate)
         if (isSynced()) updateSyncState(SyncerState.SYNCED)
-        try {
-            workDownloadQueueTasks()
-            await workUploadQueueTasks()
-        } catch (error) {
-            handleSyncError(error)
-        }
+        workDownloadQueueTasks()
+        await workUploadQueueTasks()
     }
 }
 
@@ -75,7 +68,7 @@ function updateSyncState(newState?: SyncerState) {
     }
 }
 
-function handleSyncError(error: Error | SyncerError, id?: string) {
+function handleSyncError(error: Error | SyncerError, id: string) {
     if (instanceOfSyncerError(error) && error.needsReAuth) {
         postTokenRequestMessage()
         token = undefined
@@ -93,9 +86,13 @@ async function workUploadQueueTasks() {
     while (uploadQueue.length !== 0 && token && state !== SyncerState.PAUSED) {
         updateSyncState(SyncerState.UPLOADING)
         let { id, task } = uploadQueue[0]
-        let payload = await task.work(token)
-        postMessage({ id, payload })
-        uploadQueue.shift()
+        try {
+            let payload = await task.work(token)
+            postMessage({ id, payload })
+            uploadQueue.shift()
+        } catch (error) {
+            handleSyncError(error, id)
+        }
     }
 }
 

@@ -1,23 +1,27 @@
 import { SyncerPayload, TestMode, SyncerPayloadType } from "../../../types"
 import {
-    createGetRowsTask, createGetSpreadsheetTask,
-    createDeleteRowTask, createUpdateRowTask
+    createGetRowsTask, createGetSpreadsheetTask, createDeleteRowTask,
+    createUpdateRowTask, createCreateRowTask
 } from "."
 
 export class TaskFactory {
     public createTask(payload: SyncerPayload, testMode: TestMode): BaseTask<SyncerPayload> | undefined {
         switch(payload.type) {
+            case SyncerPayloadType.CREATE_ROW:
+                return createCreateRowTask(payload, testMode)
             case SyncerPayloadType.GET_ROWS:
                 return createGetRowsTask(payload, testMode)
             case SyncerPayloadType.GET_SPREADSHEET:
                 return createGetSpreadsheetTask(payload, testMode)
-            case SyncerPayloadType.DELETE_ROW:
-                return createDeleteRowTask(payload, testMode)
             case SyncerPayloadType.UPDATE_ROW:
                 return createUpdateRowTask(payload, testMode)
+            case SyncerPayloadType.DELETE_ROW:
+                return createDeleteRowTask(payload, testMode)
+            // TODO - NICE TO HAVE
             // case SyncerPayloadType.MOVE_ROW:
-            //     return undefined // TODO
+            //     return undefined
             default:
+                console.warn("Task factory told to build unsupported task")
                 return undefined
         }
         return

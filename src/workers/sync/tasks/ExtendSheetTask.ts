@@ -1,6 +1,5 @@
-import { SyncerError } from ".."
 import { BaseTask } from "./BaseTask"
-import { GapiErrorResponse, ExtendSheetPayload } from "../../../types"
+import { SyncerError, GapiErrorResponse, ExtendSheetPayload } from "../../../types"
 
 export class ExtendSheetTask<P extends ExtendSheetPayload> extends BaseTask<P> {
     constructor(payload: P) {

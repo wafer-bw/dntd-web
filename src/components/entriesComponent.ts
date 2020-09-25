@@ -24,10 +24,20 @@ export function entriesComponent() {
             .map(({ idx, entry }) => entryVnode(entry, idx))
     }
 
+    function createEntryVnode(journal: JournalModel, idx: number): m.Vnode {
+        return m("button", {
+            class: "createEntry",
+            id: `createEntry-${idx}`,
+            onclick: async () => journalController.createEntry(journal, idx)
+        }, "ins")
+    }
+
     function entryVnode(entry: JournalEntryModel, entryIdx: number): m.Vnode {
         return m(".entryWrap", { id: `entry-${entry.id}` }, [
+            createEntryVnode(entry.journal, entryIdx),
             entryContent(entry, entryIdx),
             deleteEntryButton(entry, entryIdx),
+            createEntryVnode(entry.journal, entryIdx+1),
         ])
     }
 

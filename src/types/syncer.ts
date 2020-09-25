@@ -2,8 +2,9 @@ import { TestMode } from "./testing"
 
 export type SyncerPayload = (
     GetRowsPayload | GetSpreadsheetPayload | UpdateRowPayload |
-    ExtendSheetPayload | DeleteRowPayload | TestModeUpdatePayload | AuthUpdatePayload |
-    UnpausePayload | SyncStatePayload | ErrorPayload | TokenRequestPayload
+    ExtendSheetPayload | DeleteRowPayload | TestModeUpdatePayload |
+    AuthUpdatePayload | UnpausePayload | SyncStatePayload | ErrorPayload |
+    TokenRequestPayload | CreateRowPayload
 )
 
 export enum SyncerPayloadType {
@@ -52,6 +53,13 @@ export interface UnpausePayload {
 
 export interface DeleteRowPayload {
     type: SyncerPayloadType.DELETE_ROW
+    idx: number
+    spreadsheetId: string
+    sheetId: number
+}
+
+export interface CreateRowPayload {
+    type: SyncerPayloadType.CREATE_ROW
     idx: number
     spreadsheetId: string
     sheetId: number
