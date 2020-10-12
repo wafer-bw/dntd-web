@@ -27,7 +27,7 @@ function prequeue(msg: MessageEvent) {
             token = payload.token
             return
         case SyncerPayloadType.UNPAUSE:
-            updateSyncState(SyncerState.PAUSED)
+            updateSyncState(SyncerState.UPLOADING)
             return
     }
 

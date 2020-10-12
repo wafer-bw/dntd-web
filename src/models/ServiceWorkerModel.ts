@@ -1,4 +1,4 @@
-import { FriendlyError } from "../errors"
+import { errorsController } from "../controllers"
 
 export class ServiceWorkerModel {
     private static instance: ServiceWorkerModel
@@ -9,7 +9,7 @@ export class ServiceWorkerModel {
                 await navigator.serviceWorker.register("../serviceWorker.js")
             })
         } else {
-            throw new FriendlyError("serviceWorker not supported", "Your browser is not supported.")
+            errorsController.add("serviceWorker not supported", "Your browser is not supported.")
         }
     }
 

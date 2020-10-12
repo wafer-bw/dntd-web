@@ -1,12 +1,10 @@
-import m from "mithril"
-
 export class FriendlyError extends Error {
-    constructor(errorMsg: string, public friendlyMsg: string) {
+    public msg: string
+    public friendlyMsg: string
+
+    constructor(errorMsg: string, friendlyMsg: string) {
         super(errorMsg)
-        console.warn(errorMsg)
-        // TODO reassign - journal model used to hold list of errors and display them
-        //                 it will need to be moved to the appropriate new model
-        // journal.errors.push(friendlyMsg)
-        m.redraw()
+        this.msg = errorMsg
+        this.friendlyMsg = friendlyMsg
     }
 }
