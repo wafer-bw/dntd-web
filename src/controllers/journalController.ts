@@ -1,10 +1,9 @@
 import m from "mithril"
 import { libraryModel } from ".."
 import { ErrorPayload } from "../types"
-import { FriendlyError } from "../errors"
 import { tagFactory, entryFactory } from "../factories"
 import { JournalEntryModel, JournalModel, TagModel } from "../models"
-import { syncerController, searchController, entryController } from "."
+import { syncerController, searchController, entryController, errorsController } from "."
 
 export const journalController = {
     addEntry: addEntry,
@@ -42,7 +41,7 @@ function loadEntries(journal: JournalModel | undefined) {
             journal.loaded = true
         })
         .catch((error: ErrorPayload) => {
-            new FriendlyError(error.error.message, error.friendlyMsg)
+            errorsController.add(error.error.message, error.friendlyMsg)
         })
         .finally(() => {
             m.redraw()
@@ -64,11 +63,11 @@ function createEntry(journal: JournalModel, idx: number, content?: string) {
     entryController.save(entry, content)
     syncerController.createRow(journal.shelf.id, journal.id, idx)
         .catch((error: ErrorPayload) => {
-            new FriendlyError(error.error.message, error.friendlyMsg)
+            errorsController.add(error.error.message, error.friendlyMsg)
         })
     syncerController.updateRow(journal.shelf.id, journal.id, journal.title, idx, entry.raw)
         .catch((error: ErrorPayload) => {
-            new FriendlyError(error.error.message, error.friendlyMsg)
+            errorsController.add(error.error.message, error.friendlyMsg)
         })
     buildTags(journal)
 }
@@ -78,7 +77,7 @@ function updateEntry(journal: JournalModel, entry: JournalEntryModel, idx: numbe
     entryController.save(entry, content)
     syncerController.updateRow(journal.shelf.id, journal.id, journal.title, idx, entry.raw)
         .catch((error: ErrorPayload) => {
-            new FriendlyError(error.error.message, error.friendlyMsg)
+            errorsController.add(error.error.message, error.friendlyMsg)
         })
     buildTags(journal)
 }
@@ -87,7 +86,7 @@ function deleteEntry(journal: JournalModel, idx: number) {
     journal.deleteEntry(idx)
     syncerController.deleteRow(journal.shelf.id, journal.id, idx)
         .catch((error: ErrorPayload) => {
-            new FriendlyError(error.error.message, error.friendlyMsg)
+            errorsController.add(error.error.message, error.friendlyMsg)
         })
     buildTags(journal)
 }

@@ -1,5 +1,5 @@
 import m from "mithril"
-import { FriendlyError } from "../errors"
+import { errorsController } from "."
 import { googleModel, syncerModel } from ".."
 import { SyncerPayloadType, TestMode, SyncerPayload, ErrorPayload } from "../types"
 
@@ -102,13 +102,13 @@ function onMessage(msg: MessageEvent) {
                 m.redraw()
                 break
             case SyncerPayloadType.ERROR:
-                new FriendlyError(payload.error.message, payload.friendlyMsg)
+                errorsController.add(payload.error.message, payload.friendlyMsg)
                 break
             case SyncerPayloadType.TOKEN_REQUEST:
                 updateAuth(googleModel.token)
                 break
         }
     } else {
-        throw new FriendlyError("undefined payload", "An unexpected error occurred.")
+        errorsController.add("undefined payload", "An unexpected error occurred.")
     }
 }

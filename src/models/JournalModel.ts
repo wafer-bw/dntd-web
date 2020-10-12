@@ -24,7 +24,7 @@ export class JournalModel {
     }
 
     public deleteEntry(idx: number) {
-        this.entries.splice(idx, 1)[0]
+        this.entries.splice(idx, 1)
     }
 
     public moveEntry(fromIdx: number, toIdx: number) {

@@ -1,11 +1,8 @@
 import m from "mithril"
 import { libraryModel } from ".."
 import { ErrorPayload } from "../types"
-import { FriendlyError } from "../errors"
 import { shelfFactory } from "../factories"
-import { syncerController } from "../controllers"
-import { urlController } from "./urlController"
-import { journalController } from "./journalController"
+import { urlController, journalController, errorsController, syncerController } from "../controllers"
 
 const spreadsheetIdPattern = /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/g
 
@@ -48,7 +45,7 @@ function loadShelves(reloadLoaded?: boolean, ids?: string[]) {
             }
         })
         .catch((error: ErrorPayload) => {
-            new FriendlyError(error.error.message, error.friendlyMsg)
+            errorsController.add(error.error.message, error.friendlyMsg)
             let shelf = shelfFactory.createShelf(id, undefined, error.friendlyMsg)
             libraryModel.shelves.set(id, shelf)
         })
