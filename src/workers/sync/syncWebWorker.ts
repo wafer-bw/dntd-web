@@ -69,14 +69,15 @@ function updateSyncState(newState?: SyncerState) {
 }
 
 function handleSyncError(error: Error | SyncerError, id: string) {
-    if (instanceOfSyncerError(error) && error.needsReAuth) {
+    let syncerError: SyncerError = (instanceOfSyncerError(error)
+        ? error
+        : new SyncerError(error.message, "Unknown Error", false))
+
+    if (syncerError.needsReAuth) {
         postTokenRequestMessage()
         token = undefined
         return
     } else {
-        let syncerError: SyncerError = (instanceOfSyncerError(error)
-            ? error
-            : new SyncerError(error.message, "Unknown Error", false))
         if (syncerError.payload.pause) updateSyncState(SyncerState.PAUSED)
         postMessage({ id, error: syncerError.payload })
     }
