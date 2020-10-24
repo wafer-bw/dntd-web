@@ -16,5 +16,8 @@
 * **Cloud** - Your journals are saved in Google Sheets in the cloud.
 * **Plaintext** - Your journals are saved in plaintext.
 
+## Resources and References
+* [Material.io Icons](https://material.io/resources/icons/?style=baseline) under the `Apache 2.0` license [here](https://www.apache.org/licenses/LICENSE-2.0.html)
+
 ## CLI Counterpart
 [wafer-bw/dntd-cli](https://github.com/wafer-bw/dntd-cli)

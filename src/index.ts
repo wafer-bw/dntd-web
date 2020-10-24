@@ -1,19 +1,30 @@
 import m from "mithril"
-import { app, about } from "./components"
-import { Journal, Search, Syncer, ServiceWorker, Refines } from "./classes"
+import { signinView, libraryView, shelfView, journalView, testModeView } from "./views"
+import {
+    ServiceWorkerModel, SyncerModel, LibraryModel, GoogleModel, UrlModel, SearchModel,
+    AppStateModel, ErrorsModel
+} from "./models"
 
-export const syncer = new Syncer()
-export const search = new Search()
-export const refines = new Refines()
-export const journal = new Journal()
-export const serviceWorker = new ServiceWorker()
+export const errorsModel = ErrorsModel.getInstance()
+export const appStateModel = AppStateModel.getInstance()
+export const serviceWorkerModel = ServiceWorkerModel.getInstance()
+export const googleModel = GoogleModel.getInstance()
+export const syncerModel = SyncerModel.getInstance()
+export const libraryModel = LibraryModel.getInstance()
+export const urlModel = UrlModel.getInstance()
+export const searchModel = SearchModel.getInstance()
 
-let root = document.getElementById("root")
+const root = document.getElementById("root")
 
 if (root !== null) {
     m.route(root, "/", {
-        "/": app,
-        "/demo" : app,
-        "/about": about,
+        "/": signinView,        // TODO switch to be about page
+        "/demo": testModeView,
+        "/signin": signinView,
+        "/library": libraryView,
+        "/library/:shelfId": shelfView,
+        "/setTestMode/:testMode": testModeView,
+        "/library/:shelfId/:journalId": journalView,
+        "/demo/:shelfId/:journalId": journalView,
     })
 }

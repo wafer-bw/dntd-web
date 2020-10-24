@@ -1,4 +1,5 @@
 {
-  "url": "./public/index.html",
-  "projectId": "iwdafq"
+    "url": "./public",
+    "projectId": "iwdafq",
+    "ignoreTestFiles": "index.js"
 }
