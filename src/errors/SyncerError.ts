@@ -10,6 +10,7 @@ export class SyncerError extends Error {
             error: this,
             friendlyMsg: this.friendlyMsg,
             type: SyncerPayloadType.ERROR,
+            rejects: false,
         }
     }
 }

@@ -214,6 +214,10 @@ h1, h3, #badges {
     vertical-align: middle;
 }
 
+.solidError {
+    color: rgb(200, 0, 0);
+}
+
 .error {
     color: rgb(200, 0, 0, 0.54);
 }

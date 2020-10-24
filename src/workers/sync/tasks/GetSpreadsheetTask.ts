@@ -23,7 +23,7 @@ export class GetSpreadsheetTask<P extends GetSpreadsheetPayload> extends BaseTas
             let error: GapiErrorResponse = await response.json()
             throw new SyncerError(
                 JSON.stringify(error),
-                `Error: Could not download spreadsheet.`,
+                `Could not get spreadsheet information for ${this.payload.spreadsheetId}`,
                 response.status === 401,
                 false
             )

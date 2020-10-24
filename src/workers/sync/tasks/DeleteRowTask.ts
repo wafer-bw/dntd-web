@@ -22,7 +22,7 @@ export class DeleteRowTask<P extends DeleteRowPayload> extends BaseTask<P> {
         let response = await fetch(url.toString(), opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(JSON.stringify(error), `Failed to delete row: ${this.payload.idx}`, response.status === 401)
+            throw new SyncerError(JSON.stringify(error), "Failed to delete entry", response.status === 401)
         }
         return this.payload
     }

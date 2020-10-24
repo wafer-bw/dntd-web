@@ -40,15 +40,18 @@ export enum SyncerState {
 export interface TestModeUpdatePayload {
     type: SyncerPayloadType.TEST_MODE_UPDATE
     testMode: TestMode
+    rejects: boolean
 }
 
 export interface AuthUpdatePayload {
     type: SyncerPayloadType.AUTH_UPDATE
     token: string
+    rejects: boolean
 }
 
 export interface UnpausePayload {
     type: SyncerPayloadType.UNPAUSE
+    rejects: boolean
 }
 
 export interface DeleteRowPayload {
@@ -56,6 +59,7 @@ export interface DeleteRowPayload {
     idx: number
     spreadsheetId: string
     sheetId: number
+    rejects: boolean
 }
 
 export interface CreateRowPayload {
@@ -63,12 +67,14 @@ export interface CreateRowPayload {
     idx: number
     spreadsheetId: string
     sheetId: number
+    rejects: boolean
 }
 
 export interface ExtendSheetPayload {
     type: SyncerPayloadType.EXTEND_SHEET
     spreadsheetId: string
     sheetId: number
+    rejects: boolean
 }
 
 export interface UpdateRowPayload {
@@ -78,12 +84,14 @@ export interface UpdateRowPayload {
     sheetId: number
     sheetTitle: string
     content: string
+    rejects: boolean
 }
 
 export interface GetSpreadsheetPayload {
     type: SyncerPayloadType.GET_SPREADSHEET
     spreadsheetId: string
     spreadsheet?: gapi.client.sheets.Spreadsheet
+    rejects: boolean
 }
 
 export interface GetRowsPayload {
@@ -92,12 +100,14 @@ export interface GetRowsPayload {
     sheetId: number
     sheetTitle: string
     rows: string[]
+    rejects: boolean
 }
 
 export interface SyncStatePayload {
     type: SyncerPayloadType.SYNC_STATE
     length: number
     state: SyncerState
+    rejects: boolean
 }
 
 export interface ErrorPayload {
@@ -105,8 +115,10 @@ export interface ErrorPayload {
     error: Error
     pause: boolean
     friendlyMsg: string
+    rejects: boolean
 }
 
 export interface TokenRequestPayload {
     type: SyncerPayloadType.TOKEN_REQUEST
+    rejects: boolean
 }
