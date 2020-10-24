@@ -1,14 +1,14 @@
 
 import { urlModel } from ".."
-import { urlController, appStateController } from "../controllers"
 import { TestMode } from "../types"
+import { urlController, appStateController, libraryController } from "../controllers"
 
 export function testModeView() {
-    // TODO: WORK OUT HOW TO MANAGE TEST MODE
     function view() {
         if (urlModel.hash.startsWith("#/demo")) {
             appStateController.updateTestMode(TestMode.DEMO)
-            urlController.redirect("/library")
+            libraryController.addShelves("https://docs.google.com/spreadsheets/d/shelf/edit")
+            urlController.redirect("/library/shelf/0")
         }
 
         if (urlModel.hash.startsWith("#/setTestMode")) {

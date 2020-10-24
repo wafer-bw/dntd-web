@@ -25,5 +25,6 @@ if (root !== null) {
         "/library/:shelfId": shelfView,
         "/setTestMode/:testMode": testModeView,
         "/library/:shelfId/:journalId": journalView,
+        "/demo/:shelfId/:journalId": journalView,
     })
 }

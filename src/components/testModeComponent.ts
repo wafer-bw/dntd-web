@@ -1,7 +1,7 @@
 import m from "mithril"
 import { appStateModel } from ".."
 import { TestMode } from "../types"
-import { urlController } from "../controllers"
+import { appStateController, urlController } from "../controllers"
 
 export function testModeComponent() {
 
@@ -18,7 +18,8 @@ export function testModeComponent() {
     function stopDemoButton() {
         if (appStateModel.testMode === TestMode.DEMO) {
             return m("button", { onclick: () => {
-                urlController.redirect(`/library/${TestMode.OFF}`)
+                appStateController.updateTestMode(TestMode.OFF)
+                urlController.redirect("/library")
             }, class: "stopDemo" }, "Start Now")
         }
         return

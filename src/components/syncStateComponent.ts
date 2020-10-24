@@ -1,12 +1,12 @@
 import m from "mithril"
-import { SyncerState } from "../types"
+import { SyncerState, TestMode } from "../types"
 import { syncerController } from "../controllers"
-import { syncerModel, googleModel, libraryModel } from ".."
+import { syncerModel, googleModel, libraryModel, appStateModel } from ".."
 
 export function syncStateComponent() {
 
     function view() {
-        if (!googleModel.isSignedIn || libraryModel.shelves.size === 0) return
+        if (!googleModel.isSignedIn || libraryModel.shelves.size === 0 || appStateModel.testMode === TestMode.DEMO) return
         return m("#status", m("span", syncState()))
     }
 
