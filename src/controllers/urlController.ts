@@ -33,10 +33,10 @@ function getBreadcrumbTrail() {
     for (let i = 0; i < hash.length; i++) {
         let crumb = hash[i]
         let trail = "#/" + hash.slice(0, i + 1).join("/")
-        if (i === 2) {
+        if (i === 1) {
             shelfId = crumb
             crumb = libraryModel.shelves.get(crumb)?.title || crumb
-        } else if (i === 3 && shelfId !== undefined) {
+        } else if (i === 2 && shelfId !== undefined) {
             crumb = libraryModel.shelves.get(shelfId)?.journals.get(parseInt(crumb))?.title || crumb
         }
         if (i !== 0) breadcrumb.push(m("span", " / "))
