@@ -33,7 +33,10 @@ export function entriesComponent() {
     }
 
     function entryVnode(entry: JournalEntryModel, entryIdx: number): m.Vnode {
-        return m(".entryWrap", { id: `entry-${entry.id}` }, [
+        return m(".entryWrap", {
+            id: `entry-${entry.id}`,
+            class: `entry-idx-${entryIdx}`
+        }, [
             createEntryVnode(entry.journal, entryIdx),
             entryContent(entry, entryIdx),
             deleteEntryButton(entry, entryIdx),
@@ -43,7 +46,8 @@ export function entriesComponent() {
 
     function deleteEntryButton(entry: JournalEntryModel, entryIdx: number) {
         return m("button", {
-            class: "del",
+            id: `del-entry-${entry.id}`,
+            class: `del del-entry-idx-${entryIdx}`,
             onclick: async () => journalController.deleteEntry(entry.journal, entryIdx)
         }, "del")
     }
@@ -83,7 +87,7 @@ export function entriesComponent() {
         return {
             id: `entry-${entry.id}-content`,
             contenteditable: "true",
-            class: "entry breakwrap column",
+            class: `entry breakwrap column entry-idx-${entryIdx}-content`,
             onkeydown: (event: any) => onEntryKeydown(event),
             oninput: (event: any) => onEntryInput(event, entry),
             onupdate: (event: any) => onEntryUpdate(event),

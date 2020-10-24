@@ -2,7 +2,8 @@ import m from "mithril"
 import { libraryModel } from ".."
 import { tagFactory, entryFactory } from "../factories"
 import { JournalEntryModel, JournalModel, TagModel } from "../models"
-import { syncerController, searchController, entryController } from "."
+import { syncerController, searchController, entryController, errorsController } from "."
+import { ErrorPayload } from "../types"
 
 export const journalController = {
     addEntry: addEntry,
@@ -38,6 +39,12 @@ function loadEntries(journal: JournalModel | undefined) {
         .then(payload => {
             payload.rows.forEach((content, idx) => addEntry(journal, idx, content))
             journal.loaded = true
+            m.redraw()
+        })
+        .catch((error: ErrorPayload) => {
+            errorsController.add(error.error.message, error.friendlyMsg)
+        })
+        .finally(() => {
             m.redraw()
         })
 }

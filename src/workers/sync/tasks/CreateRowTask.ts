@@ -35,7 +35,8 @@ export class MockCreateRowTask<P extends CreateRowPayload> extends BaseTask<P> {
 
     public async work(_token: string): Promise<P> {
         if (this.testMode === TestMode.FAIL_DELETE_ROW) {
-            throw new Error("mock fail")
+            let error = new Error("mock fail")
+            throw new SyncerError(JSON.stringify(error), "Failed to create new entry", false)
         }
         return this.payload
     }

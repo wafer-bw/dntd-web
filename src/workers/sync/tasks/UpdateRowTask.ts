@@ -36,12 +36,12 @@ export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
                 let secondResponse = await fetch(url.toString(), opts)
                 if (!secondResponse.ok) {
                     let error: GapiErrorResponse = await response.json()
-                    throw new SyncerError(JSON.stringify(error), `Failed to update row: ${range}`, response.status === 401)
+                    throw new SyncerError(JSON.stringify(error), "Failed to update entry", response.status === 401)
                 } else {
                     return this.payload
                 }
             }
-            throw new SyncerError(JSON.stringify(data), "Failed to update rentry", response.status === 401)
+            throw new SyncerError(JSON.stringify(data), "Failed to update entry", response.status === 401)
         }
         return this.payload
     }
@@ -54,7 +54,8 @@ export class MockUpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
 
     public async work(): Promise<P> {
         if (this.testMode === TestMode.FAIL_UPDATE_RANGE) {
-            throw new Error("mock fail")
+            let error = new Error("mock fail")
+            throw new SyncerError(JSON.stringify(error), "Failed to update entry", false)
         }
         return this.payload
     }

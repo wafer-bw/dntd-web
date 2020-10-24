@@ -35,7 +35,8 @@ export class MockDeleteRowTask<P extends DeleteRowPayload> extends BaseTask<P> {
 
     public async work(_token: string): Promise<P> {
         if (this.testMode === TestMode.FAIL_DELETE_ROW) {
-            throw new Error("mock fail")
+            let error = new Error("mock fail")
+            throw new SyncerError(JSON.stringify(error), "Failed to delete entry", false)
         }
         return this.payload
     }

@@ -38,7 +38,10 @@ export function shelvesComponent() {
         } else {
             return m("li", [
                 delShelfButton(id),
-                m("a", { href: `#/library/${id}` }, shelf.title)
+                m("a", {
+                    href: `#/library/${id}`,
+                    id: `shelf-${id}`
+                }, shelf.title)
             ])
         }
     }

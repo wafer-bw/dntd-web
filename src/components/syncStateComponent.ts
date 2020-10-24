@@ -24,19 +24,19 @@ export function syncStateComponent() {
 
         switch (syncerModel.state) {
             case SyncerState.DOWNLOADING:
-                txt = "Downloading journal data from drive..."
+                txt = "Downloading journal data from drive"
                 break
             case SyncerState.PAUSED:
-                txt = "Warning! - Syncing is paused."
+                txt = "Warning! - Syncing is paused"
                 break
             case SyncerState.SYNCED:
-                txt = "Cloud synced."
+                txt = "Cloud synced"
                 break
             case SyncerState.UPLOADING:
-                txt = "Uploading changes to drive..."
+                txt = "Uploading changes to drive"
                 break
             case SyncerState.INITIALIZING:
-                txt = "Initializing..."
+                txt = "Initializing"
         }
         return m("span", { id: "syncStateText", class: class_ }, txt)
     }

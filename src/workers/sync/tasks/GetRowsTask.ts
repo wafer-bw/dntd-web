@@ -22,10 +22,7 @@ export class GetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
         let response = await fetch(url, opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(
-                JSON.stringify(error),
-                `Failed to load entries from ${this.payload.spreadsheetId}`,
-                response.status === 401)
+            throw new SyncerError(JSON.stringify(error), `Failed to load entries from ${this.payload.spreadsheetId}`, response.status === 401, true, true)
         } else {
             let data: gapi.client.sheets.ValueRange = await response.json()
             this.payload.rows = (data.values) ? data.values.map(row => row[0]) : []
@@ -42,7 +39,8 @@ export class MockGetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
 
     public async work(_token: string): Promise<P> {
         if (this.testMode === TestMode.FAIL_GET_RANGE) {
-            throw new Error("mock fail")
+            let error = new Error("mock fail")
+            throw new SyncerError(JSON.stringify(error), `Failed to load entries from ${this.payload.spreadsheetId}`, false, true, true)
         }
         if (this.testMode === TestMode.RETURN_ROWS) {
             this.payload.rows = ["aaa", "bbb", "ccc", "@tag", "@key:value"]
