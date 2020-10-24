@@ -1,7 +1,8 @@
 import { instanceOfSyncerError } from "."
+import { SyncerError } from "../../errors"
 import { TaskFactory, BaseTask } from "./tasks"
 import { postTokenRequestMessage, postSyncStateMessage } from "./messages"
-import { SyncerError, SyncerState, SyncerPayload, TestMode, SyncerPayloadType } from "../../types"
+import { SyncerState, SyncerPayload, TestMode, SyncerPayloadType } from "../../types"
 
 let pendingDownloads = 0
 const syncRate = 250 // ms

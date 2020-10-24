@@ -1,5 +1,6 @@
 import { BaseTask } from "./BaseTask"
-import { SyncerError, GapiErrorResponse, DeleteRowPayload, TestMode } from "../../../types"
+import { DeleteRowPayload, TestMode } from "../../../types"
+import { SyncerError, GapiErrorResponse } from "../../../errors"
 
 export function createDeleteRowTask<P extends DeleteRowPayload>(payload: P, testMode: TestMode): BaseTask<P> | undefined {
     return (testMode === TestMode.OFF)

@@ -1,14 +1,4 @@
-import { ErrorPayload, SyncerPayloadType } from "."
-
-export interface GapiErrorResponseBody {
-    code: number,
-    message: string,
-    status: string
-}
-
-export interface GapiErrorResponse {
-    error: GapiErrorResponseBody
-}
+import { ErrorPayload, SyncerPayloadType } from "../types"
 
 export class SyncerError extends Error {
     public payload: ErrorPayload
