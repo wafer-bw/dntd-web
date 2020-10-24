@@ -4,14 +4,15 @@ import { TaskFactory, BaseTask } from "./tasks"
 import { postTokenRequestMessage, postSyncStateMessage } from "./messages"
 import { SyncerState, SyncerPayload, TestMode, SyncerPayloadType } from "../../types"
 
-let pendingDownloads = 0
-const syncRate = 250 // ms
-let testMode: TestMode = TestMode.OFF
+export const syncRate = 250 // ms
 const taskFactory = new TaskFactory()
-let token: string | undefined = undefined
-let state: SyncerState = SyncerState.SYNCED
 const downloadQueue: Map<string, BaseTask<SyncerPayload>> = new Map()
 const uploadQueue: { id: string, task: BaseTask<SyncerPayload> }[] = []
+
+let pendingDownloads = 0
+let testMode: TestMode = TestMode.OFF
+let token: string | undefined = undefined
+let state: SyncerState = SyncerState.SYNCED
 
 sync()
 onmessage = (msg) => prequeue(msg)

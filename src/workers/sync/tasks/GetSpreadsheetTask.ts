@@ -21,12 +21,7 @@ export class GetSpreadsheetTask<P extends GetSpreadsheetPayload> extends BaseTas
         let response = await fetch(url, opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(
-                JSON.stringify(error),
-                `Could not get spreadsheet information for ${this.payload.spreadsheetId}`,
-                response.status === 401,
-                false
-            )
+            throw new SyncerError(JSON.stringify(error), `Could not get spreadsheet information for ${this.payload.spreadsheetId}`, response.status === 401, false, true)
         } else {
             this.payload.spreadsheet = await response.json()
         }
@@ -42,7 +37,8 @@ export class MockGetSpreadsheetTask<P extends GetSpreadsheetPayload> extends Bas
 
     public async work(_token: string): Promise<P> {
         if (this.testMode === TestMode.FAIL_GET_SPREADSHEET_SHEETS) {
-            throw new Error("mock fail")
+            let error = new Error("mock fail")
+            throw new SyncerError(JSON.stringify(error), `Could not get spreadsheet information for ${this.payload.spreadsheetId}`, false, false, true)
         }
         this.payload.spreadsheet = {
             "spreadsheetId": this.payload.spreadsheetId,

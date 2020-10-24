@@ -177,7 +177,7 @@ h1, h3, #badges {
     padding-bottom: 2.5px;
 }
 
-#sheetSelect, #spreadsheetSelect, #hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img, #unpauseSync, #syncStateText, .del, .createEntry, .entry {
+#hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img, #unpauseSync, #syncStateText, .del, .createEntry, .entry {
     margin-left: 5px;
 }
 

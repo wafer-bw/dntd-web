@@ -1,3 +1,4 @@
+import m from "mithril"
 import { errorsController } from "../controllers"
 import { SyncerState, SyncerPayload, ErrorPayload } from "../types"
 
@@ -22,13 +23,14 @@ export class SyncerModel {
         let id = `payload-${this.requestsCounter++}`
         return new Promise((resolve, reject) => {
             this.requests.set(id, ({ payload, error }: { payload: P, error: ErrorPayload }) => {
-                if (error) {
-                    if (payload === undefined || payload.rejects) {
-                        this.requests.delete(id)
-                        reject(error)
-                    } else {
-                        errorsController.add(error.error.message, error.friendlyMsg)
-                    }
+                console.log(id)
+                console.log(error)
+                if (error && error.rejects) {
+                    this.requests.delete(id)
+                    reject(error)
+                } else if (error) {
+                    errorsController.add(error.error.message, error.friendlyMsg)
+                    m.redraw()
                 } else {
                     this.requests.delete(id)
                     resolve(payload)

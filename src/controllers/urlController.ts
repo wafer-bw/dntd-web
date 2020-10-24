@@ -43,7 +43,10 @@ function getBreadcrumbTrail() {
         if (i === hash.length - 1) {
             breadcrumb.push(m("span", `${crumb}`))
         } else {
-            breadcrumb.push(m("a", { href: trail }, `${crumb}`))
+            breadcrumb.push(m("a", {
+                href: trail,
+                id: `bc-${trail.replace("#", "").replace("/", "")}`,
+            }, `${crumb}`))
         }
     }
     return breadcrumb
