@@ -1,5 +1,4 @@
 export * from "./caret"
-export * from "./errors"
 export * from "./search"
 export * from "./testing"
 export * from "./syncer"

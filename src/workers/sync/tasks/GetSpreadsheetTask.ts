@@ -1,5 +1,6 @@
 import { BaseTask } from "./BaseTask"
-import { SyncerError, GapiErrorResponse, GetSpreadsheetPayload, TestMode } from "../../../types"
+import { GetSpreadsheetPayload, TestMode } from "../../../types"
+import { SyncerError, GapiErrorResponse } from "../../../errors"
 
 export function createGetSpreadsheetTask<P extends GetSpreadsheetPayload>(payload: P, testMode: TestMode): BaseTask<P> | undefined {
     return (testMode === TestMode.OFF)
