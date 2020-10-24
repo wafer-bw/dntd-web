@@ -36,4 +36,9 @@ export class UrlModel {
         return (id === "") ? undefined : parseInt(id)
     }
 
+    get newTestMode(): string | undefined {
+        let mode = m.route.param("testMode")
+        return (mode === "") ? undefined : mode
+    }
+
 }

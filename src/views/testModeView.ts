@@ -1,4 +1,3 @@
-
 import { urlModel } from ".."
 import { TestMode } from "../types"
 import { urlController, appStateController, libraryController } from "../controllers"
@@ -12,7 +11,7 @@ export function testModeView() {
         }
 
         if (urlModel.hash.startsWith("#/setTestMode")) {
-            appStateController.updateTestMode(urlModel.getParam("testMode"))
+            appStateController.updateTestMode(urlModel.newTestMode)
             urlController.redirect("/")
         }
     }
