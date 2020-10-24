@@ -1,7 +1,7 @@
 import m from "mithril"
 import {
     googleComponent, journalsComponent, syncStateComponent, breadcrumbComponent,
-    testModeComponent,
+    testModeComponent, errorsComponent
 } from "../components"
 
 export function shelfView() {
@@ -11,6 +11,7 @@ export function shelfView() {
             m(googleComponent),
             m(testModeComponent),
             m(syncStateComponent),
+            m(errorsComponent),
             m(breadcrumbComponent),
             m(journalsComponent),
         ])

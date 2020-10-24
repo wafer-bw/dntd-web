@@ -29,10 +29,10 @@ export function shelvesComponent() {
                 delShelfButton(id),
                 m("span", id)
             ])
-        } else if (shelf.error !== undefined) {
+        } else if (shelf.error) {
             return m("li", [
                 delShelfButton(id),
-                m("span", `${id} ${shelf.error}`),
+                m("span", { class: "solidError" }, `${id}`),
                 retryShelfLoadButton(id)
             ])
         } else {

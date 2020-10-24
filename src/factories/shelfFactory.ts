@@ -4,7 +4,7 @@ export const shelfFactory = {
     createShelf: createShelf,
 }
 
-function createShelf(spreadsheetId: string, spreadsheet?: gapi.client.sheets.Spreadsheet, error?: string): ShelfModel {
+function createShelf(spreadsheetId: string, spreadsheet?: gapi.client.sheets.Spreadsheet, error?: boolean): ShelfModel {
     if (
         spreadsheet !== undefined &&
         spreadsheet.spreadsheetId !== undefined &&

@@ -29,7 +29,8 @@ export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
                 let extendSheetTask: SyncerPayload = {
                     type: SyncerPayloadType.EXTEND_SHEET,
                     spreadsheetId: this.payload.spreadsheetId,
-                    sheetId: this.payload.sheetId
+                    sheetId: this.payload.sheetId,
+                    rejects: false,
                 }
                 await new ExtendSheetTask(extendSheetTask).work(token)
                 let secondResponse = await fetch(url.toString(), opts)
@@ -40,7 +41,7 @@ export class UpdateRowTask<P extends UpdateRowPayload> extends BaseTask<P> {
                     return this.payload
                 }
             }
-            throw new SyncerError(JSON.stringify(data), `Failed to update row: ${range}`, response.status === 401)
+            throw new SyncerError(JSON.stringify(data), "Failed to update rentry", response.status === 401)
         }
         return this.payload
     }

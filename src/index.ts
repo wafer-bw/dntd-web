@@ -1,9 +1,11 @@
 import m from "mithril"
 import { signinView, libraryView, shelfView, journalView, testModeView } from "./views"
 import {
-    ServiceWorkerModel, SyncerModel, LibraryModel, GoogleModel, UrlModel, SearchModel, AppStateModel
+    ServiceWorkerModel, SyncerModel, LibraryModel, GoogleModel, UrlModel, SearchModel,
+    AppStateModel, ErrorsModel
 } from "./models"
 
+export const errorsModel = ErrorsModel.getInstance()
 export const appStateModel = AppStateModel.getInstance()
 export const serviceWorkerModel = ServiceWorkerModel.getInstance()
 export const googleModel = GoogleModel.getInstance()

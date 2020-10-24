@@ -24,7 +24,7 @@ export class GetRowsTask<P extends GetRowsPayload> extends BaseTask<P> {
             let error: GapiErrorResponse = await response.json()
             throw new SyncerError(
                 JSON.stringify(error),
-                `Failed to get sheet rows: ${range}`,
+                `Failed to load entries from ${this.payload.spreadsheetId}`,
                 response.status === 401)
         } else {
             let data: gapi.client.sheets.ValueRange = await response.json()

@@ -1,9 +1,8 @@
 import m from "mithril"
 import { libraryModel } from ".."
-import { ErrorPayload } from "../types"
 import { tagFactory, entryFactory } from "../factories"
 import { JournalEntryModel, JournalModel, TagModel } from "../models"
-import { syncerController, searchController, entryController, errorsController } from "."
+import { syncerController, searchController, entryController } from "."
 
 export const journalController = {
     addEntry: addEntry,
@@ -39,11 +38,6 @@ function loadEntries(journal: JournalModel | undefined) {
         .then(payload => {
             payload.rows.forEach((content, idx) => addEntry(journal, idx, content))
             journal.loaded = true
-        })
-        .catch((error: ErrorPayload) => {
-            errorsController.add(error.error.message, error.friendlyMsg)
-        })
-        .finally(() => {
             m.redraw()
         })
 }
@@ -62,13 +56,7 @@ function createEntry(journal: JournalModel, idx: number, content?: string) {
     journal.createEntry(idx, entry)
     entryController.save(entry, content)
     syncerController.createRow(journal.shelf.id, journal.id, idx)
-        .catch((error: ErrorPayload) => {
-            errorsController.add(error.error.message, error.friendlyMsg)
-        })
     syncerController.updateRow(journal.shelf.id, journal.id, journal.title, idx, entry.raw)
-        .catch((error: ErrorPayload) => {
-            errorsController.add(error.error.message, error.friendlyMsg)
-        })
     buildTags(journal)
 }
 
@@ -76,18 +64,12 @@ function updateEntry(journal: JournalModel, entry: JournalEntryModel, idx: numbe
     if (entry.saved === content) return
     entryController.save(entry, content)
     syncerController.updateRow(journal.shelf.id, journal.id, journal.title, idx, entry.raw)
-        .catch((error: ErrorPayload) => {
-            errorsController.add(error.error.message, error.friendlyMsg)
-        })
     buildTags(journal)
 }
 
 function deleteEntry(journal: JournalModel, idx: number) {
     journal.deleteEntry(idx)
     syncerController.deleteRow(journal.shelf.id, journal.id, idx)
-        .catch((error: ErrorPayload) => {
-            errorsController.add(error.error.message, error.friendlyMsg)
-        })
     buildTags(journal)
 }
 

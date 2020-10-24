@@ -1,7 +1,7 @@
 import m from "mithril"
 import { 
     googleComponent, shelvesComponent, syncStateComponent, addShelvesComponent,
-    testModeComponent,
+    testModeComponent, errorsComponent
 } from "../components"
 
 export function libraryView() {
@@ -11,6 +11,7 @@ export function libraryView() {
             m(googleComponent),
             m(testModeComponent),
             m(syncStateComponent),
+            m(errorsComponent),
             m(addShelvesComponent),
             m(shelvesComponent),
         ])

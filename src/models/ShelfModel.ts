@@ -4,13 +4,13 @@ export class ShelfModel {
     readonly id: string
     readonly title: string | undefined
 
-    public error: string | undefined
+    public error: boolean
     public journals: Map<number, JournalModel> = new Map()
 
-    constructor(id: string, title?: string, error?: string) {
+    constructor(id: string, title?: string, error?: boolean) {
         this.id = id
-        this.error = error
         this.title = title
+        this.error = (error === undefined) ? false : error
     }
 
 }

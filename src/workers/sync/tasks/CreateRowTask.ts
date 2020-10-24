@@ -22,7 +22,7 @@ export class CreateRowTask<P extends CreateRowPayload> extends BaseTask<P> {
         let response = await fetch(url.toString(), opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(JSON.stringify(error), `Failed to create row: ${this.payload.idx}`, response.status === 401)
+            throw new SyncerError(JSON.stringify(error), "Failed to create new entry", response.status === 401)
         }
         return this.payload
     }

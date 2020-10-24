@@ -1,3 +1,4 @@
+import { errorsController } from "../controllers"
 import { SyncerState, SyncerPayload, ErrorPayload } from "../types"
 
 export class SyncerModel {
@@ -21,9 +22,20 @@ export class SyncerModel {
         let id = `payload-${this.requestsCounter++}`
         return new Promise((resolve, reject) => {
             this.requests.set(id, ({ payload, error }: { payload: P, error: ErrorPayload }) => {
-                (error) ? reject(error) : resolve(payload)
+                if (error) {
+                    if (payload === undefined || payload.rejects) {
+                        this.requests.delete(id)
+                        reject(error)
+                    } else {
+                        errorsController.add(error.error.message, error.friendlyMsg)
+                    }
+                } else {
+                    this.requests.delete(id)
+                    resolve(payload)
+                }
             })
             worker.postMessage({ id, payload })
         })
     }
+
 }

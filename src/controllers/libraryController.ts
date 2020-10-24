@@ -2,7 +2,7 @@ import m from "mithril"
 import { libraryModel } from ".."
 import { ErrorPayload } from "../types"
 import { shelfFactory } from "../factories"
-import { urlController, journalController, errorsController, syncerController } from "../controllers"
+import { urlController, journalController, syncerController, errorsController } from "../controllers"
 
 const spreadsheetIdPattern = /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/g
 
@@ -46,7 +46,7 @@ function loadShelves(reloadLoaded?: boolean, ids?: string[]) {
         })
         .catch((error: ErrorPayload) => {
             errorsController.add(error.error.message, error.friendlyMsg)
-            let shelf = shelfFactory.createShelf(id, undefined, error.friendlyMsg)
+            let shelf = shelfFactory.createShelf(id, undefined, true)
             libraryModel.shelves.set(id, shelf)
         })
         .finally(() => {

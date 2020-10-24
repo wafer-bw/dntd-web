@@ -4,7 +4,8 @@ export function postSyncStateMessage(length: number, state: SyncerState) {
     postResponse({
         length: length,
         state: state,
-        type: SyncerPayloadType.SYNC_STATE
+        type: SyncerPayloadType.SYNC_STATE,
+        rejects: false,
     })
 }
 

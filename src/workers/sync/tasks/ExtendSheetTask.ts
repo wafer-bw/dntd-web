@@ -16,7 +16,7 @@ export class ExtendSheetTask<P extends ExtendSheetPayload> extends BaseTask<P> {
         let response = await fetch(url.toString(), opts)
         if (!response.ok) {
             let error: GapiErrorResponse = await response.json()
-            throw new SyncerError(JSON.stringify(error), "Failed to extend sheet", response.status === 401)
+            throw new SyncerError(JSON.stringify(error), "Failed to extend Google Sheet", response.status === 401)
         }
         return this.payload
     }

@@ -21,6 +21,7 @@ async function updateTestMode(testMode: TestMode) {
     return await syncerModel.pushSyncerTask({
         type: SyncerPayloadType.TEST_MODE_UPDATE,
         testMode: testMode,
+        rejects: false,
     }, worker)
 }
 
@@ -29,6 +30,7 @@ function updateAuth(token: string | undefined) {
     return syncerModel.pushSyncerTask({
         type: SyncerPayloadType.AUTH_UPDATE,
         token: token,
+        rejects: false,
     }, worker)
 }
 
@@ -37,7 +39,8 @@ function getSpreadsheet(spreadsheetId: string) {
     return syncerModel.pushSyncerTask({
         type: SyncerPayloadType.GET_SPREADSHEET,
         spreadsheetId: spreadsheetId,
-        spreadsheet: spreadsheet
+        spreadsheet: spreadsheet,
+        rejects: true,
     }, worker)
 }
 
@@ -47,6 +50,7 @@ async function createRow(shelfId: string, journalId: number, idx: number) {
         spreadsheetId: shelfId,
         sheetId: journalId,
         idx: idx,
+        rejects: false,
     }, worker)
 }
 
@@ -57,7 +61,8 @@ function getRows(shelfId: string, journalId: number, journalTitle: string) {
         spreadsheetId: shelfId,
         sheetTitle: journalTitle,
         sheetId: journalId,
-        rows: rows
+        rows: rows,
+        rejects: true,
     }, worker)
 }
 
@@ -69,6 +74,7 @@ async function updateRow(shelfId: string, journalId: number, journalTitle: strin
         sheetId: journalId,
         content: content,
         idx: idx,
+        rejects: false,
     }, worker)
 }
 
@@ -78,6 +84,7 @@ async function deleteRow(shelfId: string, journalId: number, idx: number) {
         spreadsheetId: shelfId,
         sheetId: journalId,
         idx: idx,
+        rejects: false,
     }, worker)
 }
 
@@ -86,7 +93,8 @@ async function deleteRow(shelfId: string, journalId: number, idx: number) {
 
 async function unpause() {
     return await syncerModel.pushSyncerTask({
-        type: SyncerPayloadType.UNPAUSE
+        type: SyncerPayloadType.UNPAUSE,
+        rejects: false,
     }, worker)
 }
 
@@ -94,7 +102,6 @@ function onMessage(msg: MessageEvent) {
     let { id, payload, error }: { id: string | null, payload: SyncerPayload, error: ErrorPayload } = msg.data
     if (id !== null && syncerModel.requests.has(id)) {
         syncerModel.requests.get(id)!({ payload, error })
-        syncerModel.requests.delete(id)
     } else if (payload !== undefined) {
         switch (payload.type) {
             case SyncerPayloadType.SYNC_STATE:
