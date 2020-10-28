@@ -4,6 +4,7 @@
     <p>Tag-based plaintext journaling web app with a slight feature focus on DnD and other tabletop RPGs.</p>
     <img src="https://github.com/wafer-bw/dntd-web/workflows/e2e/badge.svg"/>
     <img src="./public/images/coverage_badge.svg"/>
+    <img src="https://github.com/wafer-bw/dntd-web/workflows/CodeQL/badge.svg">
     <p><a href="https://dntd.app">https://dntd.app</a></p>
 </div>
 
