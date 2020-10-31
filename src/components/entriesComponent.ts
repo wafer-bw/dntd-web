@@ -1,5 +1,6 @@
 import m from "mithril"
 import { Caret } from "../types"
+import { appStateModel } from ".."
 import { JournalModel, JournalEntryModel } from "../models"
 import {
     caretController, urlController, entryController, journalController, searchController
@@ -20,8 +21,10 @@ export function entriesComponent() {
     }
 
     function entriesList(journal: JournalModel) {
-        return searchController.filteredEntries(journal.entries)
+        let entries = searchController.filteredEntries(journal.entries)
             .map(({ idx, entry }) => entryVnode(entry, idx))
+        if (appStateModel.composeMode) entries.reverse()
+        return entries
     }
 
     function createEntryVnode(journal: JournalModel, idx: number): m.Vnode {
@@ -33,14 +36,16 @@ export function entriesComponent() {
     }
 
     function entryVnode(entry: JournalEntryModel, entryIdx: number): m.Vnode {
+        let beforeInsertIdx = (appStateModel.composeMode) ? entryIdx + 1 : entryIdx
+        let afterInsertIdx = (appStateModel.composeMode) ? entryIdx : entryIdx + 1
         return m(".entryWrap", {
             id: `entry-${entry.id}`,
             class: `entry-idx-${entryIdx}`
         }, [
-            createEntryVnode(entry.journal, entryIdx),
+            createEntryVnode(entry.journal, beforeInsertIdx),
             entryContent(entry, entryIdx),
             deleteEntryButton(entry, entryIdx),
-            createEntryVnode(entry.journal, entryIdx+1),
+            createEntryVnode(entry.journal, afterInsertIdx),
         ])
     }
 

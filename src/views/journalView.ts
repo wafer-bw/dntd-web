@@ -3,7 +3,8 @@ import { urlController, journalController } from "../controllers"
 import {
     googleComponent, breadcrumbComponent, entriesComponent, syncStateComponent,
     searchbarComponent, refinesComponent, composeComponent, testModeComponent,
-    errorsComponent
+    errorsComponent,
+    settingsComponent
 } from "../components"
 
 export function journalView() {
@@ -22,10 +23,11 @@ export function journalView() {
             m(errorsComponent),
             m(breadcrumbComponent),
             m(searchbarComponent),
+            m(settingsComponent),
             m(refinesComponent),
             m("#entriesWrap", [
-                m(entriesComponent),
                 m(composeComponent),
+                m(entriesComponent),
             ])
         ])
     }

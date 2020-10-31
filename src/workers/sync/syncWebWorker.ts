@@ -36,11 +36,8 @@ function prequeue(msg: MessageEvent) {
     let task = taskFactory.createTask(payload, testMode)
     if (task === undefined) return
 
-    if (task.async) {
-        downloadQueue.set(id, task)
-    } else {
-        uploadQueue.push({ id, task })
-    }
+    if (task.async) downloadQueue.set(id, task)
+    else uploadQueue.push({ id, task })
 }
 
 async function sync() {
@@ -53,14 +50,11 @@ async function sync() {
 }
 
 function isSynced() {
-    if (
+    return (
         state !== SyncerState.PAUSED &&
         state !== SyncerState.SYNCED &&
         uploadQueue.length + downloadQueue.size + pendingDownloads === 0
-    ) {
-        return true
-    }
-    return false
+    )
 }
 
 function updateSyncState(newState?: SyncerState) {

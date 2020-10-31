@@ -4,6 +4,7 @@ import { TestMode, instanceOfTestMode } from "../types"
 
 export const appStateController = {
     updateTestMode: updateTestMode,
+    updateComposeMode: updateComposeMode,
 }
 
 function updateTestMode(mode: TestMode | string | undefined) {
@@ -11,4 +12,8 @@ function updateTestMode(mode: TestMode | string | undefined) {
         appStateModel.testMode = mode
         syncerController.updateTestMode(mode)
     }
+}
+
+function updateComposeMode(mode: boolean) {
+    appStateModel.composeMode = mode
 }

@@ -1,4 +1,4 @@
-import { TestMode } from "./testing"
+import { TestMode } from "."
 
 export type SyncerPayload = (
     GetRowsPayload | GetSpreadsheetPayload | UpdateRowPayload |
