@@ -6,9 +6,5 @@ export enum TestMode {
     FAIL_UPDATE_RANGE = "4",
     FAIL_DELETE_ROW = "5",
     RETURN_ROWS = "6",
-    DEMO = "demomode"
-}
-
-export function instanceOfTestMode(str: string): str is TestMode {
-    return ((<any>Object).values(TestMode).includes(str))
+    DEMO = "7"
 }

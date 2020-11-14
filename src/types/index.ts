@@ -1,4 +1,6 @@
 export * from "./caret"
+export * from "./errors"
 export * from "./search"
 export * from "./testing"
-export * from "./syncer"
+export * from "./syncerTasks"
+export * from "./syncerResponses"

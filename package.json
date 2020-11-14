@@ -7,9 +7,7 @@
         "test": "cypress run",
         "test:dev": "npm run build && npm run test",
         "test:coverage": "npm run instrument && npm run test && npm run badges && npm run build",
-        "badges": "make-coverage-badge --report-path coverage/coverage-summary.json --output-path public/images/coverage_badge.svg",
-        "host2": "cd public && python -m SimpleHTTPServer",
-        "host3": "python3 -m http.server -d public"
+        "badges": "make-coverage-badge --report-path coverage/coverage-summary.json --output-path public/images/coverage_badge.svg"
     },
     "devDependencies": {
         "@cypress/code-coverage": "^3.7.0",
@@ -18,7 +16,7 @@
         "@types/gapi.auth2": "0.0.51",
         "@types/gapi.client.sheets": "^4.0.3",
         "@types/mithril": "^2.0.2",
-        "cypress": "^4.12.1",
+        "cypress": "^4.5.0",
         "filemanager-webpack-plugin": "^2.0.5",
         "istanbul-instrumenter-loader": "^3.0.1",
         "make-coverage-badge": "^1.2.0",

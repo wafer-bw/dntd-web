@@ -44,6 +44,10 @@ h1, h3, #badges {
     text-overflow: ellipsis;
 }
 
+.del {
+    margin-left: 5px;
+}
+
 #spreadsheetURLs {
     width: 100%;
     height: 60px;
@@ -177,11 +181,7 @@ h1, h3, #badges {
     padding-bottom: 2.5px;
 }
 
-#addShelvesText {
-    width: 400px;
-}
-
-#hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img, #unpauseSync, #syncStateText, .del, .createEntry, .entry {
+#sheetSelect, #spreadsheetSelect, #hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img, #unpauseSync, #syncStateText {
     margin-left: 5px;
 }
 
@@ -216,10 +216,6 @@ h1, h3, #badges {
     color: darkgray;
     display: inline-flex;
     vertical-align: middle;
-}
-
-.solidError {
-    color: rgb(200, 0, 0);
 }
 
 .error {
