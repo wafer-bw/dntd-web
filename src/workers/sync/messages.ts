@@ -10,7 +10,10 @@ export function postSyncStateMessage(length: number, state: SyncerState) {
 }
 
 export function postTokenRequestMessage() {
-    postMessage({ type: SyncerPayloadType.TOKEN_REQUEST })
+    postResponse({
+        type: SyncerPayloadType.TOKEN_REQUEST,
+        rejects: false
+    })
 }
 
 function postResponse(payload: SyncerPayload) {

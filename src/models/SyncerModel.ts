@@ -23,8 +23,6 @@ export class SyncerModel {
         let id = `payload-${this.requestsCounter++}`
         return new Promise((resolve, reject) => {
             this.requests.set(id, ({ payload, error }: { payload: P, error: ErrorPayload }) => {
-                console.log(id)
-                console.log(error)
                 if (error && error.rejects) {
                     this.requests.delete(id)
                     reject(error)
