@@ -3,31 +3,47 @@ import cytoscape from "cytoscape"
 import { urlController } from "../controllers"
 import { JournalModel } from "../models"
 
+interface TagNodeData { score: number, }
+interface TagEdgeData { weight: number, source: string, target: string }
+
 export function graphComponent() {
-    let journal: JournalModel | undefined = undefined
     const cy: cytoscape.Core = cytoscape({ headless: true })
-    const s = [
+    const s: cytoscape.Stylesheet[] = [
         {
-            selector: 'node',
-            style: {
-                'background-color': '#666',
-                'label': 'data(id)'
+            "selector": "node",
+            "style": {
+                "shape": "ellipse",
+                "width": "mapData(score, 0, 1, 25, 90)",
+                "height": "mapData(score, 0, 1, 25, 90)",
+                "content": "data(id)",
+                "font-size": "12px",
+                "text-valign": "center",
+                "text-halign": "center",
+                "background-color": "#555",
+                "text-outline-color": "#555",
+                "text-outline-width": "2px",
+                "color": "#fff",
+                "overlay-padding": "6px",
+                "z-index": 10,
             }
         },
         {
-            selector: 'edge',
-            style: {
-                'width': 1,
-                'line-color': '#ccc',
-                'target-arrow-color': '#ccc',
-                'target-arrow-shape': 'none',
-                'curve-style': 'straight'
+            "selector": "edge",
+            "style": {
+                "curve-style": "straight",
+                "opacity": 0.4,
+                "line-color": "mapData(weight, 0, 1, blue, red)",
+                "width": "mapData(weight, 0, 1, 1, 12)",
+                "overlay-padding": "3px",
+                "target-arrow-shape": "none"
             }
         }
     ]
 
     function view() {
+        const journal = urlController.getActiveJournal()
         if (journal === undefined || journal.loaded === false) return
+        drawGraph(journal)
         return m("#graphContainer", m("#graph", {
             oncreate: vnode => mountGraph(vnode.dom)
         }))
@@ -37,41 +53,50 @@ export function graphComponent() {
         if (target !== null) cy.mount(target)
     }
 
-    function onupdate() {
-        let tagNodes: string[] = []
-        let tagEdges: string[] = []
-        let els: cytoscape.ElementsDefinition = { nodes: [], edges: [] }
-
-        if (journal === undefined) journal = urlController.getActiveJournal()
-        if (journal === undefined || journal?.loaded === false) return
-
-        for (let entry of journal.entries) {
-            for (let [sourceKey, sourceTag] of entry.entry.tags) {
+    function drawGraph(journal: JournalModel) {
+        let connectionCounts: Map<string, number> = new Map()
+        let tagNodes: Map<string, TagNodeData> = new Map()
+        let tagEdges: Map<string, TagEdgeData> = new Map()
+        for (let {entry} of journal.entries) {
+            for (let [sourceKey, sourceTag] of entry.tags) {
                 if (sourceTag.separator === undefined || sourceTag.separator === null) continue
                 if (sourceTag.cleanVal === undefined || sourceTag.cleanVal === null) continue
                 if (sourceKey.startsWith("@session:")) continue
 
-                let source = sourceTag.cleanVal.toLowerCase().split("_").join(" ")
-                if (!tagNodes.includes(source)) {
-                    tagNodes.push(source)
-                    els.nodes.push({ data: { id: source } })
+                let source = titleCase(sourceTag.cleanVal.toLowerCase().split("_").join(" "))
+                if (!tagNodes.has(source)) {
+                    tagNodes.set(source, { score: 0 })
                 }
+                tagNodes.get(source)!.score += 1
 
-                for (let [targetKey, targetTag] of entry.entry.tags) {
+                for (let [targetKey, targetTag] of entry.tags) {
                     if (targetTag.cleanVal === undefined || targetTag.cleanVal === null) continue
                     if (targetKey.startsWith("@session:")) continue
-                    
-                    let target = targetTag.cleanVal.toLowerCase().split("_").join(" ")
+
+                    let target = titleCase(targetTag.cleanVal.toLowerCase().split("_").join(" "))
                     if (target === source) continue
 
-                    let id = source + target
-                    let altId = target + source
-                    if (!tagEdges.includes(id) && !tagEdges.includes(altId)) {
-                        tagEdges.push(id)
-                        els.edges.push({ data: { id: id, source: source, target: target } })
+                    if (!connectionCounts.has(target)) connectionCounts.set(target, 0)
+                    if (!connectionCounts.has(source)) connectionCounts.set(source, 0)
+
+                    let id = [source, target].sort().join("")
+                    if (!tagEdges.has(id)) {
+                        tagEdges.set(id, { source: source, target: target, weight: 0 })
                     }
+                    tagEdges.get(id)!.weight += 1
+                    connectionCounts.set(source, connectionCounts.get(source)! + 1)
+                    connectionCounts.set(target, connectionCounts.get(target)! + 1)
                 }
             }
+        }
+
+        let els: cytoscape.ElementsDefinition = { nodes: [], edges: [] }
+        for (let [id, node] of tagNodes) {
+            els.nodes.push({ data: { id: id, score: node.score / tagNodes.size } })
+        }
+        for (let [id, edge] of tagEdges) {
+            let connections = connectionCounts.get(edge.source)! + connectionCounts.get(edge.target)!
+            els.edges.push({ data: { id: id, weight: edge.weight / connections, source: edge.source, target: edge.target } })
         }
 
         cy.add(els.nodes)
@@ -79,66 +104,29 @@ export function graphComponent() {
         cy.style(s)
         let layout = {
             name: 'cose',
-            // Called on `layoutready`
-            ready: function () { },
-            // Called on `layoutstop`
-            stop: function () { },
-            // Whether to animate while running the layout
-            // true : Animate continuously as the layout is running
-            // false : Just show the end result
-            // 'end' : Animate with the end result, from the initial positions to the end positions
-            animate: false,
-            // Easing of the animation for animate:'end'
-            animationEasing: undefined,
-            // The duration of the animation for animate:'end'
-            animationDuration: undefined,
-            // A function that determines whether the node should be animated
-            // All nodes animated by default on animate enabled
-            // Non-animated nodes are positioned immediately when the layout starts
-            animateFilter: function (_node: any, _i: any) { return true },
-            // The layout animates only after this many milliseconds for animate:true
-            // (prevents flashing on fast runs)
-            animationThreshold: 250,
-            // Number of iterations between consecutive screen positions update
+            idealEdgeLength: 100,
+            nodeOverlap: 20,
             refresh: 20,
-            // Whether to fit the network view after when done
             fit: true,
-            // Padding on fit
             padding: 30,
-            // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-            boundingBox: undefined,
-            // Excludes the label when calculating node bounding boxes for the layout algorithm
-            nodeDimensionsIncludeLabels: true,
-            // Randomize the initial positions of the nodes (true) or use existing positions (false)
-            randomize: true,
-            // Extra spacing between components in non-compound graphs
-            componentSpacing: 50,
-            // Node repulsion (non overlapping) multiplier
-            nodeRepulsion: function (_node: any) { return 2048 },
-            // Node repulsion (overlapping) multiplier
-            nodeOverlap: 100,
-            // Ideal edge (non nested) length
-            idealEdgeLength: function (_edge: any) { return 32 },
-            // Divisor to compute edge forces
-            edgeElasticity: function (_edge: any) { return 32 },
-            // Nesting factor (multiplier) to compute ideal edge length for nested edges
-            nestingFactor: 1.2,
-            // Gravity force (constant)
-            gravity: 1,
-            // Maximum number of iterations to perform
+            randomize: false,
+            componentSpacing: 100,
+            nodeRepulsion: 900000,
+            edgeElasticity: 100,
+            nestingFactor: 5,
+            gravity: 80,
             numIter: 1000,
-            // Initial temperature (maximum node displacement)
-            initialTemp: 1000,
-            // Cooling factor (how the temperature is reduced between consecutive iterations
-            coolingFactor: 0.99,
-            // Lower temperature threshold (below this point the layout will end)
-            minTemp: 1.0
+            initialTemp: 500,
+            coolingFactor: 0.95,
+            minTemp: 2,
+            nodeDimensionsIncludeLabels: true
         }
         cy.layout(layout).run()
     }
 
-    return {
-        view: view,
-        onupdate: onupdate,
+    function titleCase(s: string) {
+        return s.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
     }
+
+    return { view: view }
 }

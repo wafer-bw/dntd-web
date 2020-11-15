@@ -1,5 +1,5 @@
 import m from "mithril"
-import { searchModel } from ".."
+import { searchModel, urlModel } from ".."
 import { Caret } from "../types"
 import { caretController, textController, searchController, urlController } from "../controllers"
 
@@ -12,7 +12,8 @@ export function searchbarComponent() {
         if (journal === undefined || journal.loaded === false) return
         return m("#search", [
             m("#searchQuery", searchNodeSettings(), m.trust(searchModel.barQuery.rendered)),
-            m("button", clearSearchNodeSettings(), "x")
+            m("button", clearSearchNodeSettings(), "x"),
+            m("button", gotoGraphSettings(), "graph")
         ])
     }
 
@@ -44,6 +45,14 @@ export function searchbarComponent() {
         if (event.keyCode == 13 && !event.shiftKey) {
             event.preventDefault()
             event.target.blur()
+        }
+    }
+
+    function gotoGraphSettings() {
+        return {
+            id: "goToGraph",
+            class: "del",
+            onclick: () => urlController.redirect(`${urlModel.hash}/graph`)
         }
     }
 
