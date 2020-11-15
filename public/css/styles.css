@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Outlined");
-
 body {
     font-family: "Open Sans", sans-serif;
 }
@@ -181,7 +180,7 @@ h1, h3, #badges {
     width: 400px;
 }
 
-#hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges > img, #unpauseSync, #syncStateText, .del, .createEntry, .entry {
+#hideTagRefinesToggle, #addSpreadsheet, .authButton, .entryState, .dismissErrorButton, #content, #suffix, #badges>img, #unpauseSync, #syncStateText, .del, .createEntry, .entry {
     margin-left: 5px;
 }
 
@@ -206,7 +205,9 @@ h1, h3, #badges {
     margin-top: 3px;
 }
 
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark {
+    color: rgba(0, 0, 0, 0.54);
+}
 
 #syncStateText {
     font-size: small;
@@ -238,4 +239,10 @@ h1, h3, #badges {
     content: attr(placeholder);
     pointer-events: none;
     color: gray;
+}
+
+#cy {
+    width: 1000px;
+    height: 1000px;
+    display: block;
 }

@@ -15,6 +15,7 @@ self.addEventListener("install", (event: any) => {
                 "./images/coverage_badge.svg",
                 "https://apis.google.com/js/api.js",
                 "https://unpkg.com/mithril@2.0.4/mithril.min.js",
+                "https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.17.0/cytoscape.min.js",
             ])
         })
     )

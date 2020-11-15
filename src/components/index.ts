@@ -1,3 +1,4 @@
+export * from "./graphComponent"
 export * from "./googleComponent"
 export * from "./errorsComponent"
 export * from "./composeComponent"

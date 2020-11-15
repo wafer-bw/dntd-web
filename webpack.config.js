@@ -59,7 +59,8 @@ function build(watch, instrument) {
             path: path.resolve(__dirname, "public", "js"),
         },
         externals: {
-            "mithril": "m"
+            "mithril": "m",
+            "cytoscape": "cytoscape",
         },
         plugins: [
             new FileManagerPlugin({
