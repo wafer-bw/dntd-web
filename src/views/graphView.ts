@@ -1,8 +1,8 @@
 import m from "mithril"
 import { urlController, journalController } from "../controllers"
 import {
-    googleComponent, breadcrumbComponent, syncStateComponent, testModeComponent, 
-    errorsComponent, graphComponent
+    googleComponent, breadcrumbComponent, testModeComponent,
+    errorsComponent, graphComponent, searchbarComponent, refinesComponent
 } from "../components"
 
 export function graphView() {
@@ -17,9 +17,10 @@ export function graphView() {
         return m("#shelf", [
             m(googleComponent),
             m(testModeComponent),
-            m(syncStateComponent),
             m(errorsComponent),
             m(breadcrumbComponent),
+            m(searchbarComponent),
+            m(refinesComponent),
             m(graphComponent),
         ])
     }

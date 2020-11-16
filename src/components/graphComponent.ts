@@ -1,7 +1,7 @@
 import m from "mithril"
 import cytoscape from "cytoscape"
-import { urlController } from "../controllers"
-import { JournalModel } from "../models"
+import { JournalEntryModel } from "../models"
+import { searchController, urlController } from "../controllers"
 
 interface TagNodeData { score: number, }
 interface TagEdgeData { score: number, source: string, target: string }
@@ -13,8 +13,8 @@ export function graphComponent() {
             "selector": "node",
             "style": {
                 "shape": "ellipse",
-                "width": "mapData(score, 0, 1, 25, 70)",
-                "height": "mapData(score, 0, 1, 25, 70)",
+                "width": "mapData(score, 0, 1, 20, 50)",
+                "height": "mapData(score, 0, 1, 20, 50)",
                 "content": "data(id)",
                 "font-size": "12px",
                 "text-valign": "center",
@@ -31,9 +31,9 @@ export function graphComponent() {
             "selector": "edge",
             "style": {
                 "curve-style": "straight",
-                "opacity": 0.7,
+                "opacity": 1,
                 "line-color": "mapData(score, 0, 1, blue, red)",
-                "width": "mapData(score, 0, 1, 1, 12)",
+                "width": "mapData(score, 0, 1, 0.1, 3)",
                 "overlay-padding": "3px",
                 "target-arrow-shape": "none"
             }
@@ -43,22 +43,29 @@ export function graphComponent() {
     function view() {
         const journal = urlController.getActiveJournal()
         if (journal === undefined || journal.loaded === false) return
-        drawGraph(journal)
+        drawGraph(searchController.filteredEntries(journal.entries)
+            .map(({ entry }) => entry)
+        )
         return m("#graphContainer", m("#graph", {
             oncreate: vnode => mountGraph(vnode.dom)
         }))
     }
 
+    function onupdate() {
+        console.log("update")
+    }
+
     function mountGraph(target: Element) {
         if (target !== null) {
+            console.log("MOUNTING")
             cy.mount(target)
         }
     }
 
-    function drawGraph(journal: JournalModel) {
+    function drawGraph(entries: JournalEntryModel[]) {
         let tagNodes: Map<string, TagNodeData> = new Map()
         let tagEdges: Map<string, TagEdgeData> = new Map()
-        for (let { entry } of journal.entries) {
+        for (let entry of entries) {
             for (let [sourceKey, sourceTag] of entry.tags) {
                 if (sourceTag.separator === undefined || sourceTag.separator === null) continue
                 if (sourceTag.cleanVal === undefined || sourceTag.cleanVal === null) continue
@@ -107,6 +114,7 @@ export function graphComponent() {
             els.edges.push({ data: { id: id, score: edge.score / hightestEdgeScore, source: edge.source, target: edge.target } })
         }
 
+        cy.elements().remove()
         cy.add(els.nodes)
         cy.add(els.edges)
         cy.style(s)
@@ -119,10 +127,10 @@ export function graphComponent() {
             fit: true,
             padding: 0,
             randomize: false,
-            componentSpacing: 50,
-            nodeRepulsion: 900000,
+            componentSpacing: 5,
+            nodeRepulsion: 400000,
             edgeElasticity: 100,
-            nestingFactor: 5,
+            nestingFactor: 2,
             gravity: 50,
             numIter: 1000,
             initialTemp: 500,
@@ -137,5 +145,8 @@ export function graphComponent() {
         return s.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
     }
 
-    return { view: view }
+    return {
+        view: view,
+        onupdate: onupdate
+    }
 }
