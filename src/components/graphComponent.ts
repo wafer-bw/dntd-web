@@ -4,7 +4,7 @@ import { urlController } from "../controllers"
 import { JournalModel } from "../models"
 
 interface TagNodeData { score: number, }
-interface TagEdgeData { weight: number, source: string, target: string }
+interface TagEdgeData { score: number, source: string, target: string }
 
 export function graphComponent() {
     const cy: cytoscape.Core = cytoscape({ headless: true })
@@ -13,8 +13,8 @@ export function graphComponent() {
             "selector": "node",
             "style": {
                 "shape": "ellipse",
-                "width": "mapData(score, 0, 1, 25, 90)",
-                "height": "mapData(score, 0, 1, 25, 90)",
+                "width": "mapData(score, 0, 1, 25, 70)",
+                "height": "mapData(score, 0, 1, 25, 70)",
                 "content": "data(id)",
                 "font-size": "12px",
                 "text-valign": "center",
@@ -31,9 +31,9 @@ export function graphComponent() {
             "selector": "edge",
             "style": {
                 "curve-style": "straight",
-                "opacity": 0.4,
-                "line-color": "mapData(weight, 0, 1, blue, red)",
-                "width": "mapData(weight, 0, 1, 1, 12)",
+                "opacity": 0.7,
+                "line-color": "mapData(score, 0, 1, blue, red)",
+                "width": "mapData(score, 0, 1, 1, 12)",
                 "overlay-padding": "3px",
                 "target-arrow-shape": "none"
             }
@@ -50,14 +50,15 @@ export function graphComponent() {
     }
 
     function mountGraph(target: Element) {
-        if (target !== null) cy.mount(target)
+        if (target !== null) {
+            cy.mount(target)
+        }
     }
 
     function drawGraph(journal: JournalModel) {
-        let connectionCounts: Map<string, number> = new Map()
         let tagNodes: Map<string, TagNodeData> = new Map()
         let tagEdges: Map<string, TagEdgeData> = new Map()
-        for (let {entry} of journal.entries) {
+        for (let { entry } of journal.entries) {
             for (let [sourceKey, sourceTag] of entry.tags) {
                 if (sourceTag.separator === undefined || sourceTag.separator === null) continue
                 if (sourceTag.cleanVal === undefined || sourceTag.cleanVal === null) continue
@@ -76,45 +77,53 @@ export function graphComponent() {
                     let target = titleCase(targetTag.cleanVal.toLowerCase().split("_").join(" "))
                     if (target === source) continue
 
-                    if (!connectionCounts.has(target)) connectionCounts.set(target, 0)
-                    if (!connectionCounts.has(source)) connectionCounts.set(source, 0)
-
                     let id = [source, target].sort().join("")
                     if (!tagEdges.has(id)) {
-                        tagEdges.set(id, { source: source, target: target, weight: 0 })
+                        tagEdges.set(id, { source: source, target: target, score: 0 })
                     }
-                    tagEdges.get(id)!.weight += 1
-                    connectionCounts.set(source, connectionCounts.get(source)! + 1)
-                    connectionCounts.set(target, connectionCounts.get(target)! + 1)
+                    tagEdges.get(id)!.score += 1
                 }
             }
         }
 
+        let highestNodeScore = 0
+        for (let [, node] of tagNodes) {
+            let score = node.score / tagNodes.size
+            if (score > highestNodeScore) highestNodeScore = score
+            node.score = score
+        }
+        let hightestEdgeScore = 0
+        for (let [, edge] of tagEdges) {
+            let score = edge.score / tagEdges.size
+            if (score > hightestEdgeScore) hightestEdgeScore = score
+            edge.score = score
+        }
+
         let els: cytoscape.ElementsDefinition = { nodes: [], edges: [] }
         for (let [id, node] of tagNodes) {
-            els.nodes.push({ data: { id: id, score: node.score / tagNodes.size } })
+            els.nodes.push({ data: { id: id, score: node.score / highestNodeScore } })
         }
         for (let [id, edge] of tagEdges) {
-            let connections = connectionCounts.get(edge.source)! + connectionCounts.get(edge.target)!
-            els.edges.push({ data: { id: id, weight: edge.weight / connections, source: edge.source, target: edge.target } })
+            els.edges.push({ data: { id: id, score: edge.score / hightestEdgeScore, source: edge.source, target: edge.target } })
         }
 
         cy.add(els.nodes)
         cy.add(els.edges)
         cy.style(s)
+        // https://js.cytoscape.org/#layouts/cose
         let layout = {
             name: 'cose',
             idealEdgeLength: 100,
             nodeOverlap: 20,
             refresh: 20,
             fit: true,
-            padding: 30,
+            padding: 0,
             randomize: false,
-            componentSpacing: 100,
+            componentSpacing: 50,
             nodeRepulsion: 900000,
             edgeElasticity: 100,
             nestingFactor: 5,
-            gravity: 80,
+            gravity: 50,
             numIter: 1000,
             initialTemp: 500,
             coolingFactor: 0.95,
