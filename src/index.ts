@@ -1,5 +1,5 @@
 import m from "mithril"
-import { signinView, libraryView, shelfView, journalView, testModeView, graphView } from "./views"
+import { signinView, libraryView, shelfView, journalView, testModeView } from "./views"
 import {
     ServiceWorkerModel, SyncerModel, LibraryModel, GoogleModel, UrlModel, SearchModel,
     AppStateModel, ErrorsModel
@@ -25,7 +25,6 @@ if (root !== null) {
         "/library/:shelfId": shelfView,
         "/setTestMode/:testMode": testModeView,
         "/library/:shelfId/:journalId": journalView,
-        "/library/:shelfId/:journalId/graph": graphView,
         "/demo/:shelfId/:journalId": journalView,
     })
 }

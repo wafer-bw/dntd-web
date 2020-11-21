@@ -1,5 +1,6 @@
 import { ShelfModel } from "./ShelfModel"
 import { JournalEntryModel, TagModel } from "."
+import { ViewMode } from "../types"
 
 export class JournalModel {
     readonly id: number
@@ -7,6 +8,7 @@ export class JournalModel {
     readonly shelf: ShelfModel
 
     public loaded: boolean
+    public viewMode: ViewMode
     public tags: Map<string, TagModel>
     public entries: { id: number, entry: JournalEntryModel }[]
 
@@ -17,6 +19,7 @@ export class JournalModel {
         this.id = journalId
         this.tags = new Map()
         this.title = journalTitle
+        this.viewMode = ViewMode.COMPOSE
     }
 
     public createEntry(idx: number, entry: JournalEntryModel) {

@@ -9,10 +9,15 @@ export const searchController = {
     buildRefines: buildRefines,
     filteredEntries: filteredEntries,
     updateSearchbar: updateSearchbar,
+    updateGraphFilterBar: updateGraphFilterBar,
 }
 
 function updateSearchbar(content: string) {
     entryController.update(searchModel.barQuery, content)
+}
+
+function updateGraphFilterBar(content: string) {
+    entryController.update(searchModel.graphFilter, content)
 }
 
 function reset() {

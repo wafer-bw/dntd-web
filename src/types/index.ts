@@ -1,4 +1,5 @@
 export * from "./caret"
 export * from "./search"
-export * from "./testing"
 export * from "./syncer"
+export * from "./testing"
+export * from "./journal"

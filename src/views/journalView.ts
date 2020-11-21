@@ -3,13 +3,16 @@ import { urlController, journalController } from "../controllers"
 import {
     googleComponent, breadcrumbComponent, entriesComponent, syncStateComponent,
     searchbarComponent, refinesComponent, composeComponent, testModeComponent,
-    errorsComponent
+    errorsComponent, graphComponent, graphBarComponent
 } from "../components"
+import { JournalModel } from "../models"
+import { ViewMode } from "../types"
 
 export function journalView() {
+    let journal: JournalModel | undefined = undefined
 
     function oninit() {
-        const journal = urlController.getActiveJournal()
+        journal = urlController.getActiveJournal()
         if (journal === undefined || journal.loaded) return
         journalController.loadEntries(journal)
     }
@@ -22,12 +25,25 @@ export function journalView() {
             m(errorsComponent),
             m(breadcrumbComponent),
             m(searchbarComponent),
+            m(graphBarComponent),
             m(refinesComponent),
+            mainView(journal),
+        ])
+    }
+
+    function mainView(journal: JournalModel | undefined) {
+        if (journal === undefined || journal.loaded === false) return
+        if (journal.viewMode === ViewMode.GRAPH) {
+            return [
+                m(graphComponent),
+            ]
+        }
+        return [
             m("#entriesWrap", [
                 m(entriesComponent),
                 m(composeComponent),
             ])
-        ])
+        ]
     }
 
     return {

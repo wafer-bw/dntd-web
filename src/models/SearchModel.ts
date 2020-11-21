@@ -9,6 +9,7 @@ export class SearchModel {
     public simpleRefines: Map<string, TagModel> = new Map()
     public complexRefines: Map<string, TagModel[]> = new Map()
     public barQuery: BaseEntryModel = entryFactory.createBaseEntry()
+    public graphFilter: BaseEntryModel = entryFactory.createBaseEntry()
     public refinesQuery: {
         keys: Set<string>,
         vals: Map<string, TagModel>,
@@ -19,6 +20,10 @@ export class SearchModel {
 
     static getInstance(): SearchModel {
         return (!SearchModel.instance) ? new SearchModel() : SearchModel.instance
+    }
+
+    get graphFilterQuery(): BaseEntryModel {
+        return entryFactory.createBaseEntry(this.graphFilter.raw)
     }
 
     get query(): BaseEntryModel {

@@ -78,18 +78,18 @@ h1, h3, #badges {
     border: 1px solid black;
 }
 
-#search {
-    width: 70%
+#search, #filter {
+    width: 50%
 }
 
 #search, #hideEntriesKeysToggle, #hideTagRefinesToggle {
     display: inline-block;
 }
 
-#searchQuery {
+#searchQuery, #graphFilter {
     text-align: left;
     display: inline-block;
-    width: 90%;
+    width: 75%;
 }
 
 .tempguidancePre, .labelColumn {

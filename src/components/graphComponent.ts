@@ -2,6 +2,7 @@ import m from "mithril"
 import cytoscape from "cytoscape"
 import { JournalEntryModel } from "../models"
 import { searchController, urlController } from "../controllers"
+import { searchModel } from ".."
 
 interface TagNodeData { score: number, }
 interface TagEdgeData { score: number, source: string, target: string }
@@ -51,25 +52,28 @@ export function graphComponent() {
         }))
     }
 
-    function onupdate() {
-        console.log("update")
-    }
-
     function mountGraph(target: Element) {
         if (target !== null) {
-            console.log("MOUNTING")
             cy.mount(target)
         }
+    }
+
+    function graphFilterContinue(text: string) {
+        for (let token of searchModel.graphFilterQuery.tokens) {
+            if (token.startsWith("-") && text.includes(token.substring(1))) return true
+            if (!token.startsWith("-") && !text.includes(token)) return true
+        }
+        return false
     }
 
     function drawGraph(entries: JournalEntryModel[]) {
         let tagNodes: Map<string, TagNodeData> = new Map()
         let tagEdges: Map<string, TagEdgeData> = new Map()
         for (let entry of entries) {
-            for (let [sourceKey, sourceTag] of entry.tags) {
+            for (let [, sourceTag] of entry.tags) {
                 if (sourceTag.separator === undefined || sourceTag.separator === null) continue
                 if (sourceTag.cleanVal === undefined || sourceTag.cleanVal === null) continue
-                if (sourceKey.startsWith("@session:")) continue
+                if (graphFilterContinue(sourceTag.clean)) continue
 
                 let source = titleCase(sourceTag.cleanVal.toLowerCase().split("_").join(" "))
                 if (!tagNodes.has(source)) {
@@ -77,10 +81,9 @@ export function graphComponent() {
                 }
                 tagNodes.get(source)!.score += 1
 
-                for (let [targetKey, targetTag] of entry.tags) {
+                for (let [, targetTag] of entry.tags) {
                     if (targetTag.cleanVal === undefined || targetTag.cleanVal === null) continue
-                    if (targetKey.startsWith("@session:")) continue
-
+                    if (graphFilterContinue(targetTag.clean)) continue
                     let target = titleCase(targetTag.cleanVal.toLowerCase().split("_").join(" "))
                     if (target === source) continue
 
@@ -127,9 +130,9 @@ export function graphComponent() {
             fit: true,
             padding: 0,
             randomize: false,
-            componentSpacing: 5,
-            nodeRepulsion: 400000,
-            edgeElasticity: 100,
+            componentSpacing: 100,
+            nodeRepulsion: 200000,
+            edgeElasticity: 50,
             nestingFactor: 2,
             gravity: 50,
             numIter: 1000,
@@ -147,6 +150,5 @@ export function graphComponent() {
 
     return {
         view: view,
-        onupdate: onupdate
     }
 }
