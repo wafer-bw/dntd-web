@@ -55,6 +55,7 @@ function build(watch, instrument) {
             extensions: [".tsx", ".ts", ".js", ".jsx"],
         },
         output: {
+            hashFunction: 'xxhash64',
             filename: "[name].js",
             path: path.resolve(__dirname, "public", "js"),
         },
