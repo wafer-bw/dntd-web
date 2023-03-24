@@ -19,7 +19,7 @@
         "@types/gapi.client.sheets": "^4.0.3",
         "@types/mithril": "^2.0.2",
         "cypress": "^4.12.1",
-        "filemanager-webpack-plugin": "^2.0.5",
+        "filemanager-webpack-plugin": "^8.0.0",
         "istanbul-instrumenter-loader": "^3.0.1",
         "make-coverage-badge": "^1.2.0",
         "mithril": "^2.0.4",
